@@ -38,6 +38,7 @@ public class JPAIssueRepository extends IssueRepository {
             for (Issue issue : issues) {
                 em.persist(issue);
             }
+            em.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
