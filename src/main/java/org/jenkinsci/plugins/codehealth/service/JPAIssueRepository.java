@@ -35,9 +35,11 @@ public class JPAIssueRepository extends IssueRepository {
         LOG.log(Level.INFO, "Saving " + issues.size() + " new Issues for Top-Level-Item " + topLevelItem.getDisplayName() + ".");
         try {
             EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            em.getTransaction().begin();
             for (Issue issue : issues) {
                 em.persist(issue);
             }
+            em.getTransaction().commit();
             em.close();
         } catch (SQLException e) {
             e.printStackTrace();
