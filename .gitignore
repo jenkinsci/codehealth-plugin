@@ -32,3 +32,4 @@ hs_err_pid*
 ## Plugin-specific files:
 # IntelliJ
 /out/
+.idea/libraries/*
