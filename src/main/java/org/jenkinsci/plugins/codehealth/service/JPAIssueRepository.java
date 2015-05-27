@@ -10,6 +10,7 @@ import org.jenkinsci.plugins.codehealth.model.StateHistory;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -41,15 +42,30 @@ public class JPAIssueRepository extends IssueRepository {
             EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             em.getTransaction().begin();
             for (Issue issue : issues) {
-                if (issue.getCurrentState() == null) {
-                    StateHistory stateNew = new StateHistory();
-                    stateNew.setTimestamp(new Date());
-                    stateNew.setState(State.NEW);
-                    stateNew.setIssue(issue);
-                    issue.setStateHistory(new HashSet<StateHistory>());
-                    issue.getStateHistory().add(stateNew);
+                TypedQuery<Issue> query = em.createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN, Issue.class);
+                query.setParameter("contextHashCode", issue.getContextHashCode());
+                query.setParameter("origin", issue.getOrigin());
+                Issue result = query.getSingleResult();
+                if (result != null && result.getCurrentState().getState().equals(State.NEW)) {
+                    // transition into OPEN
+                    StateHistory stateOpen = new StateHistory();
+                    stateOpen.setState(State.OPEN);
+                    stateOpen.setTimestamp(new Date());
+                    result.getStateHistory().add(stateOpen);
+                    result.setCurrentState(stateOpen);
+                    em.refresh(result);
+                } else {
+                    if (issue.getCurrentState() == null) {
+                        StateHistory stateNew = new StateHistory();
+                        stateNew.setTimestamp(new Date());
+                        stateNew.setState(State.NEW);
+                        issue.setStateHistory(new HashSet<StateHistory>());
+                        issue.getStateHistory().add(stateNew);
+                        issue.setCurrentState(stateNew);
+                    }
+                    em.persist(issue);
                 }
-                em.persist(issue);
+
             }
             em.getTransaction().commit();
             em.close();

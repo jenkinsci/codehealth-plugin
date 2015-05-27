@@ -11,7 +11,15 @@ import java.util.Set;
  */
 @Entity
 @PerItemTable
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UNI_HASH_ORIGIN", columnNames = {"contextHashCode", "origin"})
+})
+@NamedQueries({
+        @NamedQuery(name = Issue.FIND_BY_HASH_AND_ORIGIN, query = "select i from Issue i where i.contextHashCode = :contextHashCode and i.origin = :origin")
+})
 public class Issue {
+
+    public static final String FIND_BY_HASH_AND_ORIGIN = "Issue.findByHashAndOrigin";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,8 +37,11 @@ public class Issue {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<StateHistory> stateHistory;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private StateHistory currentState;
+
+    @Column
+    private String origin;
 
     public long getId() {
         return id;
@@ -102,5 +113,13 @@ public class Issue {
 
     public void setCurrentState(StateHistory currentState) {
         this.currentState = currentState;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 }

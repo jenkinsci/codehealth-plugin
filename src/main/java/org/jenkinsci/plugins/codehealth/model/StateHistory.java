@@ -22,9 +22,6 @@ public class StateHistory {
     @Enumerated(value = EnumType.ORDINAL)
     private State state;
 
-    @ManyToOne
-    private Issue issue;
-
     public long getId() {
         return id;
     }
@@ -71,11 +68,4 @@ public class StateHistory {
         return result;
     }
 
-    public Issue getIssue() {
-        return issue;
-    }
-
-    public void setIssue(Issue issue) {
-        this.issue = issue;
-    }
 }
