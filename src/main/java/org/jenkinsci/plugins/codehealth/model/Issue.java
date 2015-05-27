@@ -4,6 +4,7 @@ package org.jenkinsci.plugins.codehealth.model;
 import org.jenkinsci.plugins.database.jpa.PerItemTable;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author Michael Prankl
@@ -24,6 +25,12 @@ public class Issue {
 
     @Enumerated(value = EnumType.ORDINAL)
     private Priority priority;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<StateHistory> stateHistory;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private StateHistory currentState;
 
     public long getId() {
         return id;
@@ -79,5 +86,21 @@ public class Issue {
         result = 31 * result + (int) (contextHashCode ^ (contextHashCode >>> 32));
         result = 31 * result + priority.hashCode();
         return result;
+    }
+
+    public Set<StateHistory> getStateHistory() {
+        return stateHistory;
+    }
+
+    public void setStateHistory(Set<StateHistory> stateHistory) {
+        this.stateHistory = stateHistory;
+    }
+
+    public StateHistory getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(StateHistory currentState) {
+        this.currentState = currentState;
     }
 }
