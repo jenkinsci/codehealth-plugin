@@ -10,6 +10,7 @@ import org.jenkinsci.plugins.codehealth.model.StateHistory;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -42,10 +43,10 @@ public class JPAIssueRepository extends IssueRepository {
             EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             em.getTransaction().begin();
             for (Issue issue : issues) {
-                TypedQuery<Issue> query = em.createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN, Issue.class);
-                query.setParameter("contextHashCode", issue.getContextHashCode());
-                query.setParameter("origin", issue.getOrigin());
-                Issue result = query.getSingleResult();
+                Query q = em.createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
+                q.setParameter("contextHashCode", issue.getContextHashCode());
+                q.setParameter("origin", issue.getOrigin());
+                Issue result = (Issue) q.getSingleResult();
                 if (result != null && result.getCurrentState().getState().equals(State.NEW)) {
                     // transition into OPEN
                     StateHistory stateOpen = new StateHistory();
@@ -53,7 +54,7 @@ public class JPAIssueRepository extends IssueRepository {
                     stateOpen.setTimestamp(new Date());
                     result.getStateHistory().add(stateOpen);
                     result.setCurrentState(stateOpen);
-                    em.refresh(result);
+                    em.persist(result);
                 } else {
                     if (issue.getCurrentState() == null) {
                         StateHistory stateNew = new StateHistory();
