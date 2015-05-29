@@ -7,16 +7,17 @@ import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.codehealth.model.Issue;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.model.StateHistory;
+import org.jenkinsci.plugins.codehealth.util.AbstractIssueMapper;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,24 +38,28 @@ public class JPAIssueRepository extends IssueRepository {
 
 
     @Override
-    public void newIssues(Collection<Issue> issues, TopLevelItem topLevelItem) {
-        LOG.log(Level.INFO, "Saving " + issues.size() + " new Issues for Top-Level-Item " + topLevelItem.getDisplayName() + ".");
+    public void newIssues(Collection data, TopLevelItem topLevelItem, AbstractIssueMapper issueMapper) {
+        LOG.log(Level.INFO, "Saving " + data.size() + " new Issues for Top-Level-Item " + topLevelItem.getDisplayName() + ".");
         try {
             EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             em.getTransaction().begin();
-            for (Issue issue : issues) {
+            for (Object item : data) {
+                Issue issue = issueMapper.map(item);
                 Query q = em.createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
                 q.setParameter("contextHashCode", issue.getContextHashCode());
                 q.setParameter("origin", issue.getOrigin());
-                Issue result = (Issue) q.getSingleResult();
-                if (result != null && result.getCurrentState().getState().equals(State.NEW)) {
-                    // transition into OPEN
-                    StateHistory stateOpen = new StateHistory();
-                    stateOpen.setState(State.OPEN);
-                    stateOpen.setTimestamp(new Date());
-                    result.getStateHistory().add(stateOpen);
-                    result.setCurrentState(stateOpen);
-                    em.persist(result);
+                List<Issue> resultList = (List<Issue>) q.getResultList();
+                if (resultList.size() == 1) {
+                    Issue result = resultList.get(0);
+                    if (result.getCurrentState().getState().equals(State.NEW)) {
+                        // transition into OPEN
+                        StateHistory stateOpen = new StateHistory();
+                        stateOpen.setState(State.OPEN);
+                        stateOpen.setTimestamp(new Date());
+                        result.getStateHistory().add(stateOpen);
+                        result.setCurrentState(stateOpen);
+                        em.persist(result);
+                    }
                 } else {
                     if (issue.getCurrentState() == null) {
                         StateHistory stateNew = new StateHistory();
@@ -63,10 +68,9 @@ public class JPAIssueRepository extends IssueRepository {
                         issue.setStateHistory(new HashSet<StateHistory>());
                         issue.getStateHistory().add(stateNew);
                         issue.setCurrentState(stateNew);
+                        em.persist(issue);
                     }
-                    em.persist(issue);
                 }
-
             }
             em.getTransaction().commit();
             em.close();
