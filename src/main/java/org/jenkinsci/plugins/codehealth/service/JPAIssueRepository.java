@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.codehealth.service;
 
 import com.google.inject.Inject;
 import hudson.Extension;
+import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.codehealth.model.Issue;
@@ -22,6 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of IssueRepository based on JPA and the database-(h2-)plugin.
+ *
  * @author Michael Prankl
  */
 @Extension
@@ -38,13 +41,15 @@ public class JPAIssueRepository extends IssueRepository {
 
 
     @Override
-    public void newIssues(Collection data, TopLevelItem topLevelItem, AbstractIssueMapper issueMapper) {
-        LOG.log(Level.INFO, "Saving " + data.size() + " new Issues for Top-Level-Item " + topLevelItem.getDisplayName() + ".");
+    public void updateIssues(Collection data, AbstractBuild build, AbstractIssueMapper issueMapper) {
+        final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
+        final int buildNr = build.getNumber();
+        LOG.log(Level.INFO, "Updating " + data.size() + " Issues for Top-Level-Item " + topLevelItem.getDisplayName() + " and Build #" + buildNr);
         try {
-            EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             em.getTransaction().begin();
             for (Object item : data) {
-                Issue issue = issueMapper.map(item);
+                final Issue issue = issueMapper.map(item);
                 Query q = em.createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
                 q.setParameter("contextHashCode", issue.getContextHashCode());
                 q.setParameter("origin", issue.getOrigin());
@@ -52,34 +57,58 @@ public class JPAIssueRepository extends IssueRepository {
                 if (resultList.size() == 1) {
                     Issue result = resultList.get(0);
                     if (result.getCurrentState().getState().equals(State.NEW)) {
-                        // transition into OPEN
-                        StateHistory stateOpen = new StateHistory();
-                        stateOpen.setState(State.OPEN);
-                        stateOpen.setTimestamp(new Date());
-                        result.getStateHistory().add(stateOpen);
-                        result.setCurrentState(stateOpen);
-                        em.persist(result);
+                        openIssue(buildNr, em, result);
+
                     }
                 } else {
                     if (issue.getCurrentState() == null) {
-                        StateHistory stateNew = new StateHistory();
-                        stateNew.setTimestamp(new Date());
-                        stateNew.setState(State.NEW);
-                        issue.setStateHistory(new HashSet<StateHistory>());
-                        issue.getStateHistory().add(stateNew);
-                        issue.setCurrentState(stateNew);
-                        em.persist(issue);
+                        newIssue(buildNr, em, issue);
                     }
                 }
             }
             em.getTransaction().commit();
             em.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Unable to update issues.", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Unable to update issues.", e);
         }
-
     }
 
+    /**
+     * Transition from NEW to OPEN.
+     *
+     * @param buildNr the build nr
+     * @param em      the entity manager
+     * @param result  the corresponding issue
+     */
+    private void openIssue(int buildNr, EntityManager em, Issue result) {
+        final StateHistory stateOpen = buildHistory(buildNr, State.OPEN);
+        result.getStateHistory().add(stateOpen);
+        result.setCurrentState(stateOpen);
+        em.persist(result);
+    }
+
+    /**
+     * Persists a new Issue.
+     *
+     * @param buildNr the build nr
+     * @param em      the entity manager
+     * @param issue   the new Issue
+     */
+    private void newIssue(int buildNr, EntityManager em, Issue issue) {
+        final StateHistory stateNew = buildHistory(buildNr, State.NEW);
+        issue.setStateHistory(new HashSet<StateHistory>());
+        issue.getStateHistory().add(stateNew);
+        issue.setCurrentState(stateNew);
+        em.persist(issue);
+    }
+
+    private StateHistory buildHistory(int buildNr, State state) {
+        final StateHistory stateHistory = new StateHistory();
+        stateHistory.setBuildNr(buildNr);
+        stateHistory.setState(state);
+        stateHistory.setTimestamp(new Date());
+        return stateHistory;
+    }
 }
