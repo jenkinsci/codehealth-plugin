@@ -50,15 +50,14 @@ public class JPAIssueRepository extends IssueRepository {
             em.getTransaction().begin();
             for (Object item : data) {
                 final Issue issue = issueMapper.map(item);
-                Query q = em.createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
-                q.setParameter("contextHashCode", issue.getContextHashCode());
-                q.setParameter("origin", issue.getOrigin());
-                List<Issue> resultList = (List<Issue>) q.getResultList();
+                List<Issue> resultList = queryIssue(em, issue);
                 if (resultList.size() == 1) {
                     Issue result = resultList.get(0);
                     if (result.getCurrentState().getState().equals(State.NEW)) {
                         openIssue(buildNr, em, result);
-
+                    } else if(result.getCurrentState().getState().equals(State.CLOSED)){
+                        // reopen issue -> State NEW
+                        reopenIssue(buildNr, em, result);
                     }
                 } else {
                     if (issue.getCurrentState() == null) {
@@ -73,6 +72,13 @@ public class JPAIssueRepository extends IssueRepository {
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Unable to update issues.", e);
         }
+    }
+
+    private void reopenIssue(int buildNr, EntityManager em, Issue result) {
+        final StateHistory stateNew = buildHistory(buildNr, State.NEW);
+        result.getStateHistory().add(stateNew);
+        result.setCurrentState(stateNew);
+        em.persist(stateNew);
     }
 
     /**
@@ -110,5 +116,50 @@ public class JPAIssueRepository extends IssueRepository {
         stateHistory.setState(state);
         stateHistory.setTimestamp(new Date());
         return stateHistory;
+    }
+
+    @Override
+    public void fixedIssues(Collection data, AbstractBuild build, AbstractIssueMapper issueMapper) {
+        final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
+        final int buildNr = build.getNumber();
+        LOG.log(Level.INFO, data.size() + " Issues for Top-Level-Item " + topLevelItem.getDisplayName() + " and Build #" + buildNr + " have been marked as fixed.");
+        try {
+            final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            em.getTransaction().begin();
+            for (Object item : data) {
+                final Issue issue = issueMapper.map(item);
+                List<Issue> resultList = queryIssue(em, issue);
+                if (resultList.size() == 1) {
+                    Issue result = resultList.get(0);
+                    if (result.getCurrentState().getState().equals(State.NEW) || result.getCurrentState().getState().equals(State.OPEN)) {
+                        closeIssue(buildNr, em, result);
+                    } else if (result.getCurrentState().getState().equals(State.CLOSED)) {
+                        LOG.log(Level.INFO, String.format("Issue(ID=%s) has already been closed with build #%s", result.getId(), result.getCurrentState().getBuildNr()));
+                    }
+                } else {
+                    LOG.log(Level.WARNING, "Couldn't find corresponding issue to close.");
+                }
+            }
+            em.getTransaction().commit();
+            em.close();
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to update issues.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to update issues.", e);
+        }
+    }
+
+    private List<Issue> queryIssue(EntityManager em, Issue issue) {
+        Query q = em.createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
+        q.setParameter("contextHashCode", issue.getContextHashCode());
+        q.setParameter("origin", issue.getOrigin());
+        return (List<Issue>) q.getResultList();
+    }
+
+    private void closeIssue(int buildNr, EntityManager em, Issue result) {
+        StateHistory closed = buildHistory(buildNr, State.CLOSED);
+        result.getStateHistory().add(closed);
+        result.setCurrentState(closed);
+        em.persist(result);
     }
 }
