@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.codehealth.model;
 
 
 import org.jenkinsci.plugins.database.jpa.PerItemTable;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -15,11 +17,14 @@ import java.util.Set;
         @UniqueConstraint(name = "UNI_HASH_ORIGIN", columnNames = {"contextHashCode", "origin"})
 })
 @NamedQueries({
-        @NamedQuery(name = Issue.FIND_BY_HASH_AND_ORIGIN, query = "select i from Issue i where i.contextHashCode = :contextHashCode and i.origin = :origin")
+        @NamedQuery(name = Issue.FIND_BY_HASH_AND_ORIGIN, query = "select i from Issue i where i.contextHashCode = :contextHashCode and i.origin = :origin"),
+        @NamedQuery(name = Issue.FIND_ALL, query = "select i from Issue i")
 })
+@ExportedBean
 public class Issue {
 
     public static final String FIND_BY_HASH_AND_ORIGIN = "Issue.findByHashAndOrigin";
+    public static final String FIND_ALL = "Issue.findAll";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,6 +48,7 @@ public class Issue {
     @Column
     private String origin;
 
+    @Exported
     public long getId() {
         return id;
     }
@@ -51,6 +57,7 @@ public class Issue {
         this.id = id;
     }
 
+    @Exported
     public String getMessage() {
         return message;
     }
@@ -59,6 +66,7 @@ public class Issue {
         this.message = message;
     }
 
+    @Exported
     public Priority getPriority() {
         return priority;
     }
@@ -67,6 +75,7 @@ public class Issue {
         this.priority = priority;
     }
 
+    @Exported
     public long getContextHashCode() {
         return contextHashCode;
     }
@@ -107,6 +116,7 @@ public class Issue {
         this.stateHistory = stateHistory;
     }
 
+    @Exported(name = "state")
     public StateHistory getCurrentState() {
         return currentState;
     }
@@ -115,6 +125,7 @@ public class Issue {
         this.currentState = currentState;
     }
 
+    @Exported
     public String getOrigin() {
         return origin;
     }

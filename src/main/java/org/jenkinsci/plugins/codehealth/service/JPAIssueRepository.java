@@ -15,10 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -161,5 +158,19 @@ public class JPAIssueRepository extends IssueRepository {
         result.getStateHistory().add(closed);
         result.setCurrentState(closed);
         em.persist(result);
+    }
+
+    @Override
+    public Collection<Issue> loadIssues(TopLevelItem topLevelItem) {
+        try {
+            final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            Query q = em.createNamedQuery(Issue.FIND_ALL);
+            return q.getResultList();
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        }
+        return Collections.emptyList();
     }
 }

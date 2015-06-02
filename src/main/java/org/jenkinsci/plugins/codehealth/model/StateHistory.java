@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.codehealth.model;
 
 import org.jenkinsci.plugins.database.jpa.PerItemTable;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.Date;
  */
 @Entity
 @PerItemTable
+@ExportedBean
 public class StateHistory {
 
     @Id
@@ -33,6 +36,7 @@ public class StateHistory {
         this.id = id;
     }
 
+    @Exported
     public Date getTimestamp() {
         return timestamp;
     }
@@ -41,6 +45,7 @@ public class StateHistory {
         this.timestamp = timestamp;
     }
 
+    @Exported
     public State getState() {
         return state;
     }
@@ -49,6 +54,7 @@ public class StateHistory {
         this.state = state;
     }
 
+    @Exported
     public int getBuildNr() {
         return buildNr;
     }
