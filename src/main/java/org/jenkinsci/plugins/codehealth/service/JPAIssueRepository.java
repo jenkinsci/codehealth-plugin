@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.codehealth.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
@@ -34,6 +35,11 @@ public class JPAIssueRepository extends IssueRepository {
 
     public JPAIssueRepository() {
         Jenkins.getInstance().getInjector().injectMembers(this);
+    }
+
+    @VisibleForTesting
+    public JPAIssueRepository(PersistenceService persistenceService){
+        this.persistenceService = persistenceService;
     }
 
 
@@ -71,6 +77,12 @@ public class JPAIssueRepository extends IssueRepository {
         }
     }
 
+    /**
+     * Transition from CLOSED to NEW (reopen issue).
+     * @param buildNr the build nr
+     * @param em the entity manager
+     * @param result the corresponding issue
+     */
     private void reopenIssue(int buildNr, EntityManager em, Issue result) {
         final StateHistory stateNew = buildHistory(buildNr, State.NEW);
         result.getStateHistory().add(stateNew);
@@ -107,6 +119,12 @@ public class JPAIssueRepository extends IssueRepository {
         em.persist(issue);
     }
 
+    /**
+     * Construct a StateHistory.
+     * @param buildNr the build nr
+     * @param state the state
+     * @return the constructed StateHistory
+     */
     private StateHistory buildHistory(int buildNr, State state) {
         final StateHistory stateHistory = new StateHistory();
         stateHistory.setBuildNr(buildNr);
