@@ -13,15 +13,17 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Factory for creating the job-level action.
+ *
  * @author Michael Prankl
  */
 @Extension
-public class CodehealthActionFactory extends TransientProjectActionFactory {
+public class CodehealthJobActionFactory extends TransientProjectActionFactory {
 
     @Inject
     private JPAIssueRepository jpaIssueRepository;
 
-    public CodehealthActionFactory() {
+    public CodehealthJobActionFactory() {
         super();
         Jenkins.getInstance().getInjector().injectMembers(this);
     }
@@ -29,7 +31,7 @@ public class CodehealthActionFactory extends TransientProjectActionFactory {
     @Override
     public Collection<? extends Action> createFor(AbstractProject abstractProject) {
         final List<Action> actions = new ArrayList<Action>();
-        actions.add(new CodehealthAction((hudson.model.TopLevelItem) abstractProject, jpaIssueRepository));
+        actions.add(new CodehealthJobAction((hudson.model.TopLevelItem) abstractProject, jpaIssueRepository));
         return actions;
     }
 }

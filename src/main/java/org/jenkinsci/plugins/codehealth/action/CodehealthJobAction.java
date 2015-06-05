@@ -15,12 +15,12 @@ import java.util.Collection;
  * @author Michael Prankl
  */
 @ExportedBean
-public class CodehealthAction implements Action {
+public class CodehealthJobAction implements Action {
 
     private TopLevelItem topLevelItem;
     private transient IssueRepository issueRepository;
 
-    public CodehealthAction(TopLevelItem topLevelItem, IssueRepository issueRepository){
+    public CodehealthJobAction(TopLevelItem topLevelItem, IssueRepository issueRepository){
         this.topLevelItem = topLevelItem;
         this.issueRepository = issueRepository;
     }
