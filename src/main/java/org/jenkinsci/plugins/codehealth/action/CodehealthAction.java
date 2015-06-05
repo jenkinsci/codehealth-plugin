@@ -45,11 +45,6 @@ public class CodehealthAction implements Action {
     }
 
     @Exported
-    public int getIssueCount(){
-        return issueRepository.loadIssues(this.topLevelItem).size();
-    }
-
-    @Exported
     public Collection<Issue> getIssues(){
         return issueRepository.loadIssues(this.topLevelItem);
     }

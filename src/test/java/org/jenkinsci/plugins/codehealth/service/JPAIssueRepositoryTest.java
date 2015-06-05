@@ -36,9 +36,11 @@ public class JPAIssueRepositoryTest {
     private FreeStyleProject mockedTopLevelItem;
     private EntityManager mockedEntityManager;
     private Query mockedQuery;
+    private AbstractIssueMapper issueMapper;
 
     @Before
     public void setUp() throws IOException, SQLException {
+        issueMapper = new TestIssueMapper();
         mockedTopLevelItem = mock(FreeStyleProject.class);
         when(mockedTopLevelItem.getDisplayName()).thenReturn("mock job");
         mockedBuild = mock(AbstractBuild.class);
@@ -55,6 +57,9 @@ public class JPAIssueRepositoryTest {
         this.issueRepository = new JPAIssueRepository(this.mockedPersistenceService);
     }
 
+    /**
+     * Test persisting 2 new Issues.
+     */
     @Test
     public void new_issues() {
         // setup 2 new issues
@@ -63,35 +68,65 @@ public class JPAIssueRepositoryTest {
         newIssues.add(buildIssue(2L, ORIGIN));
         when(mockedQuery.getResultList()).thenReturn(Collections.emptyList());
         // act
-        issueRepository.updateIssues(newIssues, mockedBuild, new TestIssueMapper());
+        issueRepository.updateIssues(newIssues, mockedBuild, issueMapper);
         // verify
         verify(mockedEntityManager, times(2)).createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
         verify(mockedEntityManager, times(2)).persist(Mockito.any());
         verify(mockedEntityManager).close();
     }
 
+    /**
+     * Test transition from NEW to OPEN.
+     */
     @Test
     public void open_issue() {
         // setup one issue which was present in last build
         Collection<Issue> newIssues = new ArrayList<Issue>();
         Issue issue = buildIssue(1L, ORIGIN);
-        StateHistory his = new StateHistory();
-        his.setTimestamp(new Date());
-        his.setBuildNr(32);
-        his.setId(1);
-        his.setState(State.NEW);
-        issue.setCurrentState(his);
-        issue.setStateHistory(new HashSet<StateHistory>());
-        issue.getStateHistory().add(his);
+        addState(issue, State.NEW);
         newIssues.add(issue);
         List<Issue> resultList = new ArrayList<Issue>(newIssues);
         when(mockedQuery.getResultList()).thenReturn(resultList);
         // act
-        issueRepository.updateIssues(newIssues, mockedBuild, new TestIssueMapper());
+        issueRepository.updateIssues(newIssues, mockedBuild, issueMapper);
         // verify
         verify(mockedEntityManager).createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
         verify(mockedEntityManager).persist(Mockito.any());
         verify(mockedEntityManager).close();
+    }
+
+    private void addState(Issue issue, State state) {
+        StateHistory his = new StateHistory();
+        his.setTimestamp(new Date());
+        his.setBuildNr(32);
+        his.setId(1);
+        his.setState(state);
+        issue.setCurrentState(his);
+        if (issue.getStateHistory() == null) {
+            issue.setStateHistory(new HashSet<StateHistory>());
+        }
+        issue.getStateHistory().add(his);
+    }
+
+    /**
+     * Test transition from NEW/OPEN to CLOSED.
+     */
+    @Test
+    public void close_issue() {
+        // setup
+        Collection<Issue> closedIssues = new ArrayList<Issue>();
+        Issue closingIssue = buildIssue(1L, ORIGIN);
+        addState(closingIssue, State.OPEN);
+        closedIssues.add(closingIssue);
+        List<Issue> resultList = new ArrayList<Issue>(closedIssues);
+        when(mockedQuery.getResultList()).thenReturn(resultList);
+        // act
+        issueRepository.fixedIssues(closedIssues, mockedBuild, issueMapper);
+        // verify
+        verify(mockedEntityManager).createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
+        verify(mockedEntityManager).persist(Mockito.any());
+        verify(mockedEntityManager).close();
+
     }
 
     private class TestIssueMapper extends AbstractIssueMapper<Issue> {
