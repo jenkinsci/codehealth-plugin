@@ -19,7 +19,8 @@ import java.util.Set;
 @NamedQueries({
         @NamedQuery(name = Issue.FIND_BY_HASH_AND_ORIGIN, query = "select i from Issue i where i.contextHashCode = :contextHashCode and i.origin = :origin"),
         @NamedQuery(name = Issue.FIND_ALL, query = "select i from Issue i"),
-        @NamedQuery(name = Issue.FIND_BY_STATE_AND_BUILD, query = "select i from Issue i join i.stateHistory sh where sh.buildNr = :buildNr and sh.state = :state")
+        @NamedQuery(name = Issue.FIND_BY_STATE_AND_BUILD, query = "select i from Issue i join i.stateHistory sh where sh.buildNr = :buildNr and sh.state = :state"),
+        @NamedQuery(name = Issue.FIND_BY_STATE, query = "select i from Issue i where i.currentState.state in :state")
 })
 @ExportedBean
 public class Issue {
@@ -27,6 +28,7 @@ public class Issue {
     public static final String FIND_BY_HASH_AND_ORIGIN = "Issue.findByHashAndOrigin";
     public static final String FIND_ALL = "Issue.findAll";
     public static final String FIND_BY_STATE_AND_BUILD = "Issue.findByStateAndBuild";
+    public static final String FIND_BY_STATE = "Issue.findByState";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

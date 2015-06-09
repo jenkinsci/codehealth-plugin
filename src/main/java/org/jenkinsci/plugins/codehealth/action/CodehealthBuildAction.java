@@ -10,6 +10,8 @@ import org.kohsuke.stapler.export.ExportedBean;
 import java.util.Collection;
 
 /**
+ * {@link hudson.model.Run}-based Action for retrieving newly introduced and fixed issues for a build.
+ *
  * @author Michael Prankl
  */
 @ExportedBean
@@ -20,16 +22,6 @@ public class CodehealthBuildAction extends AbstractCodehealthAction {
     public CodehealthBuildAction(int buildNr, TopLevelItem topLevelItem, IssueRepository issueRepository) {
         super(topLevelItem, issueRepository);
         this.buildNr = buildNr;
-    }
-
-    @Override
-    public String getIconFileName() {
-        return null;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return null;
     }
 
     @Exported

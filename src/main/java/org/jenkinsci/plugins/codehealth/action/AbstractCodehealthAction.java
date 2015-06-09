@@ -3,9 +3,16 @@ package org.jenkinsci.plugins.codehealth.action;
 import hudson.model.Action;
 import hudson.model.Api;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
+ * Abstract {@link hudson.model.Action} to access Codehealth issues via the remote Jenkins API.
+ * getIconFileName and getDisplayName always return null to prohibit the action to show up as Action item.
+ *
  * @author Michael Prankl
  */
 public abstract class AbstractCodehealthAction implements Action {
@@ -16,6 +23,16 @@ public abstract class AbstractCodehealthAction implements Action {
     public AbstractCodehealthAction(TopLevelItem topLevelItem, IssueRepository issueRepository) {
         this.topLevelItem = topLevelItem;
         this.issueRepository = issueRepository;
+    }
+
+    @Override
+    public String getIconFileName() {
+        return null;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return null;
     }
 
     @Override
@@ -41,5 +58,13 @@ public abstract class AbstractCodehealthAction implements Action {
 
     public void setIssueRepository(IssueRepository issueRepository) {
         this.issueRepository = issueRepository;
+    }
+
+    protected List<State> list(State... states) {
+        List<State> list = new ArrayList<State>(states.length);
+        for (State state : states) {
+            list.add(state);
+        }
+        return list;
     }
 }

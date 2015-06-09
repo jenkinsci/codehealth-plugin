@@ -54,7 +54,7 @@ public class CodehealthPublisher extends Recorder {
         return (DescriptorImpl) super.getDescriptor();
     }
 
-    @Extension
+    @Extension(ordinal = Double.MIN_VALUE)
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         @Override

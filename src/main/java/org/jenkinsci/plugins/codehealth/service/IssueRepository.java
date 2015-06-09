@@ -7,6 +7,7 @@ import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.util.AbstractIssueMapper;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Michael Prankl
@@ -36,6 +37,14 @@ public abstract class IssueRepository {
      * @return all Issues for this top-level-item
      */
     public abstract Collection<Issue> loadIssues(TopLevelItem topLevelItem);
+
+    /**
+     * Load state-specific issues for this top-level-item.
+     * @param topLevelItem the top-level-item (job)
+     * @param states the allowed states (open, new, closed)
+     * @return the found issues
+     */
+    public abstract Collection<Issue> loadIssues(TopLevelItem topLevelItem, List<State> states);
 
     /**
      * Load all issues which have been in this state for this build.

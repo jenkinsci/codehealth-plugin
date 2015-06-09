@@ -10,7 +10,6 @@ import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.codehealth.model.Issue;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.model.StateHistory;
-import org.jenkinsci.plugins.codehealth.util.AbstractIssueMapper;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
 import javax.persistence.EntityManager;
@@ -197,6 +196,22 @@ public class JPAIssueRepository extends IssueRepository {
     }
 
     @Override
+    public Collection<Issue> loadIssues(TopLevelItem topLevelItem, List<State> states) {
+        this.getInjector().injectMembers(this);
+        try {
+            final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            Query q = em.createNamedQuery(Issue.FIND_BY_STATE);
+            q.setParameter("state", states);
+            return q.getResultList();
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
     public Collection<Issue> loadIssues(TopLevelItem topLevelItem, int buildNr, State state) {
         this.getInjector().injectMembers(this);
         try {
@@ -213,6 +228,11 @@ public class JPAIssueRepository extends IssueRepository {
         return Collections.emptyList();
     }
 
+    /**
+     * Can be overriden in testing subclasses to get rid of the singleton dependency.
+     *
+     * @return the Guice Injector
+     */
     @VisibleForTesting
     public Injector getInjector() {
         return Jenkins.getInstance().getInjector();
