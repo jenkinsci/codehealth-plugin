@@ -30,17 +30,15 @@ public class JPAIssueRepositoryTest {
 
     private static final String ORIGIN = "TEST";
 
-    private IssueRepository issueRepository;
+    private TestingJPAIssueRepository issueRepository;
     private PersistenceService mockedPersistenceService;
     private AbstractBuild mockedBuild;
     private FreeStyleProject mockedTopLevelItem;
     private EntityManager mockedEntityManager;
     private Query mockedQuery;
-    private AbstractIssueMapper issueMapper;
 
     @Before
     public void setUp() throws IOException, SQLException {
-        issueMapper = new TestIssueMapper();
         mockedTopLevelItem = mock(FreeStyleProject.class);
         when(mockedTopLevelItem.getDisplayName()).thenReturn("mock job");
         mockedBuild = mock(AbstractBuild.class);
@@ -54,7 +52,7 @@ public class JPAIssueRepositoryTest {
         when(mockedEntityManager.getTransaction()).thenReturn(mock(EntityTransaction.class));
         mockedQuery = mock(Query.class);
         when(mockedEntityManager.createNamedQuery(Mockito.any(String.class))).thenReturn(mockedQuery);
-        this.issueRepository = new JPAIssueRepository(this.mockedPersistenceService);
+        this.issueRepository = new TestingJPAIssueRepository(this.mockedPersistenceService);
     }
 
     /**
@@ -68,7 +66,7 @@ public class JPAIssueRepositoryTest {
         newIssues.add(buildIssue(2L, ORIGIN));
         when(mockedQuery.getResultList()).thenReturn(Collections.emptyList());
         // act
-        issueRepository.updateIssues(newIssues, mockedBuild, issueMapper);
+        issueRepository.updateIssues(newIssues, mockedBuild);
         // verify
         verify(mockedEntityManager, times(2)).createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
         verify(mockedEntityManager, times(2)).persist(Mockito.any());
@@ -88,7 +86,7 @@ public class JPAIssueRepositoryTest {
         List<Issue> resultList = new ArrayList<Issue>(newIssues);
         when(mockedQuery.getResultList()).thenReturn(resultList);
         // act
-        issueRepository.updateIssues(newIssues, mockedBuild, issueMapper);
+        issueRepository.updateIssues(newIssues, mockedBuild);
         // verify
         verify(mockedEntityManager).createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
         verify(mockedEntityManager).persist(Mockito.any());
@@ -121,7 +119,7 @@ public class JPAIssueRepositoryTest {
         List<Issue> resultList = new ArrayList<Issue>(closedIssues);
         when(mockedQuery.getResultList()).thenReturn(resultList);
         // act
-        issueRepository.fixedIssues(closedIssues, mockedBuild, issueMapper);
+        issueRepository.fixedIssues(closedIssues, mockedBuild);
         // verify
         verify(mockedEntityManager).createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
         verify(mockedEntityManager).persist(Mockito.any());
@@ -129,12 +127,6 @@ public class JPAIssueRepositoryTest {
 
     }
 
-    private class TestIssueMapper extends AbstractIssueMapper<Issue> {
-        @Override
-        public Issue map(Issue o) {
-            return o;
-        }
-    }
 
     private Issue buildIssue(long contextHash, String origin) {
         Issue i = new Issue();

@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.codehealth.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
@@ -31,34 +32,33 @@ public class JPAIssueRepository extends IssueRepository {
     private final static Logger LOG = Logger.getLogger(JPAIssueRepository.class.getName());
 
     @Inject
-    private PersistenceService persistenceService;
+    private transient PersistenceService persistenceService;
 
     public JPAIssueRepository() {
-        Jenkins.getInstance().getInjector().injectMembers(this);
     }
 
     @VisibleForTesting
-    public JPAIssueRepository(PersistenceService persistenceService){
+    public JPAIssueRepository(PersistenceService persistenceService) {
         this.persistenceService = persistenceService;
     }
 
 
     @Override
-    public void updateIssues(Collection data, AbstractBuild build, AbstractIssueMapper issueMapper) {
+    public void updateIssues(Collection<Issue> data, AbstractBuild<?, ?> build) {
+        this.getInjector().injectMembers(this);
         final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
         final int buildNr = build.getNumber();
         LOG.log(Level.INFO, "Updating " + data.size() + " Issues for Top-Level-Item " + topLevelItem.getDisplayName() + " and Build #" + buildNr);
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             em.getTransaction().begin();
-            for (Object item : data) {
-                final Issue issue = issueMapper.map(item);
+            for (Issue issue : data) {
                 List<Issue> resultList = queryIssue(em, issue);
                 if (resultList.size() == 1) {
                     Issue result = resultList.get(0);
                     if (result.getCurrentState().getState().equals(State.NEW)) {
                         openIssue(buildNr, em, result);
-                    } else if(result.getCurrentState().getState().equals(State.CLOSED)){
+                    } else if (result.getCurrentState().getState().equals(State.CLOSED)) {
                         // reopen issue -> State NEW
                         reopenIssue(buildNr, em, result);
                     }
@@ -79,9 +79,10 @@ public class JPAIssueRepository extends IssueRepository {
 
     /**
      * Transition from CLOSED to NEW (reopen issue).
+     *
      * @param buildNr the build nr
-     * @param em the entity manager
-     * @param result the corresponding issue
+     * @param em      the entity manager
+     * @param result  the corresponding issue
      */
     private void reopenIssue(int buildNr, EntityManager em, Issue result) {
         final StateHistory stateNew = buildHistory(buildNr, State.NEW);
@@ -121,8 +122,9 @@ public class JPAIssueRepository extends IssueRepository {
 
     /**
      * Construct a StateHistory.
+     *
      * @param buildNr the build nr
-     * @param state the state
+     * @param state   the state
      * @return the constructed StateHistory
      */
     private StateHistory buildHistory(int buildNr, State state) {
@@ -134,15 +136,15 @@ public class JPAIssueRepository extends IssueRepository {
     }
 
     @Override
-    public void fixedIssues(Collection data, AbstractBuild build, AbstractIssueMapper issueMapper) {
+    public void fixedIssues(Collection<Issue> data, AbstractBuild<?, ?> build) {
+        this.getInjector().injectMembers(this);
         final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
         final int buildNr = build.getNumber();
         LOG.log(Level.INFO, data.size() + " Issues for Top-Level-Item " + topLevelItem.getDisplayName() + " and Build #" + buildNr + " have been marked as fixed.");
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             em.getTransaction().begin();
-            for (Object item : data) {
-                final Issue issue = issueMapper.map(item);
+            for (Issue issue : data) {
                 List<Issue> resultList = queryIssue(em, issue);
                 if (resultList.size() == 1) {
                     Issue result = resultList.get(0);
@@ -178,8 +180,10 @@ public class JPAIssueRepository extends IssueRepository {
         em.persist(result);
     }
 
+
     @Override
     public Collection<Issue> loadIssues(TopLevelItem topLevelItem) {
+        this.getInjector().injectMembers(this);
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             Query q = em.createNamedQuery(Issue.FIND_ALL);
@@ -190,5 +194,10 @@ public class JPAIssueRepository extends IssueRepository {
             LOG.log(Level.WARNING, "Unable to query issues.", e);
         }
         return Collections.emptyList();
+    }
+
+    @VisibleForTesting
+    public Injector getInjector() {
+        return Jenkins.getInstance().getInjector();
     }
 }

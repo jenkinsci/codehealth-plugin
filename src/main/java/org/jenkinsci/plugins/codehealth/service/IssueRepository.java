@@ -10,25 +10,23 @@ import java.util.Collection;
 /**
  * @author Michael Prankl
  */
-public abstract class IssueRepository<E> {
+public abstract class IssueRepository {
 
     /**
      * Updates new or open issues.
      *
-     * @param data        the collection of found issues
-     * @param build       the build which produced the issues
-     * @param issueMapper the issue mapper
+     * @param data  the collection of found issues
+     * @param build the build which produced the issues
      */
-    public abstract void updateIssues(Collection<E> data, AbstractBuild<?, ?> build, AbstractIssueMapper<E> issueMapper);
+    public abstract void updateIssues(Collection<Issue> data, AbstractBuild<?, ?> build);
 
     /**
      * Mark some issues as fixed.
      *
-     * @param data        the issues that have been fixed
-     * @param build       the corresponding build nr
-     * @param issueMapper the issue mapper
+     * @param data  the issues that have been fixed
+     * @param build the corresponding build nr
      */
-    public abstract void fixedIssues(Collection<E> data, AbstractBuild<?, ?> build, AbstractIssueMapper<E> issueMapper);
+    public abstract void fixedIssues(Collection<Issue> data, AbstractBuild<?, ?> build);
 
     /**
      * Load all issues for this top-level-item
