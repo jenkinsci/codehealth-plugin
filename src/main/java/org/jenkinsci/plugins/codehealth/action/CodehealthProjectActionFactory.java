@@ -18,12 +18,12 @@ import java.util.List;
  * @author Michael Prankl
  */
 @Extension
-public class CodehealthJobActionFactory extends TransientProjectActionFactory {
+public class CodehealthProjectActionFactory extends TransientProjectActionFactory {
 
     @Inject
     private JPAIssueRepository jpaIssueRepository;
 
-    public CodehealthJobActionFactory() {
+    public CodehealthProjectActionFactory() {
         super();
         Jenkins.getInstance().getInjector().injectMembers(this);
     }
@@ -31,7 +31,7 @@ public class CodehealthJobActionFactory extends TransientProjectActionFactory {
     @Override
     public Collection<? extends Action> createFor(AbstractProject abstractProject) {
         final List<Action> actions = new ArrayList<Action>();
-        actions.add(new CodehealthJobAction((hudson.model.TopLevelItem) abstractProject, jpaIssueRepository));
+        actions.add(new CodehealthProjectAction((hudson.model.TopLevelItem) abstractProject, jpaIssueRepository));
         return actions;
     }
 }

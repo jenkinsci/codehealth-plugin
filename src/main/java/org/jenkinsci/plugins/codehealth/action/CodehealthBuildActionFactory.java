@@ -41,8 +41,7 @@ public class CodehealthBuildActionFactory extends TransientActionFactory {
         final List<Action> actions = new ArrayList<Action>();
         Run r = (Run) target;
         TopLevelItem topLevelItem = (TopLevelItem) r.getParent();
-        // TODO implement CodehealthBuildAction
-        actions.add(new CodehealthJobAction(topLevelItem, jpaIssueRepository));
+        actions.add(new CodehealthBuildAction(r.getNumber(), topLevelItem, jpaIssueRepository));
         return actions;
     }
 }

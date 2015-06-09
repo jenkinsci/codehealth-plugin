@@ -196,6 +196,23 @@ public class JPAIssueRepository extends IssueRepository {
         return Collections.emptyList();
     }
 
+    @Override
+    public Collection<Issue> loadIssues(TopLevelItem topLevelItem, int buildNr, State state) {
+        this.getInjector().injectMembers(this);
+        try {
+            final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            Query q = em.createNamedQuery(Issue.FIND_BY_STATE_AND_BUILD);
+            q.setParameter("buildNr", buildNr);
+            q.setParameter("state", state);
+            return q.getResultList();
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        }
+        return Collections.emptyList();
+    }
+
     @VisibleForTesting
     public Injector getInjector() {
         return Jenkins.getInstance().getInjector();

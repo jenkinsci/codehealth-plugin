@@ -15,14 +15,10 @@ import java.util.Collection;
  * @author Michael Prankl
  */
 @ExportedBean
-public class CodehealthJobAction implements Action {
+public class CodehealthProjectAction extends AbstractCodehealthAction {
 
-    private TopLevelItem topLevelItem;
-    private transient IssueRepository issueRepository;
-
-    public CodehealthJobAction(TopLevelItem topLevelItem, IssueRepository issueRepository){
-        this.topLevelItem = topLevelItem;
-        this.issueRepository = issueRepository;
+    public CodehealthProjectAction(TopLevelItem topLevelItem, IssueRepository issueRepository) {
+        super(topLevelItem, issueRepository);
     }
 
     @Override
@@ -35,18 +31,9 @@ public class CodehealthJobAction implements Action {
         return null;
     }
 
-    @Override
-    public String getUrlName() {
-        return "codehealth";
-    }
-
-    public Api getApi(){
-        return new Api(this);
-    }
-
     @Exported
-    public Collection<Issue> getIssues(){
-        return issueRepository.loadIssues(this.topLevelItem);
+    public Collection<Issue> getIssues() {
+        return getIssueRepository().loadIssues(getTopLevelItem());
     }
 
 
