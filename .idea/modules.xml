@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" filepath="$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" />
       <module fileurl="file://$PROJECT_DIR$/codehealth.iml" filepath="$PROJECT_DIR$/codehealth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" filepath="$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" />
     </modules>
   </component>
 </project>
