@@ -30,7 +30,7 @@ public abstract class IssueProvider implements ExtensionPoint {
      */
     public abstract String getOrigin();
 
-    public static ExtensionList<IssueProvider> all() {
+    static ExtensionList<IssueProvider> all() {
         return Jenkins.getInstance().getExtensionList(IssueProvider.class);
     }
 }
