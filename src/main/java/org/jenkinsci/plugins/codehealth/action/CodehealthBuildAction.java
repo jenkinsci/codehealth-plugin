@@ -1,7 +1,7 @@
 package org.jenkinsci.plugins.codehealth.action;
 
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.model.Issue;
+import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
 import org.kohsuke.stapler.export.Exported;
@@ -25,12 +25,12 @@ public class CodehealthBuildAction extends AbstractCodehealthAction {
     }
 
     @Exported
-    public Collection<Issue> newIssues() {
+    public Collection<IssueEntity> newIssues() {
         return getIssueRepository().loadIssues(getTopLevelItem(), this.buildNr, State.NEW);
     }
 
     @Exported
-    public Collection<Issue> fixedIssues() {
+    public Collection<IssueEntity> fixedIssues() {
         return getIssueRepository().loadIssues(getTopLevelItem(), this.buildNr, State.CLOSED);
     }
 }

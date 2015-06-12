@@ -3,11 +3,10 @@ package org.jenkinsci.plugins.codehealth.service;
 import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.model.Issue;
+import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.Priority;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.model.StateHistory;
-import org.jenkinsci.plugins.codehealth.util.AbstractIssueMapper;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,14 +60,14 @@ public class JPAIssueRepositoryTest {
     @Test
     public void new_issues() {
         // setup 2 new issues
-        Collection<Issue> newIssues = new ArrayList<Issue>();
+        Collection<IssueEntity> newIssues = new ArrayList<IssueEntity>();
         newIssues.add(buildIssue(1L, ORIGIN));
         newIssues.add(buildIssue(2L, ORIGIN));
         when(mockedQuery.getResultList()).thenReturn(Collections.emptyList());
         // act
         issueRepository.updateIssues(newIssues, mockedBuild);
         // verify
-        verify(mockedEntityManager, times(2)).createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
+        verify(mockedEntityManager, times(2)).createNamedQuery(IssueEntity.FIND_BY_HASH_AND_ORIGIN);
         verify(mockedEntityManager, times(2)).persist(Mockito.any());
         verify(mockedEntityManager).close();
     }
@@ -79,21 +78,21 @@ public class JPAIssueRepositoryTest {
     @Test
     public void open_issue() {
         // setup one issue which was present in last build
-        Collection<Issue> newIssues = new ArrayList<Issue>();
-        Issue issue = buildIssue(1L, ORIGIN);
+        Collection<IssueEntity> newIssues = new ArrayList<IssueEntity>();
+        IssueEntity issue = buildIssue(1L, ORIGIN);
         addState(issue, State.NEW);
         newIssues.add(issue);
-        List<Issue> resultList = new ArrayList<Issue>(newIssues);
+        List<IssueEntity> resultList = new ArrayList<IssueEntity>(newIssues);
         when(mockedQuery.getResultList()).thenReturn(resultList);
         // act
         issueRepository.updateIssues(newIssues, mockedBuild);
         // verify
-        verify(mockedEntityManager).createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
+        verify(mockedEntityManager).createNamedQuery(IssueEntity.FIND_BY_HASH_AND_ORIGIN);
         verify(mockedEntityManager).persist(Mockito.any());
         verify(mockedEntityManager).close();
     }
 
-    private void addState(Issue issue, State state) {
+    private void addState(IssueEntity issue, State state) {
         StateHistory his = new StateHistory();
         his.setTimestamp(new Date());
         his.setBuildNr(32);
@@ -112,24 +111,24 @@ public class JPAIssueRepositoryTest {
     @Test
     public void close_issue() {
         // setup
-        Collection<Issue> closedIssues = new ArrayList<Issue>();
-        Issue closingIssue = buildIssue(1L, ORIGIN);
+        Collection<IssueEntity> closedIssues = new ArrayList<IssueEntity>();
+        IssueEntity closingIssue = buildIssue(1L, ORIGIN);
         addState(closingIssue, State.OPEN);
         closedIssues.add(closingIssue);
-        List<Issue> resultList = new ArrayList<Issue>(closedIssues);
+        List<IssueEntity> resultList = new ArrayList<IssueEntity>(closedIssues);
         when(mockedQuery.getResultList()).thenReturn(resultList);
         // act
         issueRepository.fixedIssues(closedIssues, mockedBuild);
         // verify
-        verify(mockedEntityManager).createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
+        verify(mockedEntityManager).createNamedQuery(IssueEntity.FIND_BY_HASH_AND_ORIGIN);
         verify(mockedEntityManager).persist(Mockito.any());
         verify(mockedEntityManager).close();
 
     }
 
 
-    private Issue buildIssue(long contextHash, String origin) {
-        Issue i = new Issue();
+    private IssueEntity buildIssue(long contextHash, String origin) {
+        IssueEntity i = new IssueEntity();
         i.setContextHashCode(contextHash);
         i.setOrigin(origin);
         i.setMessage("some message");

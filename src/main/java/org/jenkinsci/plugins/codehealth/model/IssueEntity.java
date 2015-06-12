@@ -11,19 +11,19 @@ import java.util.Set;
 /**
  * @author Michael Prankl
  */
-@Entity
+@Entity(name = "Issue")
 @PerItemTable
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "UNI_HASH_ORIGIN", columnNames = {"contextHashCode", "origin"})
 })
 @NamedQueries({
-        @NamedQuery(name = Issue.FIND_BY_HASH_AND_ORIGIN, query = "select i from Issue i where i.contextHashCode = :contextHashCode and i.origin = :origin"),
-        @NamedQuery(name = Issue.FIND_ALL, query = "select i from Issue i"),
-        @NamedQuery(name = Issue.FIND_BY_STATE_AND_BUILD, query = "select i from Issue i join i.stateHistory sh where sh.buildNr = :buildNr and sh.state = :state"),
-        @NamedQuery(name = Issue.FIND_BY_STATE, query = "select i from Issue i where i.currentState.state in :state")
+        @NamedQuery(name = IssueEntity.FIND_BY_HASH_AND_ORIGIN, query = "select i from Issue i where i.contextHashCode = :contextHashCode and i.origin = :origin"),
+        @NamedQuery(name = IssueEntity.FIND_ALL, query = "select i from Issue i"),
+        @NamedQuery(name = IssueEntity.FIND_BY_STATE_AND_BUILD, query = "select i from Issue i join i.stateHistory sh where sh.buildNr = :buildNr and sh.state = :state"),
+        @NamedQuery(name = IssueEntity.FIND_BY_STATE, query = "select i from Issue i where i.currentState.state in :state")
 })
 @ExportedBean
-public class Issue {
+public class IssueEntity implements Cloneable {
 
     public static final String FIND_BY_HASH_AND_ORIGIN = "Issue.findByHashAndOrigin";
     public static final String FIND_ALL = "Issue.findAll";
@@ -93,7 +93,7 @@ public class Issue {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Issue issue = (Issue) o;
+        IssueEntity issue = (IssueEntity) o;
 
         if (contextHashCode != issue.contextHashCode) return false;
         if (id != issue.id) return false;
@@ -136,5 +136,10 @@ public class Issue {
 
     public void setOrigin(String origin) {
         this.origin = origin;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

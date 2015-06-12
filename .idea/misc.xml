@@ -3,6 +3,9 @@
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/../jenkins/war" />
+  </component>
   <component name="IdProvider" IDEtalkID="740E1A3FB125B356CB819876B583BDC8" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
@@ -10,6 +13,9 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/../checkstyle-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../database-h2-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../database-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../jenkins/pom.xml" />
+        <option value="$PROJECT_DIR$/../analysis-pom-plugin/pom.xml" />
       </list>
     </option>
   </component>

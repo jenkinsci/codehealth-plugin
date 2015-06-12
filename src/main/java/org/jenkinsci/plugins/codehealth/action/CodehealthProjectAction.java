@@ -1,16 +1,12 @@
 package org.jenkinsci.plugins.codehealth.action;
 
-import hudson.model.Action;
-import hudson.model.Api;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.model.Issue;
+import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
-import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,8 +25,14 @@ public class CodehealthProjectAction extends AbstractCodehealthAction {
     }
 
     @Exported
-    public Collection<Issue> getIssues() {
-        return getIssueRepository().loadIssues(getTopLevelItem(), newAndOpen);
+    public Collection<IssueEntity> getIssues() {
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        try {
+            return getIssueRepository().loadIssues(getTopLevelItem(), newAndOpen);
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+        }
     }
 
 

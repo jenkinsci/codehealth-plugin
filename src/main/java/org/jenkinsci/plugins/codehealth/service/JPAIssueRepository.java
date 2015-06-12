@@ -7,7 +7,7 @@ import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
 import jenkins.model.Jenkins;
-import org.jenkinsci.plugins.codehealth.model.Issue;
+import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.model.StateHistory;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
@@ -43,7 +43,7 @@ public class JPAIssueRepository extends IssueRepository {
 
 
     @Override
-    public void updateIssues(Collection<Issue> data, AbstractBuild<?, ?> build) {
+    public void updateIssues(Collection<IssueEntity> data, AbstractBuild<?, ?> build) {
         this.getInjector().injectMembers(this);
         final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
         final int buildNr = build.getNumber();
@@ -51,10 +51,10 @@ public class JPAIssueRepository extends IssueRepository {
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             em.getTransaction().begin();
-            for (Issue issue : data) {
-                List<Issue> resultList = queryIssue(em, issue);
+            for (IssueEntity issue : data) {
+                List<IssueEntity> resultList = queryIssue(em, issue);
                 if (resultList.size() == 1) {
-                    Issue result = resultList.get(0);
+                    IssueEntity result = resultList.get(0);
                     if (result.getCurrentState().getState().equals(State.NEW)) {
                         openIssue(buildNr, em, result);
                     } else if (result.getCurrentState().getState().equals(State.CLOSED)) {
@@ -83,7 +83,7 @@ public class JPAIssueRepository extends IssueRepository {
      * @param em      the entity manager
      * @param result  the corresponding issue
      */
-    private void reopenIssue(int buildNr, EntityManager em, Issue result) {
+    private void reopenIssue(int buildNr, EntityManager em, IssueEntity result) {
         final StateHistory stateNew = buildHistory(buildNr, State.NEW);
         result.getStateHistory().add(stateNew);
         result.setCurrentState(stateNew);
@@ -97,7 +97,7 @@ public class JPAIssueRepository extends IssueRepository {
      * @param em      the entity manager
      * @param result  the corresponding issue
      */
-    private void openIssue(int buildNr, EntityManager em, Issue result) {
+    private void openIssue(int buildNr, EntityManager em, IssueEntity result) {
         final StateHistory stateOpen = buildHistory(buildNr, State.OPEN);
         result.getStateHistory().add(stateOpen);
         result.setCurrentState(stateOpen);
@@ -111,7 +111,7 @@ public class JPAIssueRepository extends IssueRepository {
      * @param em      the entity manager
      * @param issue   the new Issue
      */
-    private void newIssue(int buildNr, EntityManager em, Issue issue) {
+    private void newIssue(int buildNr, EntityManager em, IssueEntity issue) {
         final StateHistory stateNew = buildHistory(buildNr, State.NEW);
         issue.setStateHistory(new HashSet<StateHistory>());
         issue.getStateHistory().add(stateNew);
@@ -135,7 +135,7 @@ public class JPAIssueRepository extends IssueRepository {
     }
 
     @Override
-    public void fixedIssues(Collection<Issue> data, AbstractBuild<?, ?> build) {
+    public void fixedIssues(Collection<IssueEntity> data, AbstractBuild<?, ?> build) {
         this.getInjector().injectMembers(this);
         final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
         final int buildNr = build.getNumber();
@@ -143,10 +143,10 @@ public class JPAIssueRepository extends IssueRepository {
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             em.getTransaction().begin();
-            for (Issue issue : data) {
-                List<Issue> resultList = queryIssue(em, issue);
+            for (IssueEntity issue : data) {
+                List<IssueEntity> resultList = queryIssue(em, issue);
                 if (resultList.size() == 1) {
-                    Issue result = resultList.get(0);
+                    IssueEntity result = resultList.get(0);
                     if (result.getCurrentState().getState().equals(State.NEW) || result.getCurrentState().getState().equals(State.OPEN)) {
                         closeIssue(buildNr, em, result);
                     } else if (result.getCurrentState().getState().equals(State.CLOSED)) {
@@ -165,14 +165,14 @@ public class JPAIssueRepository extends IssueRepository {
         }
     }
 
-    private List<Issue> queryIssue(EntityManager em, Issue issue) {
-        Query q = em.createNamedQuery(Issue.FIND_BY_HASH_AND_ORIGIN);
+    private List<IssueEntity> queryIssue(EntityManager em, IssueEntity issue) {
+        Query q = em.createNamedQuery(IssueEntity.FIND_BY_HASH_AND_ORIGIN);
         q.setParameter("contextHashCode", issue.getContextHashCode());
         q.setParameter("origin", issue.getOrigin());
-        return (List<Issue>) q.getResultList();
+        return (List<IssueEntity>) q.getResultList();
     }
 
-    private void closeIssue(int buildNr, EntityManager em, Issue result) {
+    private void closeIssue(int buildNr, EntityManager em, IssueEntity result) {
         StateHistory closed = buildHistory(buildNr, State.CLOSED);
         result.getStateHistory().add(closed);
         result.setCurrentState(closed);
@@ -181,11 +181,11 @@ public class JPAIssueRepository extends IssueRepository {
 
 
     @Override
-    public Collection<Issue> loadIssues(TopLevelItem topLevelItem) {
+    public Collection<IssueEntity> loadIssues(TopLevelItem topLevelItem) {
         this.getInjector().injectMembers(this);
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
-            Query q = em.createNamedQuery(Issue.FIND_ALL);
+            Query q = em.createNamedQuery(IssueEntity.FIND_ALL);
             return q.getResultList();
         } catch (SQLException e) {
             LOG.log(Level.WARNING, "Unable to query issues.", e);
@@ -196,11 +196,11 @@ public class JPAIssueRepository extends IssueRepository {
     }
 
     @Override
-    public Collection<Issue> loadIssues(TopLevelItem topLevelItem, List<State> states) {
+    public Collection<IssueEntity> loadIssues(TopLevelItem topLevelItem, List<State> states) {
         this.getInjector().injectMembers(this);
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
-            Query q = em.createNamedQuery(Issue.FIND_BY_STATE);
+            Query q = em.createNamedQuery(IssueEntity.FIND_BY_STATE);
             q.setParameter("state", states);
             return q.getResultList();
         } catch (SQLException e) {
@@ -212,11 +212,11 @@ public class JPAIssueRepository extends IssueRepository {
     }
 
     @Override
-    public Collection<Issue> loadIssues(TopLevelItem topLevelItem, int buildNr, State state) {
+    public Collection<IssueEntity> loadIssues(TopLevelItem topLevelItem, int buildNr, State state) {
         this.getInjector().injectMembers(this);
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
-            Query q = em.createNamedQuery(Issue.FIND_BY_STATE_AND_BUILD);
+            Query q = em.createNamedQuery(IssueEntity.FIND_BY_STATE_AND_BUILD);
             q.setParameter("buildNr", buildNr);
             q.setParameter("state", state);
             return q.getResultList();
