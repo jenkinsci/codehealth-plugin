@@ -17,6 +17,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -41,17 +42,32 @@ public class CodehealthPublisher extends Recorder {
         for (IssueProvider issueProvider : IssueProvider.all()) {
             final String origin = issueProvider.getOrigin();
             logConsole(listener, "Getting Issues from " + issueProvider.getClass().getName() + ", origin=" + origin);
-            for (Issue issue : issueProvider.getExistingIssues(build)) {
+            Collection<Issue> existingIssues = issueProvider.getExistingIssues(build);
+            for (Issue issue : existingIssues) {
                 newIssues.add(mapToInternal(issue, origin));
             }
-            for (Issue issue : issueProvider.getFixedIssues(build)) {
-                fixedIssues.add(mapToInternal(issue, origin));
+            if (issueProvider.canProvideFixedIssues()) {
+                for (Issue issue : issueProvider.getFixedIssues(build)) {
+                    fixedIssues.add(mapToInternal(issue, origin));
+                }
+            } else {
+                fixedIssues.addAll(calculateFixedIssues(build, existingIssues, origin));
             }
         }
         logConsole(listener, String.format("%s new/open issues, %s fixed issues.", newIssues.size(), fixedIssues.size()));
         issueRepository.updateIssues(newIssues, build);
         issueRepository.fixedIssues(fixedIssues, build);
         return true;
+    }
+
+    private Collection<? extends IssueEntity> calculateFixedIssues(final AbstractBuild<?, ?> build, final Collection<Issue> existingIssues, final String origin) {
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        try {
+            return issueRepository.calculateFixedIssues((hudson.model.TopLevelItem) build.getProject(), existingIssues, origin);
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+        }
     }
 
     private IssueEntity mapToInternal(final Issue issue, final String origin) {

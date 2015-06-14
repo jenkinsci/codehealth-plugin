@@ -27,9 +27,11 @@
         <module name="codehealth" />
         <module name="database" />
         <module name="database-h2" />
+        <module name="findbugs" />
         <module name="jenkins-core" />
         <module name="jenkins-test-harness" />
         <module name="jenkins-war" />
+        <module name="library" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -42,6 +44,7 @@
       <module name="jenkins-core" target="1.7" />
       <module name="jenkins-test-harness" target="1.7" />
       <module name="jenkins-war" target="1.7" />
+      <module name="parent" target="1.5" />
       <module name="plugin" target="1.6" />
       <module name="pom" target="1.7" />
     </bytecodeTargetLevel>

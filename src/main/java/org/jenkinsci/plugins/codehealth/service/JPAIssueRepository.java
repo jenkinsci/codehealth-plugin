@@ -7,6 +7,7 @@ import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
 import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.codehealth.Issue;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.model.StateHistory;
@@ -220,6 +221,40 @@ public class JPAIssueRepository extends IssueRepository {
             q.setParameter("buildNr", buildNr);
             q.setParameter("state", state);
             return q.getResultList();
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Collection<IssueEntity> calculateFixedIssues(TopLevelItem topLevelItem, Collection<Issue> existingIssues, String origin) {
+        this.getInjector().injectMembers(this);
+        Collection<IssueEntity> fixedIssues = new ArrayList<IssueEntity>();
+        List<State> openStates = new ArrayList<State>();
+        openStates.add(State.OPEN);
+        openStates.add(State.NEW);
+        try {
+            final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            Query q = em.createNamedQuery(IssueEntity.FIND_BY_ORIGIN_AND_STATE);
+            q.setParameter("states", openStates);
+            q.setParameter("origin", origin);
+            List<IssueEntity> openIssues = q.getResultList();
+            for (IssueEntity openIssue : openIssues) {
+                boolean fixed = true;
+                for (Issue existingIssue : existingIssues) {
+                    if (existingIssue.getContextHashCode() == openIssue.getContextHashCode()) {
+                        fixed = false;
+                        break;
+                    }
+                }
+                if (fixed) {
+                    fixedIssues.add(openIssue);
+                }
+            }
+            return fixedIssues;
         } catch (SQLException e) {
             LOG.log(Level.WARNING, "Unable to query issues.", e);
         } catch (IOException e) {

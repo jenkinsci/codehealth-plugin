@@ -5,6 +5,8 @@
     <file url="file://$PROJECT_DIR$/../checkstyle-plugin" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../database-plugin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../findbugs-plugin/library" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/../findbugs-plugin/plugin" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/../jenkins" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../jenkins/cli" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../jenkins/core" charset="UTF-8" />

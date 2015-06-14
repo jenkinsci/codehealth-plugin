@@ -57,4 +57,16 @@ public abstract class IssueRepository {
      */
     public abstract Collection<IssueEntity> loadIssues(TopLevelItem topLevelItem, int buildNr, State state);
 
+
+    /**
+     * Find all Issues that are in state New/Open and are not part of the existing issues.
+     *
+     * @param topLevelItem   the top-level-item (job)
+     * @param existingIssues the existing issues reported for a build
+     * @param origin         origin of the issues
+     * @return issues that have been fixed
+     */
+    public abstract Collection<IssueEntity> calculateFixedIssues(TopLevelItem topLevelItem,
+                                                                 Collection<Issue> existingIssues, String origin);
+
 }

@@ -30,6 +30,11 @@ public abstract class IssueProvider implements ExtensionPoint {
      */
     public abstract String getOrigin();
 
+    /**
+     * @return if the plugin can provide information about fixed issues with {@link org.jenkinsci.plugins.codehealth.IssueProvider#getFixedIssues(hudson.model.AbstractBuild)}
+     */
+    public abstract boolean canProvideFixedIssues();
+
     static ExtensionList<IssueProvider> all() {
         return Jenkins.getInstance().getExtensionList(IssueProvider.class);
     }
