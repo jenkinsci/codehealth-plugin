@@ -1,0 +1,205 @@
+package org.jenkinsci.plugins.codehealth;
+
+import hudson.ExtensionList;
+import hudson.Launcher;
+import hudson.model.*;
+import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.codehealth.model.Priority;
+import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentMatcher;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.mockito.Matchers.anyCollection;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+
+/**
+ * @author Michael Prankl
+ */
+public class CodehealthPublisherTest {
+
+    private Jenkins jenkins;
+    private CodehealthPublisher publisher;
+    private ExtensionList<IssueProvider> issueProviders;
+    private JPAIssueRepository issueRepository;
+    private FreeStyleProject topLevelItem;
+    private AbstractBuild<?, ?> build;
+    private Launcher launcher;
+    private BuildListener buildListener;
+    private List<IssueProvider> issueProviderList;
+
+    @Before
+    public void setup() {
+        this.issueProviderList = new ArrayList<IssueProvider>();
+        this.topLevelItem = mock(FreeStyleProject.class);
+        this.build = mock(AbstractBuild.class);
+        when(this.build.getProject()).thenReturn((AbstractProject) this.topLevelItem);
+        this.launcher = mock(Launcher.class);
+        this.buildListener = mock(BuildListener.class);
+        when(this.buildListener.getLogger()).thenReturn(System.out);
+        this.jenkins = mock(Hudson.class);
+        this.issueProviders = setupProviders(this.jenkins, this.issueProviderList);
+        this.issueRepository = mock(JPAIssueRepository.class);
+        this.publisher = new TestingCodehealthPublisher(this.issueRepository, this.issueProviders);
+    }
+
+    /**
+     * Given provider "findbugs" with 5 existing issues and 2 fixed issues
+     * And provider "checkstyle" with 10 existing issues and that can not provide fixed issues
+     * When the codehealth publisher collects these issues from these providers
+     * Then in total 15 existing issues are reported
+     * And in total 2 fixed issues are reported
+     * And for provider "checkstyle" fixed issues are calculated
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    @Test
+    public void roundtrip() throws IOException, InterruptedException {
+        // setup
+        this.issueProviderList.add(buildIssueProvider("findbugs", 5, 2, true));
+        this.issueProviderList.add(buildIssueProvider("checkstyle", 10, 0, false));
+        // act
+        this.publisher.perform(this.build, this.launcher, this.buildListener);
+        // verify 15 new/open issues are reported
+        verify(issueRepository).updateIssues(argThat(hasSizeOf(15)), eq(this.build));
+        // verify 2 fixed issues are reported
+        verify(issueRepository).fixedIssues(argThat(hasSizeOf(2)), eq(this.build));
+        // verify that for checkstyle fixed issues are calculated
+        verify(issueRepository).calculateFixedIssues(eq(this.topLevelItem), anyCollection(), eq("checkstyle"));
+        // verify logging
+        verify(this.buildListener, times(3)).getLogger();
+    }
+
+    /**
+     * Given a provider "BROKEN-PROVIDER" that returns null-values instead of collections
+     * When the codehealth publisher collects from these providers
+     * Then this provider is silently skipped
+     * And other providers are handled correctly
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    @Test
+    public void null_tolerance() throws IOException, InterruptedException {
+        // setup
+        this.issueProviderList.add(new IssueProvider() {
+            @Override
+            public Collection<Issue> getExistingIssues(AbstractBuild<?, ?> build) {
+                return null;
+            }
+
+            @Override
+            public Collection<Issue> getFixedIssues(AbstractBuild<?, ?> build) {
+                return null;
+            }
+
+            @Override
+            public String getOrigin() {
+                return "BROKEN-PROVIDER";
+            }
+
+            @Override
+            public boolean canProvideFixedIssues() {
+                return true;
+            }
+        });
+        this.issueProviderList.add(buildIssueProvider("checkstyle", 10, 0, false));
+        // act
+        this.publisher.perform(this.build, this.launcher, this.buildListener);
+        // verify 15 new/open issues are reported
+        verify(issueRepository).updateIssues(argThat(hasSizeOf(10)), eq(this.build));
+        // verify 2 fixed issues are reported
+        verify(issueRepository).fixedIssues(argThat(hasSizeOf(0)), eq(this.build));
+        // verify that for checkstyle fixed issues are calculated
+        verify(issueRepository).calculateFixedIssues(eq(this.topLevelItem), anyCollection(), eq("checkstyle"));
+    }
+
+    private CollectionSizeArgumentMatcher hasSizeOf(final int size) {
+        return new CollectionSizeArgumentMatcher(size);
+    }
+
+    private ExtensionList<IssueProvider> setupProviders(final Jenkins jenkins, final List<IssueProvider> issueProviderList) {
+        return new MockExtensionList(jenkins, IssueProvider.class, issueProviderList);
+    }
+
+    private void addProvider(IssueProvider issueProvider) {
+        this.issueProviderList.add(issueProvider);
+    }
+
+    private IssueProvider buildIssueProvider(final String origin, final int existingIssues, final int fixedIssues, final boolean canProvideFixedIssues) {
+        final List<Issue> existingIssueList = buildIssues(existingIssues);
+        final List<Issue> fixedIssueList = buildIssues(fixedIssues);
+        return new IssueProvider() {
+            @Override
+            public Collection<Issue> getExistingIssues(AbstractBuild<?, ?> build) {
+                return existingIssueList;
+            }
+
+            @Override
+            public Collection<Issue> getFixedIssues(AbstractBuild<?, ?> build) {
+                if (canProvideFixedIssues) {
+                    return fixedIssueList;
+                } else {
+                    return Collections.emptyList();
+                }
+            }
+
+            @Override
+            public String getOrigin() {
+                return origin;
+            }
+
+            @Override
+            public boolean canProvideFixedIssues() {
+                return canProvideFixedIssues;
+            }
+        };
+    }
+
+    private List<Issue> buildIssues(final int issueCount) {
+        final List<Issue> issues = new ArrayList<Issue>(issueCount);
+        for (int i = 0; i < issueCount; i++) {
+            issues.add(new Issue(i, "some message", Priority.HIGH));
+        }
+        return issues;
+    }
+
+
+    private class MockExtensionList extends ExtensionList<IssueProvider> {
+
+        private List<IssueProvider> issueProviders;
+
+        protected MockExtensionList(final Jenkins jenkins, final Class<IssueProvider> extensionType, final List<IssueProvider> providers) {
+            super(jenkins, extensionType);
+            this.issueProviders = providers;
+        }
+
+        @Override
+        public Iterator<IssueProvider> iterator() {
+            return this.issueProviders.iterator();
+        }
+    }
+
+    /**
+     * Mockito argument matcher that only checks for collection size.
+     */
+    private class CollectionSizeArgumentMatcher extends ArgumentMatcher<Collection> {
+
+        private final int size;
+
+        public CollectionSizeArgumentMatcher(final int size) {
+            this.size = size;
+        }
+
+        @Override
+        public boolean matches(Object o) {
+            return ((Collection) o).size() == this.size;
+        }
+    }
+}

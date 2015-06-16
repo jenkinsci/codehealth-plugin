@@ -1,7 +1,10 @@
 package org.jenkinsci.plugins.codehealth;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import hudson.Extension;
+import hudson.ExtensionList;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -34,21 +37,31 @@ public class CodehealthPublisher extends Recorder {
     public CodehealthPublisher() {
     }
 
+    @VisibleForTesting
+    public CodehealthPublisher(JPAIssueRepository issueRepository) {
+        this.issueRepository = issueRepository;
+    }
+
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-        Jenkins.getInstance().getInjector().injectMembers(this);
+        this.getInjector().injectMembers(this);
         final List<IssueEntity> newIssues = new ArrayList<IssueEntity>();
         final List<IssueEntity> fixedIssues = new ArrayList<IssueEntity>();
-        for (IssueProvider issueProvider : IssueProvider.all()) {
+        for (IssueProvider issueProvider : getIssueProviders()) {
             final String origin = issueProvider.getOrigin();
             logConsole(listener, "Getting Issues from " + issueProvider.getClass().getName() + ", origin=" + origin);
             Collection<Issue> existingIssues = issueProvider.getExistingIssues(build);
-            for (Issue issue : existingIssues) {
-                newIssues.add(mapToInternal(issue, origin));
+            if (existingIssues != null) {
+                for (Issue issue : existingIssues) {
+                    newIssues.add(mapToInternal(issue, origin));
+                }
             }
             if (issueProvider.canProvideFixedIssues()) {
-                for (Issue issue : issueProvider.getFixedIssues(build)) {
-                    fixedIssues.add(mapToInternal(issue, origin));
+                Collection<Issue> issueProviderFixedIssues = issueProvider.getFixedIssues(build);
+                if (issueProviderFixedIssues != null) {
+                    for (Issue issue : issueProviderFixedIssues) {
+                        fixedIssues.add(mapToInternal(issue, origin));
+                    }
                 }
             } else {
                 fixedIssues.addAll(calculateFixedIssues(build, existingIssues, origin));
@@ -60,7 +73,8 @@ public class CodehealthPublisher extends Recorder {
         return true;
     }
 
-    private Collection<? extends IssueEntity> calculateFixedIssues(final AbstractBuild<?, ?> build, final Collection<Issue> existingIssues, final String origin) {
+    private Collection<? extends IssueEntity> calculateFixedIssues(final AbstractBuild<?, ?> build,
+                                                                   final Collection<Issue> existingIssues, final String origin) {
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         try {
@@ -114,4 +128,15 @@ public class CodehealthPublisher extends Recorder {
     private void logConsole(final BuildListener listener, final String message) {
         listener.getLogger().println(String.format("[CODEHEALTH] %s", message));
     }
+
+    @VisibleForTesting
+    Injector getInjector() {
+        return Jenkins.getInstance().getInjector();
+    }
+
+    @VisibleForTesting
+    ExtensionList<IssueProvider> getIssueProviders() {
+        return IssueProvider.all();
+    }
+
 }
