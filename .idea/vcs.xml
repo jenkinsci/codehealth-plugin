@@ -9,6 +9,7 @@
     <mapping directory="$PROJECT_DIR$/../database-plugin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../findbugs-plugin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../jenkins" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../sloccount-plugin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../violations-plugin" vcs="Git" />
   </component>
 </project>

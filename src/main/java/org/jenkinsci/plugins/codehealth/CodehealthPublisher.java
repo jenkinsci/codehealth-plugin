@@ -14,6 +14,7 @@ import hudson.tasks.Recorder;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
+import org.jenkinsci.plugins.codehealth.service.JPALinesOfCodeRepository;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -31,6 +32,9 @@ public class CodehealthPublisher extends Recorder {
     @Inject
     private transient JPAIssueRepository issueRepository;
 
+    @Inject
+    private transient JPALinesOfCodeRepository locRepository;
+
     @DataBoundConstructor
     public CodehealthPublisher() {
     }
@@ -43,6 +47,30 @@ public class CodehealthPublisher extends Recorder {
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         this.getInjector().injectMembers(this);
+        handleIssues(build, listener);
+        handleLinesOfCode(build, listener);
+        return true;
+    }
+
+    private void handleLinesOfCode(AbstractBuild<?, ?> build, BuildListener listener) {
+        ExtensionList<LinesOfCodeProvider> loCProviders = getLoCProviders();
+        LinesOfCode loc = null;
+        if (loCProviders.size() > 1) {
+            // TODO configuration option for publisher, in which the user has the choose the provider
+            logConsole(listener, "There's more than one provider for the LOC-metric (Lines of Code) in your current build setup!");
+        }
+        for (LinesOfCodeProvider provider : loCProviders) {
+            logConsole(listener, "Getting LoC from " + provider.getClass().getName());
+            loc = provider.getLOC(build);
+            break;
+        }
+        if (loc != null) {
+            locRepository.save(loc, build);
+        }
+
+    }
+
+    private void handleIssues(AbstractBuild<?, ?> build, BuildListener listener) {
         final List<IssueEntity> newIssues = new ArrayList<IssueEntity>();
         final List<IssueEntity> fixedIssues = new ArrayList<IssueEntity>();
         for (IssueProvider issueProvider : getIssueProviders()) {
@@ -68,7 +96,6 @@ public class CodehealthPublisher extends Recorder {
         logConsole(listener, String.format("%s new/open issues, %s fixed issues.", newIssues.size(), fixedIssues.size()));
         issueRepository.updateIssues(newIssues, build);
         issueRepository.fixedIssues(fixedIssues, build);
-        return true;
     }
 
     private Collection<? extends IssueEntity> calculateFixedIssues(final AbstractBuild<?, ?> build,
@@ -135,6 +162,11 @@ public class CodehealthPublisher extends Recorder {
     @VisibleForTesting
     ExtensionList<IssueProvider> getIssueProviders() {
         return IssueProvider.all();
+    }
+
+    @VisibleForTesting
+    ExtensionList<LinesOfCodeProvider> getLoCProviders() {
+        return LinesOfCodeProvider.all();
     }
 
 }

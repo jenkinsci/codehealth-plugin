@@ -5,6 +5,7 @@ import hudson.model.Api;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
+import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +20,12 @@ public abstract class AbstractCodehealthAction implements Action {
 
     private TopLevelItem topLevelItem;
     private transient IssueRepository issueRepository;
+    private transient LinesOfCodeRepository locRepository;
 
-    public AbstractCodehealthAction(TopLevelItem topLevelItem, IssueRepository issueRepository) {
+    public AbstractCodehealthAction(TopLevelItem topLevelItem, IssueRepository issueRepository, LinesOfCodeRepository locRepository) {
         this.topLevelItem = topLevelItem;
         this.issueRepository = issueRepository;
+        this.locRepository = locRepository;
     }
 
     @Override
@@ -66,5 +69,13 @@ public abstract class AbstractCodehealthAction implements Action {
             list.add(state);
         }
         return list;
+    }
+
+    public LinesOfCodeRepository getLocRepository() {
+        return locRepository;
+    }
+
+    public void setLocRepository(LinesOfCodeRepository locRepository) {
+        this.locRepository = locRepository;
     }
 }

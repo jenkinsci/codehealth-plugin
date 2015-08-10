@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.codehealth;
 
 import hudson.ExtensionList;
+import hudson.ExtensionPoint;
 import hudson.Launcher;
 import hudson.model.*;
 import jenkins.model.Jenkins;
@@ -26,16 +27,19 @@ public class CodehealthPublisherTest {
     private Jenkins jenkins;
     private CodehealthPublisher publisher;
     private ExtensionList<IssueProvider> issueProviders;
+    private ExtensionList<LinesOfCodeProvider> locProviders;
     private JPAIssueRepository issueRepository;
     private FreeStyleProject topLevelItem;
     private AbstractBuild<?, ?> build;
     private Launcher launcher;
     private BuildListener buildListener;
     private List<IssueProvider> issueProviderList;
+    private List<LinesOfCodeProvider> locProviderList;
 
     @Before
     public void setup() {
         this.issueProviderList = new ArrayList<IssueProvider>();
+        this.locProviderList = new ArrayList<LinesOfCodeProvider>();
         this.topLevelItem = mock(FreeStyleProject.class);
         this.build = mock(AbstractBuild.class);
         when(this.build.getProject()).thenReturn((AbstractProject) this.topLevelItem);
@@ -43,9 +47,10 @@ public class CodehealthPublisherTest {
         this.buildListener = mock(BuildListener.class);
         when(this.buildListener.getLogger()).thenReturn(System.out);
         this.jenkins = mock(Hudson.class);
-        this.issueProviders = setupProviders(this.jenkins, this.issueProviderList);
+        this.issueProviders = setupIssueProviders(this.jenkins, this.issueProviderList);
+        this.locProviders = setupLocProviders(this.jenkins, this.locProviderList);
         this.issueRepository = mock(JPAIssueRepository.class);
-        this.publisher = new TestingCodehealthPublisher(this.issueRepository, this.issueProviders);
+        this.publisher = new TestingCodehealthPublisher(this.issueRepository, this.issueProviders, this.locProviders);
     }
 
     /**
@@ -60,7 +65,7 @@ public class CodehealthPublisherTest {
      * @throws InterruptedException
      */
     @Test
-    public void roundtrip() throws IOException, InterruptedException {
+    public void issues_roundtrip() throws IOException, InterruptedException {
         // setup
         this.issueProviderList.add(buildIssueProvider("findbugs", 5, 2, true));
         this.issueProviderList.add(buildIssueProvider("checkstyle", 10, 0, false));
@@ -86,7 +91,7 @@ public class CodehealthPublisherTest {
      * @throws InterruptedException
      */
     @Test
-    public void null_tolerance() throws IOException, InterruptedException {
+    public void issues_null_tolerance() throws IOException, InterruptedException {
         // setup
         this.issueProviderList.add(new IssueProvider() {
             @Override
@@ -124,12 +129,12 @@ public class CodehealthPublisherTest {
         return new CollectionSizeArgumentMatcher(size);
     }
 
-    private ExtensionList<IssueProvider> setupProviders(final Jenkins jenkins, final List<IssueProvider> issueProviderList) {
+    private ExtensionList<IssueProvider> setupIssueProviders(final Jenkins jenkins, final List<IssueProvider> issueProviderList) {
         return new MockExtensionList(jenkins, IssueProvider.class, issueProviderList);
     }
 
-    private void addProvider(IssueProvider issueProvider) {
-        this.issueProviderList.add(issueProvider);
+    private ExtensionList<LinesOfCodeProvider> setupLocProviders(Jenkins jenkins, List<LinesOfCodeProvider> locProviderList) {
+        return new MockExtensionList(jenkins, LinesOfCodeProvider.class, locProviderList);
     }
 
     private IssueProvider buildIssueProvider(final String origin, final int existingIssues, final int fixedIssues, final boolean canProvideFixedIssues) {
@@ -171,18 +176,23 @@ public class CodehealthPublisherTest {
     }
 
 
-    private class MockExtensionList extends ExtensionList<IssueProvider> {
+    private class MockExtensionList<T extends ExtensionPoint> extends ExtensionList<T> {
 
-        private List<IssueProvider> issueProviders;
+        private List<T> providers;
 
-        protected MockExtensionList(final Jenkins jenkins, final Class<IssueProvider> extensionType, final List<IssueProvider> providers) {
+        protected MockExtensionList(final Jenkins jenkins, final Class<T> extensionType, final List<T> providers) {
             super(jenkins, extensionType);
-            this.issueProviders = providers;
+            this.providers = providers;
         }
 
         @Override
-        public Iterator<IssueProvider> iterator() {
-            return this.issueProviders.iterator();
+        public Iterator<T> iterator() {
+            return this.providers.iterator();
+        }
+
+        @Override
+        public int size() {
+            return providers.size();
         }
     }
 

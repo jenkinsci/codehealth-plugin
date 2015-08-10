@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author Michael Prankl
  */
-public abstract class IssueRepository {
+public abstract class IssueRepository extends BaseRepository {
 
     /**
      * Updates new or open issues.

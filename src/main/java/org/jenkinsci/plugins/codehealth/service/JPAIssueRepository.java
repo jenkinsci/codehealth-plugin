@@ -263,13 +263,4 @@ public class JPAIssueRepository extends IssueRepository {
         return Collections.emptyList();
     }
 
-    /**
-     * Can be overriden in testing subclasses to get rid of the singleton dependency.
-     *
-     * @return the Guice Injector
-     */
-    @VisibleForTesting
-    public Injector getInjector() {
-        return Jenkins.getInstance().getInjector();
-    }
 }

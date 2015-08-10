@@ -13,19 +13,26 @@ import org.mockito.Mockito;
 public class TestingCodehealthPublisher extends CodehealthPublisher {
 
     private final ExtensionList<IssueProvider> issueProviders;
+    private final ExtensionList<LinesOfCodeProvider> locProviders;
 
     /**
      * @param issueRepository the issue repository
      * @param issueProviders  registered issue providers
      */
-    public TestingCodehealthPublisher(final JPAIssueRepository issueRepository, final ExtensionList<IssueProvider> issueProviders) {
+    public TestingCodehealthPublisher(final JPAIssueRepository issueRepository, final ExtensionList<IssueProvider> issueProviders, final ExtensionList<LinesOfCodeProvider> locProviders) {
         super(issueRepository);
         this.issueProviders = issueProviders;
+        this.locProviders = locProviders;
     }
 
     @Override
     ExtensionList<IssueProvider> getIssueProviders() {
         return this.issueProviders;
+    }
+
+    @Override
+    ExtensionList<LinesOfCodeProvider> getLoCProviders() {
+        return this.locProviders;
     }
 
     @Override

@@ -4,6 +4,7 @@ import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
+import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -20,8 +21,8 @@ public class CodehealthProjectAction extends AbstractCodehealthAction {
 
     private transient final List<State> newAndOpen = list(State.NEW, State.OPEN);
 
-    public CodehealthProjectAction(TopLevelItem topLevelItem, IssueRepository issueRepository) {
-        super(topLevelItem, issueRepository);
+    public CodehealthProjectAction(TopLevelItem topLevelItem, IssueRepository issueRepository, LinesOfCodeRepository locRepository) {
+        super(topLevelItem, issueRepository, locRepository);
     }
 
     @Exported

@@ -17,6 +17,7 @@
       <module fileurl="file://$PROJECT_DIR$/../findbugs-plugin/parent.iml" filepath="$PROJECT_DIR$/../findbugs-plugin/parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jenkins/plugins/plugin.iml" filepath="$PROJECT_DIR$/../jenkins/plugins/plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jenkins/pom.iml" filepath="$PROJECT_DIR$/../jenkins/pom.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" filepath="$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" />
       <module fileurl="file://$PROJECT_DIR$/../violations-plugin/violations.iml" filepath="$PROJECT_DIR$/../violations-plugin/violations.iml" />
     </modules>
   </component>

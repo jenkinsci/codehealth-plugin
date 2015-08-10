@@ -1,9 +1,12 @@
 package org.jenkinsci.plugins.codehealth.action;
 
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.LinesOfCode;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
+import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
+import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -19,8 +22,8 @@ public class CodehealthBuildAction extends AbstractCodehealthAction {
 
     private int buildNr;
 
-    public CodehealthBuildAction(int buildNr, TopLevelItem topLevelItem, IssueRepository issueRepository) {
-        super(topLevelItem, issueRepository);
+    public CodehealthBuildAction(int buildNr, TopLevelItem topLevelItem, IssueRepository issueRepository, LinesOfCodeRepository locRepository) {
+        super(topLevelItem, issueRepository, locRepository);
         this.buildNr = buildNr;
     }
 
@@ -32,5 +35,10 @@ public class CodehealthBuildAction extends AbstractCodehealthAction {
     @Exported
     public Collection<IssueEntity> fixedIssues() {
         return getIssueRepository().loadIssues(getTopLevelItem(), this.buildNr, State.CLOSED);
+    }
+
+    @Exported
+    public LinesOfCodeEntity linesOfCode(){
+        return getLocRepository().read(getTopLevelItem(), this.buildNr);
     }
 }

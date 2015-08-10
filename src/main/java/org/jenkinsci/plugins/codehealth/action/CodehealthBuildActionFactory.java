@@ -8,6 +8,7 @@ import hudson.model.TopLevelItem;
 import jenkins.model.Jenkins;
 import jenkins.model.TransientActionFactory;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
+import org.jenkinsci.plugins.codehealth.service.JPALinesOfCodeRepository;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ public class CodehealthBuildActionFactory extends TransientActionFactory {
     @Inject
     private JPAIssueRepository jpaIssueRepository;
 
+    @Inject
+    private JPALinesOfCodeRepository jpaLinesOfCodeRepository;
+
     public CodehealthBuildActionFactory() {
         super();
         Jenkins.getInstance().getInjector().injectMembers(this);
@@ -41,7 +45,7 @@ public class CodehealthBuildActionFactory extends TransientActionFactory {
         final List<Action> actions = new ArrayList<Action>();
         Run r = (Run) target;
         TopLevelItem topLevelItem = (TopLevelItem) r.getParent();
-        actions.add(new CodehealthBuildAction(r.getNumber(), topLevelItem, jpaIssueRepository));
+        actions.add(new CodehealthBuildAction(r.getNumber(), topLevelItem, jpaIssueRepository, jpaLinesOfCodeRepository));
         return actions;
     }
 }
