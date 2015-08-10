@@ -4,12 +4,20 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../analysis-pom-plugin/analysis-pom.iml" filepath="$PROJECT_DIR$/../analysis-pom-plugin/analysis-pom.iml" />
       <module fileurl="file://$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" filepath="$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jenkins/cli/cli.iml" filepath="$PROJECT_DIR$/../jenkins/cli/cli.iml" />
       <module fileurl="file://$PROJECT_DIR$/codehealth.iml" filepath="$PROJECT_DIR$/codehealth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../contexthashcode/contexthashcode.iml" filepath="$PROJECT_DIR$/../contexthashcode/contexthashcode.iml" />
       <module fileurl="file://$PROJECT_DIR$/../database-plugin/database.iml" filepath="$PROJECT_DIR$/../database-plugin/database.iml" />
       <module fileurl="file://$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" filepath="$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" />
       <module fileurl="file://$PROJECT_DIR$/../findbugs-plugin/plugin/findbugs.iml" filepath="$PROJECT_DIR$/../findbugs-plugin/plugin/findbugs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jenkins/core/jenkins-core.iml" filepath="$PROJECT_DIR$/../jenkins/core/jenkins-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jenkins/test/jenkins-test-harness.iml" filepath="$PROJECT_DIR$/../jenkins/test/jenkins-test-harness.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jenkins/war/jenkins-war.iml" filepath="$PROJECT_DIR$/../jenkins/war/jenkins-war.iml" />
       <module fileurl="file://$PROJECT_DIR$/../findbugs-plugin/library/library.iml" filepath="$PROJECT_DIR$/../findbugs-plugin/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/../findbugs-plugin/parent.iml" filepath="$PROJECT_DIR$/../findbugs-plugin/parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jenkins/plugins/plugin.iml" filepath="$PROJECT_DIR$/../jenkins/plugins/plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jenkins/pom.iml" filepath="$PROJECT_DIR$/../jenkins/pom.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../violations-plugin/violations.iml" filepath="$PROJECT_DIR$/../violations-plugin/violations.iml" />
     </modules>
   </component>
 </project>

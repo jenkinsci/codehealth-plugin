@@ -23,19 +23,26 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="checkstyle" />
+        <module name="cli" />
         <module name="codehealth" />
+        <module name="contexthashcode" />
         <module name="database" />
         <module name="database-h2" />
         <module name="findbugs" />
+        <module name="jenkins-core" />
+        <module name="jenkins-test-harness" />
+        <module name="jenkins-war" />
         <module name="library" />
+        <module name="violations" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="analysis-pom" target="1.6" />
       <module name="checkstyle" target="1.6" />
       <module name="cli" target="1.7" />
-      <module name="codehealth" target="1.6" />
-      <module name="database" target="1.5" />
+      <module name="codehealth" target="1.7" />
+      <module name="contexthashcode" target="1.7" />
+      <module name="database" target="1.6" />
       <module name="database-h2" target="1.5" />
       <module name="findbugs" target="1.6" />
       <module name="jenkins-core" target="1.7" />
@@ -45,6 +52,7 @@
       <module name="parent" target="1.5" />
       <module name="plugin" target="1.6" />
       <module name="pom" target="1.7" />
+      <module name="violations" target="1.6" />
     </bytecodeTargetLevel>
   </component>
 </project>

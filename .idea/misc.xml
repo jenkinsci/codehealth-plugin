@@ -12,25 +12,17 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/../checkstyle-plugin/pom.xml" />
-        <option value="$PROJECT_DIR$/../database-h2-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../database-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../jenkins/pom.xml" />
         <option value="$PROJECT_DIR$/../analysis-pom-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../findbugs-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../database-h2-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../violations-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../contexthashcode/pom.xml" />
       </list>
     </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/../jenkins/cli/pom.xml" />
-        <option value="$PROJECT_DIR$/../jenkins/core/pom.xml" />
-        <option value="$PROJECT_DIR$/../jenkins/plugins/pom.xml" />
-        <option value="$PROJECT_DIR$/../jenkins/pom.xml" />
-        <option value="$PROJECT_DIR$/../jenkins/test/pom.xml" />
-        <option value="$PROJECT_DIR$/../jenkins/war/pom.xml" />
-      </set>
-    </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
