@@ -17,6 +17,11 @@ public abstract class LinesOfCodeProvider implements ExtensionPoint {
      */
     public abstract LinesOfCode getLOC(AbstractBuild<?, ?> build);
 
+    /**
+     * @return unique identifier of the contributing plugin
+     */
+    public abstract String getOrigin();
+
     static ExtensionList<LinesOfCodeProvider> all() {
         return Jenkins.getInstance().getExtensionList(LinesOfCodeProvider.class);
     }
