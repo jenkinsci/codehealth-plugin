@@ -29,6 +29,8 @@ import java.util.List;
  */
 public class CodehealthPublisher extends Recorder {
 
+    private LinesOfCodeProvider linesOfCodeProvider;
+
     @Inject
     private transient JPAIssueRepository issueRepository;
 
@@ -36,7 +38,8 @@ public class CodehealthPublisher extends Recorder {
     private transient JPALinesOfCodeRepository locRepository;
 
     @DataBoundConstructor
-    public CodehealthPublisher() {
+    public CodehealthPublisher(LinesOfCodeProvider linesOfCodeProvider) {
+        this.linesOfCodeProvider = linesOfCodeProvider;
     }
 
     @VisibleForTesting
@@ -53,19 +56,15 @@ public class CodehealthPublisher extends Recorder {
     }
 
     private void handleLinesOfCode(AbstractBuild<?, ?> build, BuildListener listener) {
-        ExtensionList<LinesOfCodeProvider> loCProviders = getLoCProviders();
-        LinesOfCode loc = null;
-        if (loCProviders.size() > 1) {
-            // TODO configuration option for publisher, in which the user has the choose the provider
-            logConsole(listener, "There's more than one provider for the LOC-metric (Lines of Code) in your current build setup!");
-        }
-        for (LinesOfCodeProvider provider : loCProviders) {
-            logConsole(listener, "Getting LoC from " + provider.getClass().getName());
-            loc = provider.getLOC(build);
-            break;
-        }
-        if (loc != null) {
-            locRepository.save(loc, build);
+        LinesOfCodeProvider locProvider = getLinesOfCodeProvider();
+        if (locProvider != null) {
+            logConsole(listener, "Getting LoC from " + locProvider.getClass().getName());
+            LinesOfCode loc = locProvider.getLOC(build);
+            if (loc != null) {
+                locRepository.save(loc, build);
+            }
+        } else {
+            logConsole(listener, "No provider for Lines Of Code (LOC) specified.");
         }
 
     }
@@ -129,6 +128,17 @@ public class CodehealthPublisher extends Recorder {
     @Override
     public BuildStepDescriptor getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
+    }
+
+    public LinesOfCodeProvider getLinesOfCodeProvider() {
+        return linesOfCodeProvider;
+    }
+
+    public void setLinesOfCodeProvider(LinesOfCodeProvider linesOfCodeProvider) {
+        if (linesOfCodeProvider instanceof NoLinesOfCodeProvider) {
+            linesOfCodeProvider = null;
+        }
+        this.linesOfCodeProvider = linesOfCodeProvider;
     }
 
     @Extension(ordinal = Double.MIN_VALUE)

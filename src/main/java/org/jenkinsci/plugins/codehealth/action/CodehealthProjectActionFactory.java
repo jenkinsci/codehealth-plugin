@@ -35,7 +35,7 @@ public class CodehealthProjectActionFactory extends TransientProjectActionFactor
     @Override
     public Collection<? extends Action> createFor(AbstractProject abstractProject) {
         final List<Action> actions = new ArrayList<Action>();
-        actions.add(new CodehealthProjectAction((hudson.model.TopLevelItem) abstractProject, jpaIssueRepository, jpaLinesOfCodeRepository));
+        actions.add(new CodehealthProjectAction(abstractProject, jpaIssueRepository, jpaLinesOfCodeRepository));
         return actions;
     }
 }

@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.codehealth;
 import hudson.ExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractDescribableImpl;
 import jenkins.model.Jenkins;
 
 /**
@@ -10,7 +11,7 @@ import jenkins.model.Jenkins;
  *
  * @author Michael Prankl
  */
-public abstract class LinesOfCodeProvider implements ExtensionPoint {
+public abstract class LinesOfCodeProvider extends AbstractDescribableImpl<LinesOfCodeProvider> implements ExtensionPoint {
 
     /**
      * @return the LOC of the build
@@ -24,5 +25,10 @@ public abstract class LinesOfCodeProvider implements ExtensionPoint {
 
     static ExtensionList<LinesOfCodeProvider> all() {
         return Jenkins.getInstance().getExtensionList(LinesOfCodeProvider.class);
+    }
+
+    @Override
+    public LinesOfCodeDescriptor getDescriptor() {
+        return (LinesOfCodeDescriptor) super.getDescriptor();
     }
 }

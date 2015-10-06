@@ -9,9 +9,7 @@ import org.jenkinsci.plugins.codehealth.LinesOfCode;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -42,10 +40,13 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
         this.getInjector().injectMembers(this);
         try {
             EntityManager entityManager = this.persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
-            TypedQuery<LinesOfCodeEntity> namedQuery = entityManager.createNamedQuery(LinesOfCodeEntity.FIND_BY_BUILD_NR, LinesOfCodeEntity.class);
-            namedQuery.setParameter("buildNr", buildNr);
-            LinesOfCodeEntity result = namedQuery.getSingleResult();
-            return result;
+            Query query = entityManager.createNamedQuery(LinesOfCodeEntity.FIND_BY_BUILD_NR);
+            query.setParameter("buildNr", buildNr);
+            try {
+                LinesOfCodeEntity result = (LinesOfCodeEntity) query.getSingleResult();
+                return result;
+            } catch (NoResultException e){
+            }
         } catch (SQLException e) {
             LOG.log(Level.WARNING, "Unable to query lines of code.", e);
         } catch (IOException e) {
