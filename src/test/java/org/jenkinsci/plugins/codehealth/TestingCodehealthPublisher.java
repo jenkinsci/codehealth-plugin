@@ -31,11 +31,6 @@ public class TestingCodehealthPublisher extends CodehealthPublisher {
     }
 
     @Override
-    ExtensionList<LinesOfCodeProvider> getLoCProviders() {
-        return this.locProviders;
-    }
-
-    @Override
     Injector getInjector() {
         return Mockito.mock(Injector.class);
     }

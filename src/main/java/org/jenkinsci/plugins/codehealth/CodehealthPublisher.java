@@ -6,13 +6,16 @@ import com.google.inject.Injector;
 import hudson.Extension;
 import hudson.ExtensionList;
 import hudson.Launcher;
-import hudson.model.*;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
+import org.jenkinsci.plugins.codehealth.service.JPADuplicateCodeRepository;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.jenkinsci.plugins.codehealth.service.JPALinesOfCodeRepository;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -30,6 +33,7 @@ import java.util.List;
 public class CodehealthPublisher extends Recorder {
 
     private LinesOfCodeProvider linesOfCodeProvider;
+    private DuplicateCodeProvider duplicateCodeProvider;
 
     @Inject
     private transient JPAIssueRepository issueRepository;
@@ -37,9 +41,13 @@ public class CodehealthPublisher extends Recorder {
     @Inject
     private transient JPALinesOfCodeRepository locRepository;
 
+    @Inject
+    private transient JPADuplicateCodeRepository duplicateCodeRepository;
+
     @DataBoundConstructor
-    public CodehealthPublisher(LinesOfCodeProvider linesOfCodeProvider) {
+    public CodehealthPublisher(LinesOfCodeProvider linesOfCodeProvider, DuplicateCodeProvider duplicateCodeProvider) {
         this.linesOfCodeProvider = linesOfCodeProvider;
+        this.duplicateCodeProvider = duplicateCodeProvider;
     }
 
     @VisibleForTesting
@@ -52,7 +60,21 @@ public class CodehealthPublisher extends Recorder {
         this.getInjector().injectMembers(this);
         handleIssues(build, listener);
         handleLinesOfCode(build, listener);
+        handleDuplicateCode(build, listener);
         return true;
+    }
+
+    private void handleDuplicateCode(AbstractBuild<?, ?> build, BuildListener listener) {
+        DuplicateCodeProvider dupProvider = getDuplicateCodeProvider();
+        if (dupProvider != null) {
+            logConsole(listener, "Getting duplicate code from " + dupProvider.getClass().getName());
+            DuplicateCode duplicateCode = dupProvider.getDuplicateCode(build);
+            if (duplicateCode != null) {
+                duplicateCodeRepository.save(duplicateCode, build);
+            }
+        } else {
+            logConsole(listener, "No provider for Duplicate Code specified.");
+        }
     }
 
     private void handleLinesOfCode(AbstractBuild<?, ?> build, BuildListener listener) {
@@ -141,6 +163,17 @@ public class CodehealthPublisher extends Recorder {
         this.linesOfCodeProvider = linesOfCodeProvider;
     }
 
+    public DuplicateCodeProvider getDuplicateCodeProvider() {
+        return duplicateCodeProvider;
+    }
+
+    public void setDuplicateCodeProvider(DuplicateCodeProvider duplicateCodeProvider) {
+        if (duplicateCodeProvider instanceof NoDuplicateCodeProvider) {
+            duplicateCodeProvider = null;
+        }
+        this.duplicateCodeProvider = duplicateCodeProvider;
+    }
+
     @Extension(ordinal = Double.MIN_VALUE)
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
@@ -172,11 +205,6 @@ public class CodehealthPublisher extends Recorder {
     @VisibleForTesting
     ExtensionList<IssueProvider> getIssueProviders() {
         return IssueProvider.all();
-    }
-
-    @VisibleForTesting
-    ExtensionList<LinesOfCodeProvider> getLoCProviders() {
-        return LinesOfCodeProvider.all();
     }
 
 }

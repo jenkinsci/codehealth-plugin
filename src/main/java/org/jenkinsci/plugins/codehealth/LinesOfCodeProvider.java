@@ -23,12 +23,9 @@ public abstract class LinesOfCodeProvider extends AbstractDescribableImpl<LinesO
      */
     public abstract String getOrigin();
 
-    static ExtensionList<LinesOfCodeProvider> all() {
-        return Jenkins.getInstance().getExtensionList(LinesOfCodeProvider.class);
-    }
-
     @Override
     public LinesOfCodeDescriptor getDescriptor() {
         return (LinesOfCodeDescriptor) super.getDescriptor();
     }
+
 }

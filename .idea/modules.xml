@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/../contexthashcode/contexthashcode.iml" filepath="$PROJECT_DIR$/../contexthashcode/contexthashcode.iml" />
       <module fileurl="file://$PROJECT_DIR$/../database-plugin/database.iml" filepath="$PROJECT_DIR$/../database-plugin/database.iml" />
       <module fileurl="file://$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" filepath="$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../dry-plugin/dry.iml" filepath="$PROJECT_DIR$/../dry-plugin/dry.iml" />
       <module fileurl="file://$PROJECT_DIR$/../findbugs-plugin/plugin/findbugs.iml" filepath="$PROJECT_DIR$/../findbugs-plugin/plugin/findbugs.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jenkins/core/jenkins-core.iml" filepath="$PROJECT_DIR$/../jenkins/core/jenkins-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jenkins/test/jenkins-test-harness.iml" filepath="$PROJECT_DIR$/../jenkins/test/jenkins-test-harness.iml" />

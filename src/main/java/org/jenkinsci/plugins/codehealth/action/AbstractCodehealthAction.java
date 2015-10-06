@@ -4,6 +4,7 @@ import hudson.model.Action;
 import hudson.model.Api;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.State;
+import org.jenkinsci.plugins.codehealth.service.DuplicateCodeRepository;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
 import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
 
@@ -21,11 +22,13 @@ public abstract class AbstractCodehealthAction implements Action {
     private TopLevelItem topLevelItem;
     private transient IssueRepository issueRepository;
     private transient LinesOfCodeRepository locRepository;
+    private transient DuplicateCodeRepository duplicateCodeRepository;
 
-    public AbstractCodehealthAction(TopLevelItem topLevelItem, IssueRepository issueRepository, LinesOfCodeRepository locRepository) {
+    public AbstractCodehealthAction(TopLevelItem topLevelItem, IssueRepository issueRepository, LinesOfCodeRepository locRepository, DuplicateCodeRepository duplicateCodeRepository) {
         this.topLevelItem = topLevelItem;
         this.issueRepository = issueRepository;
         this.locRepository = locRepository;
+        this.duplicateCodeRepository = duplicateCodeRepository;
     }
 
     @Override
@@ -77,5 +80,13 @@ public abstract class AbstractCodehealthAction implements Action {
 
     public void setLocRepository(LinesOfCodeRepository locRepository) {
         this.locRepository = locRepository;
+    }
+
+    public DuplicateCodeRepository getDuplicateCodeRepository() {
+        return duplicateCodeRepository;
+    }
+
+    public void setDuplicateCodeRepository(DuplicateCodeRepository duplicateCodeRepository) {
+        this.duplicateCodeRepository = duplicateCodeRepository;
     }
 }

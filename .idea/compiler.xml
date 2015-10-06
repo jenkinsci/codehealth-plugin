@@ -28,6 +28,7 @@
         <module name="contexthashcode" />
         <module name="database" />
         <module name="database-h2" />
+        <module name="dry" />
         <module name="findbugs" />
         <module name="jenkins-core" />
         <module name="jenkins-test-harness" />
@@ -45,6 +46,7 @@
       <module name="contexthashcode" target="1.7" />
       <module name="database" target="1.6" />
       <module name="database-h2" target="1.5" />
+      <module name="dry" target="1.6" />
       <module name="findbugs" target="1.6" />
       <module name="jenkins-core" target="1.7" />
       <module name="jenkins-test-harness" target="1.7" />

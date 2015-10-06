@@ -20,6 +20,7 @@
         <option value="$PROJECT_DIR$/../violations-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../contexthashcode/pom.xml" />
         <option value="$PROJECT_DIR$/../sloccount-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../dry-plugin/pom.xml" />
       </list>
     </option>
   </component>

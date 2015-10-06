@@ -77,8 +77,6 @@ public class CodehealthPublisherTest {
         verify(issueRepository).fixedIssues(argThat(hasSizeOf(2)), eq(this.build));
         // verify that for checkstyle fixed issues are calculated
         verify(issueRepository).calculateFixedIssues(eq(this.topLevelItem), anyCollection(), eq("checkstyle"));
-        // verify logging
-        verify(this.buildListener, times(3)).getLogger();
     }
 
     /**

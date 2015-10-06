@@ -6,6 +6,7 @@ import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.TransientProjectActionFactory;
 import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.codehealth.service.JPADuplicateCodeRepository;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.jenkinsci.plugins.codehealth.service.JPALinesOfCodeRepository;
 
@@ -27,6 +28,9 @@ public class CodehealthProjectActionFactory extends TransientProjectActionFactor
     @Inject
     private JPALinesOfCodeRepository jpaLinesOfCodeRepository;
 
+    @Inject
+    private JPADuplicateCodeRepository jpaDuplicateCodeRepository;
+
     public CodehealthProjectActionFactory() {
         super();
         Jenkins.getInstance().getInjector().injectMembers(this);
@@ -35,7 +39,7 @@ public class CodehealthProjectActionFactory extends TransientProjectActionFactor
     @Override
     public Collection<? extends Action> createFor(AbstractProject abstractProject) {
         final List<Action> actions = new ArrayList<Action>();
-        actions.add(new CodehealthProjectAction(abstractProject, jpaIssueRepository, jpaLinesOfCodeRepository));
+        actions.add(new CodehealthProjectAction(abstractProject, jpaIssueRepository, jpaLinesOfCodeRepository, jpaDuplicateCodeRepository));
         return actions;
     }
 }
