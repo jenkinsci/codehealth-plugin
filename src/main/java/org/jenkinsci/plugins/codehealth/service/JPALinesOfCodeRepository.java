@@ -80,7 +80,7 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
         final LinesOfCodeEntity baseLocs = this.read(topLevelItem, fromBuildNr);
         final LinesOfCodeEntity targetLocs = this.read(topLevelItem, toBuildNr);
         if (baseLocs != null && targetLocs != null) {
-            return new LinesOfCode(targetLocs.getLinesOfCode() - baseLocs.getLinesOfCode(), targetLocs.getFiles() - baseLocs.getLinesOfCode());
+            return new LinesOfCode(targetLocs.getLinesOfCode() - baseLocs.getLinesOfCode(), targetLocs.getFiles() - baseLocs.getFiles());
         } else {
             return null;
         }

@@ -1,8 +1,12 @@
 package org.jenkinsci.plugins.codehealth;
 
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
+
 /**
  * @author Michael Prankl
  */
+@ExportedBean
 public class LinesOfCode {
 
     private int linesOfCode;
@@ -14,6 +18,7 @@ public class LinesOfCode {
         this.fileCount = fileCount;
     }
 
+    @Exported
     public int getLinesOfCode() {
         return linesOfCode;
     }
@@ -22,6 +27,7 @@ public class LinesOfCode {
         this.linesOfCode = linesOfCode;
     }
 
+    @Exported
     public int getFileCount() {
         return fileCount;
     }
