@@ -61,13 +61,10 @@ public abstract class IssueProvider implements ExtensionPoint {
      */
     public static IssueProvider findProvider(String origin) {
         for (IssueProvider issueProvider : all()) {
-            System.out.println("Checking provider: " + issueProvider.getOrigin());
             if (issueProvider.getOrigin().equals(origin)) {
-                System.out.println("Treffer");
                 return issueProvider;
             }
         }
-        System.out.println("Kein Treffer");
         return null;
     }
 
