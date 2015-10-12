@@ -1,6 +1,5 @@
-package org.jenkinsci.plugins.codehealth;
+package org.jenkinsci.plugins.codehealth.provider.loc;
 
-import hudson.Extension;
 import hudson.model.AbstractBuild;
 import org.kohsuke.stapler.DataBoundConstructor;
 

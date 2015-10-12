@@ -1,10 +1,9 @@
-package org.jenkinsci.plugins.codehealth;
+package org.jenkinsci.plugins.codehealth.provider.issues;
 
 import hudson.ExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.AbstractBuild;
 import jenkins.model.Jenkins;
-import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 
 import java.util.Collection;
 
@@ -31,11 +30,11 @@ public abstract class IssueProvider implements ExtensionPoint {
     public abstract String getOrigin();
 
     /**
-     * @return if the plugin can provide information about fixed issues with {@link org.jenkinsci.plugins.codehealth.IssueProvider#getFixedIssues(hudson.model.AbstractBuild)}
+     * @return if the plugin can provide information about fixed issues with {@link IssueProvider#getFixedIssues(hudson.model.AbstractBuild)}
      */
     public abstract boolean canProvideFixedIssues();
 
-    static ExtensionList<IssueProvider> all() {
+    public static ExtensionList<IssueProvider> all() {
         return Jenkins.getInstance().getExtensionList(IssueProvider.class);
     }
 }

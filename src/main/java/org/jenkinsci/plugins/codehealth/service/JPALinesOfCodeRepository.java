@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.LinesOfCode;
+import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 

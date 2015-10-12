@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.codehealth;
+package org.jenkinsci.plugins.codehealth.provider.loc;
 
 import hudson.DescriptorExtensionList;
 import hudson.model.Descriptor;

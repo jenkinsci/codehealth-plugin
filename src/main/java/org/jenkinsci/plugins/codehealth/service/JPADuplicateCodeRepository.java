@@ -6,7 +6,7 @@ import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.DuplicateCode;
+import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 

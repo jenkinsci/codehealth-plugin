@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.codehealth;
+package org.jenkinsci.plugins.codehealth.provider.duplicates;
 
 import hudson.DescriptorExtensionList;
 import hudson.model.Descriptor;

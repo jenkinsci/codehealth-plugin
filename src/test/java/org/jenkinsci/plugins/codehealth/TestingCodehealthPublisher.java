@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.codehealth;
 
 import com.google.inject.Injector;
 import hudson.ExtensionList;
+import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
+import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCodeProvider;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.mockito.Mockito;
 

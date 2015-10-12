@@ -1,7 +1,7 @@
 package org.jenkinsci.plugins.codehealth.CodehealthPublisher
 
-import org.jenkinsci.plugins.codehealth.NoDuplicateCodeProvider
-import org.jenkinsci.plugins.codehealth.NoLinesOfCodeProvider
+import org.jenkinsci.plugins.codehealth.provider.duplicates.NoDuplicateCodeProvider
+import org.jenkinsci.plugins.codehealth.provider.loc.NoLinesOfCodeProvider
 
 def f = namespace(lib.FormTagLib)
 

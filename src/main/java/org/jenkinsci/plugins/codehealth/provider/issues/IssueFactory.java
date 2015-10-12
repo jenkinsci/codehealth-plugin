@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.codehealth;
+package org.jenkinsci.plugins.codehealth.provider.issues;
 
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 

@@ -1,10 +1,8 @@
-package org.jenkinsci.plugins.codehealth;
+package org.jenkinsci.plugins.codehealth.provider.loc;
 
-import hudson.ExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractDescribableImpl;
-import jenkins.model.Jenkins;
 
 /**
  * Extension point for code analysis plugins which want to contribute a LOC metric.

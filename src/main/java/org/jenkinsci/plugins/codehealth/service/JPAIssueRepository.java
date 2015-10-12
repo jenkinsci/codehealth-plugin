@@ -2,12 +2,10 @@ package org.jenkinsci.plugins.codehealth.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
-import jenkins.model.Jenkins;
-import org.jenkinsci.plugins.codehealth.Issue;
+import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.model.StateHistory;

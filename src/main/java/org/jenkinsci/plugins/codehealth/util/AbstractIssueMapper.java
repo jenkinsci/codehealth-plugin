@@ -1,6 +1,6 @@
 package org.jenkinsci.plugins.codehealth.util;
 
-import org.jenkinsci.plugins.codehealth.Issue;
+import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 
 /**
  * Abstract class to support the mapping of annotations/warnings to codehealth Issues.
