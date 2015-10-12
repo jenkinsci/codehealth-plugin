@@ -1,7 +1,7 @@
-package org.jenkinsci.plugins.codehealth.action;
+package org.jenkinsci.plugins.codehealth.action.issues;
 
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.LinesOfCode;
+import org.jenkinsci.plugins.codehealth.action.issues.AbstractIssuesAction;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
@@ -20,12 +20,12 @@ import java.util.Collection;
  * @author Michael Prankl
  */
 @ExportedBean
-public class CodehealthBuildAction extends AbstractCodehealthAction {
+public class IssuesBuildAction extends AbstractIssuesAction {
 
     private int buildNr;
 
-    public CodehealthBuildAction(int buildNr, TopLevelItem topLevelItem, IssueRepository issueRepository, LinesOfCodeRepository locRepository, DuplicateCodeRepository duplicateCodeRepository) {
-        super(topLevelItem, issueRepository, locRepository, duplicateCodeRepository);
+    public IssuesBuildAction(int buildNr, TopLevelItem topLevelItem, IssueRepository issueRepository) {
+        super(topLevelItem, issueRepository);
         this.buildNr = buildNr;
     }
 
@@ -39,13 +39,4 @@ public class CodehealthBuildAction extends AbstractCodehealthAction {
         return getIssueRepository().loadIssues(getTopLevelItem(), this.buildNr, State.CLOSED);
     }
 
-    @Exported
-    public LinesOfCodeEntity linesOfCode() {
-        return getLocRepository().read(getTopLevelItem(), this.buildNr);
-    }
-
-    @Exported
-    public DuplicateCodeEntity duplicateCode() {
-        return getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), this.buildNr);
-    }
 }

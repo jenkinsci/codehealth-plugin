@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.codehealth.action;
+package org.jenkinsci.plugins.codehealth.action.issues;
 
 import com.google.inject.Inject;
 import hudson.Extension;
@@ -7,6 +7,8 @@ import hudson.model.Run;
 import hudson.model.TopLevelItem;
 import jenkins.model.Jenkins;
 import jenkins.model.TransientActionFactory;
+import org.jenkinsci.plugins.codehealth.action.AbstractBuildActionFactory;
+import org.jenkinsci.plugins.codehealth.action.issues.IssuesBuildAction;
 import org.jenkinsci.plugins.codehealth.service.JPADuplicateCodeRepository;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.jenkinsci.plugins.codehealth.service.JPALinesOfCodeRepository;
@@ -17,31 +19,12 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Factory for creating the build-level action.
+ * Factory for creating the build-level action for issues.
  *
  * @author Michael Prankl
  */
 @Extension
-public class CodehealthBuildActionFactory extends TransientActionFactory {
-
-    @Inject
-    private JPAIssueRepository jpaIssueRepository;
-
-    @Inject
-    private JPALinesOfCodeRepository jpaLinesOfCodeRepository;
-
-    @Inject
-    private JPADuplicateCodeRepository jpaDuplicateCodeRepository;
-
-    public CodehealthBuildActionFactory() {
-        super();
-        Jenkins.getInstance().getInjector().injectMembers(this);
-    }
-
-    @Override
-    public Class type() {
-        return Run.class;
-    }
+public class IssuesBuildActionFactory extends AbstractBuildActionFactory<JPAIssueRepository> {
 
     @Nonnull
     @Override
@@ -49,7 +32,7 @@ public class CodehealthBuildActionFactory extends TransientActionFactory {
         final List<Action> actions = new ArrayList<Action>();
         Run r = (Run) target;
         TopLevelItem topLevelItem = (TopLevelItem) r.getParent();
-        actions.add(new CodehealthBuildAction(r.getNumber(), topLevelItem, jpaIssueRepository, jpaLinesOfCodeRepository, jpaDuplicateCodeRepository));
+        actions.add(new IssuesBuildAction(r.getNumber(), topLevelItem, getRepositoryImplementation()));
         return actions;
     }
 }

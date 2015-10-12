@@ -1,15 +1,10 @@
-package org.jenkinsci.plugins.codehealth.action;
+package org.jenkinsci.plugins.codehealth.action.issues;
 
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.DuplicateCode;
-import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
-import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
-import org.jenkinsci.plugins.codehealth.service.DuplicateCodeRepository;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
-import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -22,12 +17,12 @@ import java.util.List;
  * @author Michael Prankl
  */
 @ExportedBean
-public class CodehealthProjectAction extends AbstractCodehealthAction {
+public class IssuesProjectAction extends AbstractIssuesAction {
     private transient AbstractProject abstractProject;
     private transient final List<State> newAndOpen = list(State.NEW, State.OPEN);
 
-    public CodehealthProjectAction(AbstractProject abstractProject, IssueRepository issueRepository, LinesOfCodeRepository locRepository, DuplicateCodeRepository duplicateCodeRepository) {
-        super((TopLevelItem) abstractProject, issueRepository, locRepository, duplicateCodeRepository);
+    public IssuesProjectAction(AbstractProject abstractProject, IssueRepository issueRepository) {
+        super((TopLevelItem) abstractProject, issueRepository);
         this.abstractProject = abstractProject;
     }
 
@@ -41,20 +36,5 @@ public class CodehealthProjectAction extends AbstractCodehealthAction {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
     }
-
-    @Exported
-    public LinesOfCodeEntity getLinesOfCode() {
-        if (this.abstractProject.getLastBuild() != null) {
-            return getLocRepository().read(this.getTopLevelItem(), this.abstractProject.getLastBuild().getNumber());
-        } else {
-            return null;
-        }
-    }
-
-    @Exported
-    public DuplicateCodeEntity getDuplicateCode() {
-        return getDuplicateCodeRepository().loadLatest(this.abstractProject);
-    }
-
 
 }
