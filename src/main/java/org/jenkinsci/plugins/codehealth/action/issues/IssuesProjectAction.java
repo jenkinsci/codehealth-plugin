@@ -2,9 +2,13 @@ package org.jenkinsci.plugins.codehealth.action.issues;
 
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
+import hudson.util.HttpResponses;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
+import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
+import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -35,6 +39,11 @@ public class IssuesProjectAction extends AbstractIssuesAction {
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
+    }
+
+    public HttpResponse doGoToBuildResult(@QueryParameter String origin){
+        IssueProvider provider = IssueProvider.findProvider(origin);
+        return HttpResponses.redirectTo("../" + provider.getProjectResultUrlName());
     }
 
 }
