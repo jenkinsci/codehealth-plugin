@@ -1,8 +1,13 @@
 package org.jenkinsci.plugins.codehealth.provider.duplicates;
 
+import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
+
 /**
  * @author Michael Prankl
  */
+@ExportedBean
 public class DuplicateCode {
 
     private int numberOfDuplicateLines;
@@ -13,6 +18,7 @@ public class DuplicateCode {
         this.numberOfDuplicateFiles = numberOfDuplicateFiles;
     }
 
+    @Exported
     public int getNumberOfDuplicateLines() {
         return numberOfDuplicateLines;
     }
@@ -21,11 +27,16 @@ public class DuplicateCode {
         this.numberOfDuplicateLines = numberOfDuplicateLines;
     }
 
+    @Exported
     public int getNumberOfDuplicateFiles() {
         return numberOfDuplicateFiles;
     }
 
     public void setNumberOfDuplicateFiles(int numberOfDuplicateFiles) {
         this.numberOfDuplicateFiles = numberOfDuplicateFiles;
+    }
+
+    public static DuplicateCode deltaOf(DuplicateCodeEntity fromDup, DuplicateCodeEntity toDup) {
+        return new DuplicateCode(toDup.getDuplicateLines() - fromDup.getDuplicateLines(), toDup.getDuplicateFiles() - fromDup.getDuplicateFiles());
     }
 }
