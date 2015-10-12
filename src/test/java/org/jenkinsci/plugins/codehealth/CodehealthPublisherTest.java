@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 
@@ -114,6 +115,18 @@ public class CodehealthPublisherTest {
             public boolean canProvideFixedIssues() {
                 return true;
             }
+
+            @Nullable
+            @Override
+            public String getProjectResultUrlName() {
+                return getOrigin();
+            }
+
+            @Nullable
+            @Override
+            public String getBuildResultUrlName() {
+                return getOrigin();
+            }
         });
         this.issueProviderList.add(buildIssueProvider("checkstyle", 10, 0, false));
         // act
@@ -164,6 +177,18 @@ public class CodehealthPublisherTest {
             @Override
             public boolean canProvideFixedIssues() {
                 return canProvideFixedIssues;
+            }
+
+            @Nullable
+            @Override
+            public String getProjectResultUrlName() {
+                return getOrigin();
+            }
+
+            @Nullable
+            @Override
+            public String getBuildResultUrlName() {
+                return getOrigin();
             }
         };
     }
