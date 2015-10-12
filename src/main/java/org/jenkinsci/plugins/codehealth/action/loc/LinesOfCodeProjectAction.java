@@ -16,8 +16,8 @@ public class LinesOfCodeProjectAction extends AbstractLinesOfCodeAction {
 
     private transient AbstractProject abstractProject;
 
-    public LinesOfCodeProjectAction(AbstractProject abstractProject, TopLevelItem topLevelItem, LinesOfCodeRepository linesOfCodeRepository) {
-        super(topLevelItem, linesOfCodeRepository);
+    public LinesOfCodeProjectAction(AbstractProject abstractProject, LinesOfCodeRepository linesOfCodeRepository) {
+        super((TopLevelItem) abstractProject, linesOfCodeRepository);
         this.abstractProject = abstractProject;
     }
 

@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.codehealth;
 
+import hudson.Extension;
 import hudson.model.AbstractBuild;
 import org.kohsuke.stapler.DataBoundConstructor;
 
