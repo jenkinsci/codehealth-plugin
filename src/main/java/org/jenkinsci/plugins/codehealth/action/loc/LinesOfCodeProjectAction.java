@@ -1,8 +1,10 @@
 package org.jenkinsci.plugins.codehealth.action.loc;
 
+import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Api;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.LinesOfCode;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
 import org.kohsuke.stapler.export.Exported;
@@ -28,6 +30,14 @@ public class LinesOfCodeProjectAction extends AbstractLinesOfCodeAction {
         } else {
             return null;
         }
+    }
+
+    @Exported
+    public LinesOfCode getLinesOfCodeDelta() {
+        if (this.abstractProject.getLastBuild() != null && this.abstractProject.getLastBuild().getPreviousBuild() != null) {
+            return getLinesOfCodeRepository().readDelta(this.getTopLevelItem(), this.abstractProject.getLastBuild().getNumber(), this.abstractProject.getLastBuild().getPreviousBuild().getNumber());
+        }
+        return null;
     }
 
 

@@ -9,10 +9,11 @@ import org.jenkinsci.plugins.codehealth.LinesOfCode;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +46,7 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
             try {
                 LinesOfCodeEntity result = (LinesOfCodeEntity) query.getSingleResult();
                 return result;
-            } catch (NoResultException e){
+            } catch (NoResultException e) {
             }
         } catch (SQLException e) {
             LOG.log(Level.WARNING, "Unable to query lines of code.", e);
@@ -71,6 +72,17 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
             LOG.log(Level.WARNING, "Unable to save lines of code.", e);
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Unable to save lines of code.", e);
+        }
+    }
+
+    @Override
+    public LinesOfCode readDelta(TopLevelItem topLevelItem, int toBuildNr, int fromBuildNr) {
+        final LinesOfCodeEntity baseLocs = this.read(topLevelItem, fromBuildNr);
+        final LinesOfCodeEntity targetLocs = this.read(topLevelItem, toBuildNr);
+        if (baseLocs != null && targetLocs != null) {
+            return new LinesOfCode(targetLocs.getLinesOfCode() - baseLocs.getLinesOfCode(), targetLocs.getFiles() - baseLocs.getLinesOfCode());
+        } else {
+            return null;
         }
     }
 

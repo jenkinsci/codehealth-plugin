@@ -20,4 +20,10 @@ public abstract class LinesOfCodeRepository extends BaseRepository {
      * @param build the build
      */
     public abstract void save(LinesOfCode loc, AbstractBuild<?, ?> build);
+
+    /**
+     *
+     * @return the LOC delta between the given build numbers
+     */
+    public abstract LinesOfCode readDelta(TopLevelItem topLevelItem, int toBuildNr, int fromBuildNr);
 }
