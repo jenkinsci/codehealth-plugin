@@ -79,6 +79,7 @@ public class CodehealthPublisher extends Recorder {
             logConsole(listener, "Getting duplicate code from " + dupProvider.getClass().getName());
             DuplicateCode duplicateCode = dupProvider.getDuplicateCode(build);
             if (duplicateCode != null) {
+                logConsole(listener, "Duplicate lines: " + duplicateCode.getNumberOfDuplicateLines() + ", files: " + duplicateCode.getNumberOfDuplicateFiles());
                 duplicateCodeRepository.save(duplicateCode, build);
             }
         } else {
@@ -92,6 +93,7 @@ public class CodehealthPublisher extends Recorder {
             logConsole(listener, "Getting LoC from " + locProvider.getClass().getName());
             LinesOfCode loc = locProvider.getLOC(build);
             if (loc != null) {
+                logConsole(listener, "Line count: " + loc.getLinesOfCode() + ", File count: " + loc.getFileCount());
                 locRepository.save(loc, build);
             }
         } else {
