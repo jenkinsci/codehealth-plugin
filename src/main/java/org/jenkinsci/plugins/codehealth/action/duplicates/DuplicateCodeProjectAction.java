@@ -29,14 +29,22 @@ public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction {
     }
 
     @Exported(name = "trend")
-    public DuplicateCode duplicateCodeTrend() {
+    public DuplicateCodeTrend duplicateCodeTrend() {
         LatestBuilds latestBuildsWithDuplicates = getDuplicateCodeRepository().getLatestBuildsWithDuplicates(getTopLevelItem());
         if (latestBuildsWithDuplicates != null) {
             DuplicateCodeEntity latestDup = getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), latestBuildsWithDuplicates.getLatestBuild());
             DuplicateCodeEntity prevDup = getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), latestBuildsWithDuplicates.getPreviousToLatestBuild());
-            return DuplicateCode.deltaOf(prevDup, latestDup);
+            DuplicateCode dupTrend = DuplicateCode.deltaOf(prevDup, latestDup);
+            return makeTrend(latestBuildsWithDuplicates, dupTrend);
         }
         return null;
+    }
+
+    private DuplicateCodeTrend makeTrend(LatestBuilds builds, DuplicateCode trend){
+        DuplicateCodeTrend duplicateCodeTrend = new DuplicateCodeTrend();
+        duplicateCodeTrend.setBuilds(builds);
+        duplicateCodeTrend.setDuplicateCode(trend);
+        return duplicateCodeTrend;
     }
 
 }
