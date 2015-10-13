@@ -2,7 +2,7 @@ package org.jenkinsci.plugins.codehealth.action.loc;
 
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
-import org.jenkinsci.plugins.codehealth.action.ResultRedirect;
+import org.jenkinsci.plugins.codehealth.action.ResultUrlNameProvider;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCodeProvider;
 import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
@@ -14,7 +14,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  * @author Michael Prankl
  */
 @ExportedBean
-public class LinesOfCodeBuildAction extends AbstractLinesOfCodeAction implements ResultRedirect {
+public class LinesOfCodeBuildAction extends AbstractLinesOfCodeAction implements ResultUrlNameProvider {
 
     private int buildNr;
 
@@ -39,5 +39,11 @@ public class LinesOfCodeBuildAction extends AbstractLinesOfCodeAction implements
     @Override
     public HttpResponse doGoToResult() {
         return HttpResponses.redirectTo("../" + getLinesOfCodeProvider().getBuildResultUrl());
+    }
+
+    @Override
+    @Exported
+    public String getResultUrlName() {
+        return getLinesOfCodeProvider().getBuildResultUrl();
     }
 }

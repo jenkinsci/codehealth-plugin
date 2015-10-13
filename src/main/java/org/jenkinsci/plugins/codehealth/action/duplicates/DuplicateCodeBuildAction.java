@@ -2,7 +2,7 @@ package org.jenkinsci.plugins.codehealth.action.duplicates;
 
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
-import org.jenkinsci.plugins.codehealth.action.ResultRedirect;
+import org.jenkinsci.plugins.codehealth.action.ResultUrlNameProvider;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCodeProvider;
 import org.jenkinsci.plugins.codehealth.service.DuplicateCodeRepository;
@@ -19,7 +19,7 @@ import java.io.OutputStream;
  * @author Michael Prankl
  */
 @ExportedBean
-public class DuplicateCodeBuildAction extends AbstractDuplicateCodeAction implements ResultRedirect {
+public class DuplicateCodeBuildAction extends AbstractDuplicateCodeAction implements ResultUrlNameProvider {
 
     private int buildNr;
 
@@ -36,6 +36,12 @@ public class DuplicateCodeBuildAction extends AbstractDuplicateCodeAction implem
     @Override
     public HttpResponse doGoToResult() {
         return HttpResponses.redirectTo("../" + getDuplicateCodeProvider().getBuildResultUrl());
+    }
+
+    @Override
+    @Exported
+    public String getResultUrlName() {
+        return getDuplicateCodeProvider().getBuildResultUrl();
     }
 
     public void doResultUrlName(StaplerRequest request, StaplerResponse response) throws IOException {

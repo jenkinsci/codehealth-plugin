@@ -5,10 +5,15 @@ import org.kohsuke.stapler.HttpResponse;
 /**
  * @author Michael Prankl
  */
-public interface ResultRedirect {
+public interface ResultUrlNameProvider {
 
     /**
      * @return HTTP redirect to the result page of the contributing plugin
      */
     HttpResponse doGoToResult();
+
+    /**
+     * @return the result url name of the contributing plugin
+     */
+    String getResultUrlName();
 }

@@ -3,7 +3,7 @@ package org.jenkinsci.plugins.codehealth.action.duplicates;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
-import org.jenkinsci.plugins.codehealth.action.ResultRedirect;
+import org.jenkinsci.plugins.codehealth.action.ResultUrlNameProvider;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
@@ -17,7 +17,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  * @author Michael Prankl
  */
 @ExportedBean
-public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction implements ResultRedirect {
+public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction implements ResultUrlNameProvider {
 
     private transient AbstractProject abstractProject;
 
@@ -53,6 +53,12 @@ public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction impl
     @Override
     public HttpResponse doGoToResult() {
         return HttpResponses.redirectTo("../" + getDuplicateCodeProvider().getProjectResultUrl());
+    }
+
+    @Override
+    @Exported
+    public String getResultUrlName() {
+        return getDuplicateCodeProvider().getProjectResultUrl();
     }
 
 }
