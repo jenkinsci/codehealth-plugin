@@ -5,7 +5,6 @@ import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * @author Michael Prankl
@@ -29,10 +28,10 @@ public class LinesOfCodeEntity {
     private int buildNr;
 
     @Column(nullable = false)
-    private int linesOfCode;
+    private long linesOfCode;
 
     @Column(nullable = false)
-    private int files;
+    private long files;
 
     @Exported
     public int getBuildNr() {
@@ -44,20 +43,20 @@ public class LinesOfCodeEntity {
     }
 
     @Exported
-    public int getLinesOfCode() {
+    public long getLinesOfCode() {
         return linesOfCode;
     }
 
-    public void setLinesOfCode(int linesOfCode) {
+    public void setLinesOfCode(long linesOfCode) {
         this.linesOfCode = linesOfCode;
     }
 
     @Exported(name = "fileCount")
-    public int getFiles() {
+    public long getFiles() {
         return files;
     }
 
-    public void setFiles(int files) {
+    public void setFiles(long files) {
         this.files = files;
     }
 
@@ -88,8 +87,8 @@ public class LinesOfCodeEntity {
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + buildNr;
-        result = 31 * result + linesOfCode;
-        result = 31 * result + files;
+        result = 31 * result + (int) (linesOfCode ^ (linesOfCode >>> 32));
+        result = 31 * result + (int) (files ^ (files >>> 32));
         return result;
     }
 }

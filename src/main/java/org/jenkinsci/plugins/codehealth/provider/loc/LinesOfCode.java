@@ -9,30 +9,30 @@ import org.kohsuke.stapler.export.ExportedBean;
 @ExportedBean
 public class LinesOfCode {
 
-    private int linesOfCode;
-    private int fileCount;
+    private long linesOfCode;
+    private long fileCount;
 
 
-    public LinesOfCode(int linesOfCode, int fileCount) {
+    public LinesOfCode(long linesOfCode, long fileCount) {
         this.linesOfCode = linesOfCode;
         this.fileCount = fileCount;
     }
 
     @Exported
-    public int getLinesOfCode() {
+    public long getLinesOfCode() {
         return linesOfCode;
     }
 
-    public void setLinesOfCode(int linesOfCode) {
+    public void setLinesOfCode(long linesOfCode) {
         this.linesOfCode = linesOfCode;
     }
 
     @Exported
-    public int getFileCount() {
+    public long getFileCount() {
         return fileCount;
     }
 
-    public void setFileCount(int fileCount) {
+    public void setFileCount(long fileCount) {
         this.fileCount = fileCount;
     }
 }
