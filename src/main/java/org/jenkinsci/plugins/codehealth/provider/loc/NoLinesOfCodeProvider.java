@@ -33,7 +33,7 @@ public class NoLinesOfCodeProvider extends LinesOfCodeProvider {
     }
 
     public static List<LinesOfCodeDescriptor> allPlusNone() {
-        final List<LinesOfCodeDescriptor> descriptors = new ArrayList<>();
+        final List<LinesOfCodeDescriptor> descriptors = new ArrayList<LinesOfCodeDescriptor>();
         descriptors.add(new DescriptorImpl());
         descriptors.addAll(LinesOfCodeDescriptor.all());
         return descriptors;

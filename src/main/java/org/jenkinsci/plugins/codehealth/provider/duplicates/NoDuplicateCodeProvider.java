@@ -33,7 +33,7 @@ public class NoDuplicateCodeProvider extends DuplicateCodeProvider {
     }
 
     public static List<DuplicateCodeDescriptor> allPlusNone() {
-        final List<DuplicateCodeDescriptor> descriptors = new ArrayList<>();
+        final List<DuplicateCodeDescriptor> descriptors = new ArrayList<DuplicateCodeDescriptor>();
         descriptors.add(new DescriptorImpl());
         descriptors.addAll(DuplicateCodeDescriptor.all());
         return descriptors;

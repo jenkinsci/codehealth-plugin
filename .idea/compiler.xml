@@ -23,16 +23,13 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="checkstyle" />
-        <module name="cli" />
         <module name="codehealth" />
         <module name="contexthashcode" />
         <module name="database" />
         <module name="database-h2" />
         <module name="dry" />
         <module name="findbugs" />
-        <module name="jenkins-core" />
-        <module name="jenkins-test-harness" />
-        <module name="jenkins-war" />
+        <module name="javancss" />
         <module name="library" />
         <module name="sloccount" />
         <module name="violations" />
@@ -48,6 +45,7 @@
       <module name="database-h2" target="1.5" />
       <module name="dry" target="1.6" />
       <module name="findbugs" target="1.6" />
+      <module name="javancss" target="1.5" />
       <module name="jenkins-core" target="1.7" />
       <module name="jenkins-test-harness" target="1.7" />
       <module name="jenkins-war" target="1.7" />
