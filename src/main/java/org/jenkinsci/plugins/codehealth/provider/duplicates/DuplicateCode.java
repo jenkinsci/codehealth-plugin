@@ -28,11 +28,11 @@ public class DuplicateCode {
     }
 
     @Exported
-    public int getNumberOfDuplicateFiles() {
+    public int getNumberOfFilesWithDuplicates() {
         return numberOfDuplicateFiles;
     }
 
-    public void setNumberOfDuplicateFiles(int numberOfDuplicateFiles) {
+    public void setNumberOfFilesWithDuplicates(int numberOfDuplicateFiles) {
         this.numberOfDuplicateFiles = numberOfDuplicateFiles;
     }
 

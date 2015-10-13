@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.codehealth.service;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 
@@ -22,4 +23,6 @@ public abstract class DuplicateCodeRepository extends BaseRepository {
     public abstract DuplicateCodeEntity loadForBuild(TopLevelItem topLevelItem, int buildNr);
 
     public abstract DuplicateCodeEntity loadLatest(AbstractProject<?, ?> project);
+
+    public abstract LatestBuilds getLatestBuildsWithDuplicates(TopLevelItem topLevelItem);
 }

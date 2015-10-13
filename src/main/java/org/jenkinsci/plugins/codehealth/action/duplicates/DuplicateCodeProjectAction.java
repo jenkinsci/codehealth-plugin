@@ -4,6 +4,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
+import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 import org.jenkinsci.plugins.codehealth.service.DuplicateCodeRepository;
 import org.kohsuke.stapler.export.Exported;
@@ -27,17 +28,13 @@ public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction {
         return getDuplicateCodeRepository().loadLatest(this.abstractProject);
     }
 
-    @Exported
-    public DuplicateCode duplicateCodeDelta() {
-        AbstractBuild lastBuild = this.abstractProject.getLastBuild();
-        AbstractBuild previousBuild = null;
-        if (lastBuild != null) {
-            previousBuild = lastBuild.getPreviousBuild();
-        }
-        if (lastBuild != null && previousBuild != null) {
-            DuplicateCodeEntity toDup = getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), lastBuild.getNumber());
-            DuplicateCodeEntity fromDup = getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), previousBuild.getNumber());
-            return DuplicateCode.deltaOf(fromDup, toDup);
+    @Exported(name = "trend")
+    public DuplicateCode duplicateCodeTrend() {
+        LatestBuilds latestBuildsWithDuplicates = getDuplicateCodeRepository().getLatestBuildsWithDuplicates(getTopLevelItem());
+        if (latestBuildsWithDuplicates != null) {
+            DuplicateCodeEntity latestDup = getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), latestBuildsWithDuplicates.getLatestBuild());
+            DuplicateCodeEntity prevDup = getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), latestBuildsWithDuplicates.getPreviousToLatestBuild());
+            return DuplicateCode.deltaOf(prevDup, latestDup);
         }
         return null;
     }

@@ -9,7 +9,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  * @author Michael Prankl
  */
 @ExportedBean
-public class LoCTrend {
+public class LinesOfCodeTrend {
 
     private LatestBuilds builds;
     private LinesOfCode loc;

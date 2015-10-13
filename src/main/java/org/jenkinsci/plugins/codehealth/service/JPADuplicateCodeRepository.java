@@ -6,8 +6,9 @@ import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
+import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
+import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
 import javax.persistence.EntityManager;
@@ -15,6 +16,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +61,7 @@ public class JPADuplicateCodeRepository extends DuplicateCodeRepository {
 
     private DuplicateCodeEntity map(DuplicateCode duplicateCode, AbstractBuild<?, ?> build) {
         DuplicateCodeEntity entity = new DuplicateCodeEntity();
-        entity.setDuplicateFiles(duplicateCode.getNumberOfDuplicateFiles());
+        entity.setDuplicateFiles(duplicateCode.getNumberOfFilesWithDuplicates());
         entity.setDuplicateLines(duplicateCode.getNumberOfDuplicateLines());
         entity.setBuildNr(build.getNumber());
         return entity;
@@ -81,6 +83,31 @@ public class JPADuplicateCodeRepository extends DuplicateCodeRepository {
         }
         if (lastBuildNr != null) {
             return queryForBuildNr(this.persistenceService, topLevelItem, lastBuildNr);
+        }
+        return null;
+    }
+
+    @Override
+    public LatestBuilds getLatestBuildsWithDuplicates(TopLevelItem topLevelItem) {
+        this.getInjector().injectMembers(this);
+        Integer latestBuildNr = null;
+        Integer prevToLatestBuildNr = null;
+        try {
+            EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            List<Integer> resultListLatest = em.createNamedQuery(DuplicateCodeEntity.LATEST_BUILD_NR).getResultList();
+            if (!resultListLatest.isEmpty()) {
+                latestBuildNr = resultListLatest.get(0);
+                List<Integer> resultListPrev = em.createNamedQuery(DuplicateCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR).getResultList();
+                if (!resultListPrev.isEmpty()) {
+                    prevToLatestBuildNr = resultListPrev.get(0);
+                    LatestBuilds latestBuilds = new LatestBuilds(latestBuildNr, prevToLatestBuildNr);
+                    return latestBuilds;
+                }
+            }
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to query latest build with duplicate code.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to query latest build with duplicate code.", e);
         }
         return null;
     }

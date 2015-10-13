@@ -79,7 +79,7 @@ public class CodehealthPublisher extends Recorder {
             logConsole(listener, "Getting duplicate code from " + dupProvider.getClass().getName());
             DuplicateCode duplicateCode = dupProvider.getDuplicateCode(build);
             if (duplicateCode != null) {
-                logConsole(listener, "Duplicate lines: " + duplicateCode.getNumberOfDuplicateLines() + ", files: " + duplicateCode.getNumberOfDuplicateFiles());
+                logConsole(listener, "Duplicate lines: " + duplicateCode.getNumberOfDuplicateLines() + ", files: " + duplicateCode.getNumberOfFilesWithDuplicates());
                 duplicateCodeRepository.save(duplicateCode, build);
             }
         } else {

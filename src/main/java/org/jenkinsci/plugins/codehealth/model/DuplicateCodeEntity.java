@@ -13,10 +13,20 @@ import javax.persistence.*;
 @PerItemTable
 @ExportedBean
 @Table(uniqueConstraints = {@UniqueConstraint(name = "DUP_UNI_BUILDNR", columnNames = {"buildNr"})})
-@NamedQueries({@NamedQuery(name = DuplicateCodeEntity.FIND_BY_BUILD_NR, query = "select dup from DuplicateCode dup where dup.buildNr = :buildNr")})
+@NamedQueries({
+        @NamedQuery(name = DuplicateCodeEntity.FIND_BY_BUILD_NR,
+                query = "select dup from DuplicateCode dup where dup.buildNr = :buildNr"),
+        @NamedQuery(name = DuplicateCodeEntity.LATEST_BUILD_NR,
+                query = "select max(dup.buildNr) from DuplicateCode dup"),
+        @NamedQuery(name = DuplicateCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR,
+                query = "select max(dup.buildNr) from DuplicateCode dup " +
+                        "where dup.buildNr < (select max(dup2.buildNr) from DuplicateCode dup2)")
+})
 public class DuplicateCodeEntity {
 
     public static final String FIND_BY_BUILD_NR = "DuplicateCode.findByBuildNr";
+    public static final String LATEST_BUILD_NR = "DuplicateCode.latestBuildNr";
+    public static final String PREVIOUS_TO_LATEST_BUILD_NR = "DuplicateCode.prevToLatestBuildNr";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

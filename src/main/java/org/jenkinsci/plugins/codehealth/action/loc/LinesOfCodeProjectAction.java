@@ -32,17 +32,15 @@ public class LinesOfCodeProjectAction extends AbstractLinesOfCodeAction {
     }
 
     @Exported(name = "trend")
-    public LoCTrend getLinesOfCodeTrend() {
+    public LinesOfCodeTrend getLinesOfCodeTrend() {
         LatestBuilds latestBuildsWithLoC = getLinesOfCodeRepository().getLatestBuildsWithLoC(getTopLevelItem());
         if (latestBuildsWithLoC != null) {
             LinesOfCode linesOfCodeDelta = getLinesOfCodeRepository().readDelta(this.getTopLevelItem(), latestBuildsWithLoC.getLatestBuild(), latestBuildsWithLoC.getPreviousToLatestBuild());
-            LoCTrend trend = new LoCTrend();
+            LinesOfCodeTrend trend = new LinesOfCodeTrend();
             trend.setBuilds(latestBuildsWithLoC);
             trend.setLoc(linesOfCodeDelta);
             return trend;
         }
         return null;
     }
-
-
 }
