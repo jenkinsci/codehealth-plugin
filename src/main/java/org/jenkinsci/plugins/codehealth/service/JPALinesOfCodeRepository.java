@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
@@ -14,6 +15,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,6 +86,30 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public LatestBuilds getLatestBuildsWithLoC(TopLevelItem topLevelItem) {
+        this.getInjector().injectMembers(this);
+        Integer latestBuildNr = null;
+        Integer prevToLatestBuildNr = null;
+        try {
+            EntityManager entityManager = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            List<Integer> resultListLatest = entityManager.createNamedQuery(LinesOfCodeEntity.LATEST_BUILD_NR).getResultList();
+            if (!resultListLatest.isEmpty()) {
+                latestBuildNr = resultListLatest.get(0);
+                List<Integer> resultListPrev = entityManager.createNamedQuery(LinesOfCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR).getResultList();
+                if (!resultListPrev.isEmpty()) {
+                    prevToLatestBuildNr = resultListPrev.get(0);
+                    return new LatestBuilds(latestBuildNr, prevToLatestBuildNr);
+                }
+            }
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to retrieve latest builds with lines of code.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to retrieve latest builds with lines of code.", e);
+        }
+        return null;
     }
 
     private LinesOfCodeEntity map(LinesOfCode loc, int buildNr) {

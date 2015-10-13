@@ -18,7 +18,7 @@ public class LinesOfCode {
         this.fileCount = fileCount;
     }
 
-    @Exported
+    @Exported(visibility = 1, name = "lineCount")
     public long getLinesOfCode() {
         return linesOfCode;
     }
@@ -27,7 +27,7 @@ public class LinesOfCode {
         this.linesOfCode = linesOfCode;
     }
 
-    @Exported
+    @Exported(visibility = 1)
     public long getFileCount() {
         return fileCount;
     }
