@@ -24,7 +24,9 @@ public class LinesOfCodeBuildActionFactory extends AbstractBuildActionFactory<JP
         final List<Action> actions = new ArrayList<Action>();
         Run r = (Run) target;
         TopLevelItem topLevelItem = (TopLevelItem) r.getParent();
-        actions.add(new LinesOfCodeBuildAction(r.getNumber(), topLevelItem, getRepositoryImplementation()));
+        if (isCodehealthActive((hudson.model.AbstractProject) r.getParent())) {
+            actions.add(new LinesOfCodeBuildAction(r.getNumber(), topLevelItem, getRepositoryImplementation()));
+        }
         return actions;
     }
 }

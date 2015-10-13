@@ -2,14 +2,18 @@ package org.jenkinsci.plugins.codehealth.action;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
+import hudson.model.AbstractProject;
+import hudson.model.Describable;
 import hudson.model.TransientProjectActionFactory;
+import hudson.util.DescribableList;
 import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.codehealth.CodehealthPublisher;
 import org.jenkinsci.plugins.codehealth.service.BaseRepository;
 
 /**
  * @author Michael Prankl
  */
-public abstract class AbstractProjectActionFactory<R extends BaseRepository> extends TransientProjectActionFactory {
+public abstract class AbstractProjectActionFactory<R extends BaseRepository> extends TransientProjectActionFactory implements CodehealthActiveChecker {
 
     @Inject
     private R repositoryImplementation;
@@ -26,5 +30,10 @@ public abstract class AbstractProjectActionFactory<R extends BaseRepository> ext
 
     public R getRepositoryImplementation() {
         return repositoryImplementation;
+    }
+
+    @Override
+    public boolean isCodehealthActive(AbstractProject project) {
+        return project.getPublishersList().contains(CodehealthPublisher.DESCRIPTOR);
     }
 }

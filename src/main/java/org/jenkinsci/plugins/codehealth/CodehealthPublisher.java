@@ -9,6 +9,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.FreeStyleProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
@@ -160,7 +161,7 @@ public class CodehealthPublisher extends Recorder {
 
     @Override
     public BuildStepDescriptor getDescriptor() {
-        return (DescriptorImpl) super.getDescriptor();
+        return DESCRIPTOR;
     }
 
     public LinesOfCodeProvider getLinesOfCodeProvider() {
@@ -184,6 +185,8 @@ public class CodehealthPublisher extends Recorder {
         }
         this.duplicateCodeProvider = duplicateCodeProvider;
     }
+
+    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
     @Extension(ordinal = Double.MIN_VALUE)
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {

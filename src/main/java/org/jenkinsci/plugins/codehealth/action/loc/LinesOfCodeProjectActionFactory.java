@@ -19,7 +19,9 @@ public class LinesOfCodeProjectActionFactory extends AbstractProjectActionFactor
     @Override
     public Collection<? extends Action> createFor(AbstractProject abstractProject) {
         final List<Action> actions = new ArrayList<Action>();
-        actions.add(new LinesOfCodeProjectAction(abstractProject, getRepositoryImplementation()));
+        if (isCodehealthActive(abstractProject)) {
+            actions.add(new LinesOfCodeProjectAction(abstractProject, getRepositoryImplementation()));
+        }
         return actions;
     }
 }

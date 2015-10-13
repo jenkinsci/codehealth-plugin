@@ -21,7 +21,9 @@ public class IssuesProjectActionFactory extends AbstractProjectActionFactory<JPA
     @Override
     public Collection<? extends Action> createFor(AbstractProject abstractProject) {
         final List<Action> actions = new ArrayList<Action>();
-        actions.add(new IssuesProjectAction(abstractProject, getRepositoryImplementation()));
+        if (isCodehealthActive(abstractProject)) {
+            actions.add(new IssuesProjectAction(abstractProject, getRepositoryImplementation()));
+        }
         return actions;
     }
 }

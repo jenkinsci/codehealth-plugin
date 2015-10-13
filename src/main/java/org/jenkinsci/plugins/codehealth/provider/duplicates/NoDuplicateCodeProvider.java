@@ -25,6 +25,11 @@ public class NoDuplicateCodeProvider extends DuplicateCodeProvider {
         return "NoDuplicateCodeProvider";
     }
 
+    @Override
+    public String getBuildResultUrl() {
+        return null;
+    }
+
     public static class DescriptorImpl extends DuplicateCodeDescriptor {
         @Override
         public String getDisplayName() {

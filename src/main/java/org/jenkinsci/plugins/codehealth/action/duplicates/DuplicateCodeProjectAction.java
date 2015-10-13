@@ -3,10 +3,13 @@ package org.jenkinsci.plugins.codehealth.action.duplicates;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
+import hudson.util.HttpResponses;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
+import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCodeProvider;
 import org.jenkinsci.plugins.codehealth.service.DuplicateCodeRepository;
+import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -18,8 +21,8 @@ public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction {
 
     private transient AbstractProject abstractProject;
 
-    public DuplicateCodeProjectAction(AbstractProject abstractProject, DuplicateCodeRepository duplicateCodeRepository) {
-        super((TopLevelItem) abstractProject, duplicateCodeRepository);
+    public DuplicateCodeProjectAction(AbstractProject abstractProject, DuplicateCodeRepository duplicateCodeRepository, DuplicateCodeProvider duplicateCodeProvider) {
+        super((TopLevelItem) abstractProject, duplicateCodeRepository, duplicateCodeProvider);
         this.abstractProject = abstractProject;
     }
 
@@ -40,11 +43,15 @@ public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction {
         return null;
     }
 
-    private DuplicateCodeTrend makeTrend(LatestBuilds builds, DuplicateCode trend){
+    private DuplicateCodeTrend makeTrend(LatestBuilds builds, DuplicateCode trend) {
         DuplicateCodeTrend duplicateCodeTrend = new DuplicateCodeTrend();
         duplicateCodeTrend.setBuilds(builds);
         duplicateCodeTrend.setDuplicateCode(trend);
         return duplicateCodeTrend;
+    }
+
+    public HttpResponse doGoToProjectResult() {
+        return HttpResponses.redirectTo("../" + getDuplicateCodeProvider().getProjectResultUrl());
     }
 
 }
