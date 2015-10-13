@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.codehealth.provider.loc;
 import hudson.model.AbstractBuild;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,18 @@ public class NoLinesOfCodeProvider extends LinesOfCodeProvider {
     @Override
     public String getOrigin() {
         return "NoLinesOfCodeProvider";
+    }
+
+    @Nullable
+    @Override
+    public String getBuildResultUrl() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public String getProjectResultUrl() {
+        return null;
     }
 
     public static class DescriptorImpl extends LinesOfCodeDescriptor {

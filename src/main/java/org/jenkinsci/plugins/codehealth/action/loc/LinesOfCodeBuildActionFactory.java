@@ -2,8 +2,11 @@ package org.jenkinsci.plugins.codehealth.action.loc;
 
 import hudson.Extension;
 import hudson.model.Action;
+import hudson.model.Project;
 import hudson.model.Run;
 import hudson.model.TopLevelItem;
+import hudson.tasks.Publisher;
+import org.jenkinsci.plugins.codehealth.CodehealthPublisher;
 import org.jenkinsci.plugins.codehealth.action.AbstractBuildActionFactory;
 import org.jenkinsci.plugins.codehealth.service.JPALinesOfCodeRepository;
 
@@ -25,7 +28,9 @@ public class LinesOfCodeBuildActionFactory extends AbstractBuildActionFactory<JP
         Run r = (Run) target;
         TopLevelItem topLevelItem = (TopLevelItem) r.getParent();
         if (isCodehealthActive((hudson.model.AbstractProject) r.getParent())) {
-            actions.add(new LinesOfCodeBuildAction(r.getNumber(), topLevelItem, getRepositoryImplementation()));
+            Project p = (Project) r.getParent();
+            CodehealthPublisher publisher = (CodehealthPublisher) p.getPublisher(CodehealthPublisher.DESCRIPTOR);
+            actions.add(new LinesOfCodeBuildAction(r.getNumber(), topLevelItem, getRepositoryImplementation(), publisher.getLinesOfCodeProvider()));
         }
         return actions;
     }

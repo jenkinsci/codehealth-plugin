@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.codehealth.provider.duplicates;
 import hudson.model.AbstractBuild;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +26,15 @@ public class NoDuplicateCodeProvider extends DuplicateCodeProvider {
         return "NoDuplicateCodeProvider";
     }
 
+    @Nullable
     @Override
     public String getBuildResultUrl() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public String getProjectResultUrl() {
         return null;
     }
 

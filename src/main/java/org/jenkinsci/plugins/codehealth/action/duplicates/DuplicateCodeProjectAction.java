@@ -1,9 +1,9 @@
 package org.jenkinsci.plugins.codehealth.action.duplicates;
 
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
+import org.jenkinsci.plugins.codehealth.action.ResultRedirect;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
@@ -17,7 +17,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  * @author Michael Prankl
  */
 @ExportedBean
-public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction {
+public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction implements ResultRedirect {
 
     private transient AbstractProject abstractProject;
 
@@ -50,7 +50,8 @@ public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction {
         return duplicateCodeTrend;
     }
 
-    public HttpResponse doGoToProjectResult() {
+    @Override
+    public HttpResponse doGoToResult() {
         return HttpResponses.redirectTo("../" + getDuplicateCodeProvider().getProjectResultUrl());
     }
 

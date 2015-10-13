@@ -2,12 +2,11 @@ package org.jenkinsci.plugins.codehealth.action.duplicates;
 
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
+import org.jenkinsci.plugins.codehealth.action.ResultRedirect;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCodeProvider;
-import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
 import org.jenkinsci.plugins.codehealth.service.DuplicateCodeRepository;
 import org.kohsuke.stapler.HttpResponse;
-import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -15,7 +14,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  * @author Michael Prankl
  */
 @ExportedBean
-public class DuplicateCodeBuildAction extends AbstractDuplicateCodeAction {
+public class DuplicateCodeBuildAction extends AbstractDuplicateCodeAction implements ResultRedirect {
 
     private int buildNr;
 
@@ -29,7 +28,8 @@ public class DuplicateCodeBuildAction extends AbstractDuplicateCodeAction {
         return getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), this.buildNr);
     }
 
-    public HttpResponse doGoToBuildResult() {
+    @Override
+    public HttpResponse doGoToResult() {
         return HttpResponses.redirectTo("../" + getDuplicateCodeProvider().getBuildResultUrl());
     }
 
