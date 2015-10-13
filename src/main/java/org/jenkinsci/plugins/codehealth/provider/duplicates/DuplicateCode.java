@@ -18,21 +18,21 @@ public class DuplicateCode {
         this.numberOfDuplicateFiles = numberOfDuplicateFiles;
     }
 
-    @Exported
-    public int getNumberOfDuplicateLines() {
+    @Exported(visibility = 1)
+    public int getDuplicateLines() {
         return numberOfDuplicateLines;
     }
 
-    public void setNumberOfDuplicateLines(int numberOfDuplicateLines) {
+    public void setDuplicateLines(int numberOfDuplicateLines) {
         this.numberOfDuplicateLines = numberOfDuplicateLines;
     }
 
-    @Exported
-    public int getNumberOfFilesWithDuplicates() {
+    @Exported(visibility = 1)
+    public int getFilesWithDuplicates() {
         return numberOfDuplicateFiles;
     }
 
-    public void setNumberOfFilesWithDuplicates(int numberOfDuplicateFiles) {
+    public void setFilesWithDuplicates(int numberOfDuplicateFiles) {
         this.numberOfDuplicateFiles = numberOfDuplicateFiles;
     }
 

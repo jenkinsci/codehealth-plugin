@@ -49,7 +49,7 @@ public class DuplicateCodeEntity {
         this.id = id;
     }
 
-    @Exported
+    @Exported(visibility = 1)
     public int getDuplicateLines() {
         return duplicateLines;
     }
@@ -58,7 +58,7 @@ public class DuplicateCodeEntity {
         this.duplicateLines = duplicateLines;
     }
 
-    @Exported
+    @Exported(name = "filesWithDuplicates", visibility = 1)
     public int getDuplicateFiles() {
         return duplicateFiles;
     }

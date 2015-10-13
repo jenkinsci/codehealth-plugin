@@ -61,8 +61,8 @@ public class JPADuplicateCodeRepository extends DuplicateCodeRepository {
 
     private DuplicateCodeEntity map(DuplicateCode duplicateCode, AbstractBuild<?, ?> build) {
         DuplicateCodeEntity entity = new DuplicateCodeEntity();
-        entity.setDuplicateFiles(duplicateCode.getNumberOfFilesWithDuplicates());
-        entity.setDuplicateLines(duplicateCode.getNumberOfDuplicateLines());
+        entity.setDuplicateFiles(duplicateCode.getFilesWithDuplicates());
+        entity.setDuplicateLines(duplicateCode.getDuplicateLines());
         entity.setBuildNr(build.getNumber());
         return entity;
     }
