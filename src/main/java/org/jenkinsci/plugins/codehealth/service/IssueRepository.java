@@ -2,9 +2,9 @@ package org.jenkinsci.plugins.codehealth.service;
 
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
+import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 
 import java.util.Collection;
 import java.util.List;

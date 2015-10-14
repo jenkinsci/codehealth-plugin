@@ -3,8 +3,8 @@ package org.jenkinsci.plugins.codehealth.service;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
-import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
+import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 
 /**
  * @author Michael Prankl

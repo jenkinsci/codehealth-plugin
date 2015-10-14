@@ -5,10 +5,10 @@ import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.model.StateHistory;
+import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
 import javax.persistence.EntityManager;

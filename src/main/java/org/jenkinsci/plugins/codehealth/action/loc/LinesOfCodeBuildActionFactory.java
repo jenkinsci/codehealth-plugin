@@ -5,7 +5,6 @@ import hudson.model.Action;
 import hudson.model.Project;
 import hudson.model.Run;
 import hudson.model.TopLevelItem;
-import hudson.tasks.Publisher;
 import org.jenkinsci.plugins.codehealth.CodehealthPublisher;
 import org.jenkinsci.plugins.codehealth.action.AbstractBuildActionFactory;
 import org.jenkinsci.plugins.codehealth.service.JPALinesOfCodeRepository;

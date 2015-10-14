@@ -1,6 +1,5 @@
 package org.jenkinsci.plugins.codehealth.action.loc;
 
-import hudson.model.Api;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.action.AbstractCodehealthAction;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCodeProvider;

@@ -3,9 +3,9 @@ package org.jenkinsci.plugins.codehealth.service;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
-import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 
 /**
  * @author Michael Prankl

@@ -1,5 +1,5 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
-         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core"
+        >
     This Jelly will be included on the /api page of the Action and can be used to further describe
     which data is available.
 </j:jelly>

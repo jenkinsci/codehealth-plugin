@@ -2,19 +2,12 @@ package org.jenkinsci.plugins.codehealth.action.issues;
 
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
-import org.jenkinsci.plugins.codehealth.action.issues.AbstractIssuesAction;
-import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
-import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
-import org.jenkinsci.plugins.codehealth.service.DuplicateCodeRepository;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
-import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
