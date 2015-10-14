@@ -41,9 +41,15 @@ public class IssuesProjectAction extends AbstractIssuesAction {
         }
     }
 
-    public HttpResponse doGoToBuildResult(@QueryParameter String origin){
+    public HttpResponse doGoToBuildResult(@QueryParameter String origin) {
         IssueProvider provider = IssueProvider.findProvider(origin);
         return HttpResponses.redirectTo("../" + provider.getProjectResultUrlName());
     }
+
+    public IssuesTrend getTrend() {
+        // TODO
+        return null;
+    }
+
 
 }

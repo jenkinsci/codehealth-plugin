@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.codehealth.model;
 
 
+import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 import org.jenkinsci.plugins.database.jpa.PerItemTable;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -21,7 +22,8 @@ import java.util.Set;
         @NamedQuery(name = IssueEntity.FIND_ALL, query = "select i from Issue i"),
         @NamedQuery(name = IssueEntity.FIND_BY_STATE_AND_BUILD, query = "select i from Issue i join i.stateHistory sh where sh.buildNr = :buildNr and sh.state = :state"),
         @NamedQuery(name = IssueEntity.FIND_BY_STATE, query = "select i from Issue i where i.currentState.state in :state"),
-        @NamedQuery(name = IssueEntity.FIND_BY_ORIGIN_AND_STATE, query = "select i from  Issue i where i.currentState.state in :states and i.origin = :origin")
+        @NamedQuery(name = IssueEntity.FIND_BY_ORIGIN_AND_STATE, query = "select i from  Issue i where i.currentState.state in :states and i.origin = :origin"),
+        // TODO @NamedQuery(name = IssueEntity.LATEST_BUILD_NR, query = "select i.build")
 })
 @ExportedBean
 public class IssueEntity implements Cloneable {
