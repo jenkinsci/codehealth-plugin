@@ -46,10 +46,4 @@ public class IssuesProjectAction extends AbstractIssuesAction {
         return HttpResponses.redirectTo("../" + provider.getProjectResultUrlName());
     }
 
-    public IssuesTrend getTrend() {
-        // TODO
-        return null;
-    }
-
-
 }

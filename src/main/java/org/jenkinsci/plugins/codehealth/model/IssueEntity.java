@@ -22,8 +22,7 @@ import java.util.Set;
         @NamedQuery(name = IssueEntity.FIND_ALL, query = "select i from Issue i"),
         @NamedQuery(name = IssueEntity.FIND_BY_STATE_AND_BUILD, query = "select i from Issue i join i.stateHistory sh where sh.buildNr = :buildNr and sh.state = :state"),
         @NamedQuery(name = IssueEntity.FIND_BY_STATE, query = "select i from Issue i where i.currentState.state in :state"),
-        @NamedQuery(name = IssueEntity.FIND_BY_ORIGIN_AND_STATE, query = "select i from  Issue i where i.currentState.state in :states and i.origin = :origin"),
-        // TODO @NamedQuery(name = IssueEntity.LATEST_BUILD_NR, query = "select i.build")
+        @NamedQuery(name = IssueEntity.FIND_BY_ORIGIN_AND_STATE, query = "select i from  Issue i where i.currentState.state in :states and i.origin = :origin")
 })
 @ExportedBean
 public class IssueEntity implements Cloneable {
