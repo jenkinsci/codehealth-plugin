@@ -35,6 +35,12 @@ public abstract class IssueProvider implements ExtensionPoint {
     public abstract String getOrigin();
 
     /**
+     * @return pretty name of the plugin which contributes issues (will be displayed on UI)
+     */
+    @Nonnull
+    public abstract String getOriginPluginName();
+
+    /**
      * @return if the plugin can provide information about fixed issues with {@link IssueProvider#getFixedIssues(hudson.model.AbstractBuild)}
      */
     public abstract boolean canProvideFixedIssues();

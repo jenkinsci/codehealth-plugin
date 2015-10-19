@@ -45,8 +45,9 @@ public class IssuesProjectAction extends AbstractIssuesAction {
         Collection<IssueEntity> issues = getIssues();
         Map<String, Integer> map = new LinkedHashMap<String, Integer>();
         for (IssueEntity issue : issues) {
-            Integer count = map.getOrDefault(issue.getOrigin(), Integer.valueOf(0));
-            map.put(issue.getOrigin(), ++count);
+            String originPluginName = IssueProvider.findProvider(issue.getOrigin()).getOriginPluginName();
+            Integer count = map.getOrDefault(originPluginName, Integer.valueOf(0));
+            map.put(originPluginName, ++count);
         }
         return map;
     }

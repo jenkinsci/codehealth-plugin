@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
@@ -111,6 +112,12 @@ public class CodehealthPublisherTest {
                 return "BROKEN-PROVIDER";
             }
 
+            @Nonnull
+            @Override
+            public String getOriginPluginName() {
+                return "Broken Provider Plugin";
+            }
+
             @Override
             public boolean canProvideFixedIssues() {
                 return true;
@@ -171,6 +178,12 @@ public class CodehealthPublisherTest {
 
             @Override
             public String getOrigin() {
+                return origin;
+            }
+
+            @Nonnull
+            @Override
+            public String getOriginPluginName() {
                 return origin;
             }
 
