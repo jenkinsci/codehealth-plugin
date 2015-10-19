@@ -8,7 +8,7 @@ var header = $('#header');
 //$bootstrap('[data-toggle="popover"]').popover();
 
 // TODO issueAPI relative url
-var issuesAPI = "http://localhost:8080/jenkins/job/codehealth-local/issues-api/api/json?depth=1";
+var issuesAPI = "http://localhost:8080/jenkins/job/codehealth-local/issues-api/api/json?tree=issues[id,priority,message,origin]";
 $.getJSON(issuesAPI)
     .done(function (data) {
         $.each(data.issues, function (i, issue) {
