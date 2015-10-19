@@ -20,6 +20,12 @@ $.getJSON(issuesAPI)
                 $("<td>").text(issue.origin)
             ).appendTo('#codehealth-issues');
         });
+
+        var nrOfIssues = data.issues.length;
+        console.log("Nr of issues: " + nrOfIssues);
+        $("#issues-title").append(
+          $("<span>").attr("class", "badge").text(nrOfIssues)
+        );
     })
     .always(function(){
        console.log("JSON API called...")

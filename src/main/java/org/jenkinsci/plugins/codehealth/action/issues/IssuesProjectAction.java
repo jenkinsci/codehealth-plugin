@@ -12,8 +12,7 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * {@link hudson.model.AbstractProject}-based Action to retrieve current issues for a project.
@@ -39,6 +38,17 @@ public class IssuesProjectAction extends AbstractIssuesAction {
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
+    }
+
+    @Exported(name = "issuesPerOrigin")
+    public Map<String, Integer> getIssuesPerOrigin() {
+        Collection<IssueEntity> issues = getIssues();
+        Map<String, Integer> map = new LinkedHashMap<String, Integer>();
+        for (IssueEntity issue : issues) {
+            Integer count = map.getOrDefault(issue.getOrigin(), Integer.valueOf(0));
+            map.put(issue.getOrigin(), ++count);
+        }
+        return map;
     }
 
     public HttpResponse doGoToBuildResult(@QueryParameter String origin) {
