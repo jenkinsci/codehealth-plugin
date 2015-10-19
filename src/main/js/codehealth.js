@@ -24,5 +24,6 @@ $.getJSON(issuesAPI)
     .always(function(){
        console.log("JSON API called...")
     });
-
 ;
+
+var $ui = require('jqueryui-detached').getJQueryUI();
