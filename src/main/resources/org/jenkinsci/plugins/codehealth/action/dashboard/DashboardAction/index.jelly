@@ -3,8 +3,31 @@
     <l:layout title="${%Codehealth Dashboard}" norefresh="true">
         <st:include it="${it.build}" page="sidepanel.jelly"/>
         <l:main-panel>
+            <script src="${rootURL}/plugin/codehealth/bundles/codehealth.js"/>
             <h2 class="codehealth_title">${it.displayName}</h2>
-            <script src="${rootURL}/plugin/codehealth/bundles/codehealth.js" />
+
+            <div id="codehealth_main" class="bootstrap-3">
+                <!-- content in here can use Bootstrap 3 CSS rules. -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Issues</h3>
+                    </div>
+                    <div class="panel-content"></div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th># ID</th>
+                                <th>Message</th>
+                                <th>Priority</th>
+                                <th>Origin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="codehealth-issues">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </l:main-panel>
     </l:layout>
 

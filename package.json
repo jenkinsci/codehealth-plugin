@@ -11,12 +11,13 @@
     "url": "git+https://github.com/eidottermihi/codehealth.git"
   },
   "author": "Michael Prankl <eidottermihi@gmail.com> (http://www.github.com/eidottermihi)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/eidottermihi/codehealth/issues"
   },
   "homepage": "https://github.com/eidottermihi/codehealth#readme",
   "devDependencies": {
+    "bootstrap-detached": "^3.3.4-v6",
     "gulp": "^3.9.0",
     "jenkins-js-builder": "0.0.24",
     "jenkins-js-modules": "^1.1.0",
