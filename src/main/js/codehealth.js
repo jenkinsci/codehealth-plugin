@@ -7,11 +7,12 @@ var header = $('#header');
 
 //$bootstrap('[data-toggle="popover"]').popover();
 
-// TODO issueAPI relative url
-var issuesAPI = "http://localhost:8080/jenkins/job/codehealth-local/issues-api/api/json?tree=issues[id,priority,message,origin]";
+var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin]";
+var linesOfCodeAPI = "../loc-api/api/json?depth=2";
 $.getJSON(issuesAPI)
     .done(function (data) {
         $.each(data.issues, function (i, issue) {
+            var linkHref = "../issues-api/goToBuildResult?origin=" + issue.origin;
             var $tr = $("<tr>").append(
                 $("<td>").text(issue.id),
                 $("<td>").text(issue.message),
@@ -19,4 +20,9 @@ $.getJSON(issuesAPI)
                 $("<td>").text(issue.origin)
             ).appendTo('#codehealth-issues');
         });
+    })
+    .always(function(){
+       console.log("JSON API called...")
     });
+
+;
