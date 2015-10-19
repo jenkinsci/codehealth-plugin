@@ -14,7 +14,7 @@ $.getJSON(issuesAPI)
         $.each(data.issues, function (i, issue) {
             var linkHref = "../issues-api/goToBuildResult?origin=" + issue.origin;
             var $tr = $("<tr>").append(
-                $("<td>").text(issue.id),
+                $("<td>").append($("<a>").text(issue.id).attr("href",linkHref)),
                 $("<td>").text(issue.message),
                 $("<td>").text(issue.priority),
                 $("<td>").text(issue.origin)
