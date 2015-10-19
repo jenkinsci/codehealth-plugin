@@ -1,9 +1,10 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <l:layout title="${%Codehealth Dashboard}">
-        <st:include it="${it.owner}" page="sidepanel.jelly"/>
+    <l:layout title="${%Codehealth Dashboard}" norefresh="true">
+        <st:include it="${it.build}" page="sidepanel.jelly"/>
         <l:main-panel>
-            <h1>${it.displayName}</h1>
+            <h2 class="codehealth_title">${it.displayName}</h2>
+            <script src="${rootURL}/plugin/codehealth/bundles/codehealth.js" />
         </l:main-panel>
     </l:layout>
 

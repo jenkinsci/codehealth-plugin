@@ -1,0 +1,25 @@
+{
+  "name": "codehealth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eidottermihi/codehealth.git"
+  },
+  "author": "Michael Prankl <eidottermihi@gmail.com> (http://www.github.com/eidottermihi)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eidottermihi/codehealth/issues"
+  },
+  "homepage": "https://github.com/eidottermihi/codehealth#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "jenkins-js-builder": "0.0.24",
+    "jenkins-js-modules": "^1.1.0",
+    "jquery-detached": "^2.1.4-v2"
+  }
+}

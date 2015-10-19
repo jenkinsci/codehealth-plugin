@@ -33,3 +33,17 @@ hs_err_pid*
 # IntelliJ
 /out/
 .idea/libraries/*
+.idea/artifacts
+
+# Local Node Stuff
+node/
+node_modules/
+
+# Maven
+target/
+
+# Jenkins HPI Plugin
+work/
+
+# Generated JS Bundle
+src/main/webapp/bundles/
