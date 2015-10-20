@@ -14,7 +14,7 @@ import java.util.Date;
 @PerItemTable
 @ExportedBean
 @NamedQueries(
-        @NamedQuery(name = Build.FIND_BY_NUMBER, query = "select b from Build b where b.number = :number")
+        @NamedQuery(name = Build.FIND_BY_NUMBER, query = "select b from Build b where b.number = :buildNr")
 )
 public class Build {
 
