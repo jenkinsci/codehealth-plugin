@@ -18,6 +18,7 @@
   "homepage": "https://github.com/eidottermihi/codehealth#readme",
   "devDependencies": {
     "bootstrap-detached": "^3.3.4-v6",
+    "d3": "^3.5.6",
     "gulp": "^3.9.0",
     "jenkins-js-builder": "0.0.24",
     "jenkins-js-modules": "^1.1.0",

@@ -1,33 +1,98 @@
 var $ = require('jquery-detached').getJQuery();
 var $bootstrap = require('bootstrap-detached').getBootstrap();
-
+var d3 = require('d3');
 var header = $('#header');
 
-//$('#codehealth_main').html('<h3>JQuery Magic</h3>');
-
-//$bootstrap('[data-toggle="popover"]').popover();
-
+// API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin]";
+var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
 var linesOfCodeAPI = "../loc-api/api/json?depth=2";
-$.getJSON(issuesAPI)
-    .done(function (data) {
-        $.each(data.issues, function (i, issue) {
-            var linkHref = "../issues-api/goToBuildResult?origin=" + issue.origin;
-            var $tr = $("<tr>").append(
-                $("<td>").append($("<a>").text(issue.id).attr("href",linkHref)),
-                $("<td>").text(issue.message),
-                $("<td>").text(issue.priority),
-                $("<td>").text(issue.origin)
-            ).appendTo('#codehealth-issues');
-        });
 
-        var nrOfIssues = data.issues.length;
-        console.log("Nr of issues: " + nrOfIssues);
-        $("#issues-title").append(
-          $("<span>").attr("class", "badge").text(nrOfIssues)
-        );
-    })
-    .always(function(){
-       console.log("JSON API called...")
-    });
-;
+// Issues per Origin
+function issuesPerOrigin() {
+    var totalCount = 0, totalLow = 0, totalNormal = 0, totalHigh = 0;
+    $.getJSON(issuesPerOriginAPI)
+        .done(function (data) {
+            $("#issues-per-origin").empty();
+            $.each(data.issuesPerOrigin, function (key, value) {
+                console.log("Summing up issues for : " + key);
+                totalOriginCount = value.length;
+                totalCount = totalCount + totalOriginCount;
+                lowCount = 0;
+                normalCount = 0;
+                highCount = 0;
+                var origin;
+                $.each(value, function (j, issue) {
+                    if (issue.priority == "HIGH") {
+                        highCount++;
+                    } else if (issue.priority == "NORMAL") {
+                        normalCount++;
+                    } else {
+                        lowCount++;
+                    }
+                    origin = issue.origin;
+                });
+                console.log("HIGH: " + highCount + " NORMAL: " + normalCount + " LOW: " + lowCount + " -- TOTAL: " + totalOriginCount);
+                totalLow = totalLow + lowCount;
+                totalNormal = totalNormal + normalCount;
+                totalHigh = totalHigh + highCount;
+                var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
+                $("<tr>").append(
+                    $("<td>").append($("<a>").text(key).attr("href", linkHref)),
+                    $("<td>").text(highCount),
+                    $("<td>").text(normalCount),
+                    $("<td>").text(lowCount),
+                    $("<td>").text(totalOriginCount)
+                ).appendTo("#issues-per-origin");
+            });
+            // add totals
+            $("<tr>").append(
+                $("<td>").text("Total"),
+                $("<td>").text(totalHigh),
+                $("<td>").text(totalNormal),
+                $("<td>").text(totalLow),
+                $("<td>").text(totalCount)
+            ).appendTo("#issues-per-origin");
+        });
+}
+
+// Issues Table
+function issuesTable() {
+    $.getJSON(issuesAPI)
+        .done(function (data) {
+            $("#codehealth-issues").empty();
+            $.each(data.issues, function (i, issue) {
+                // add to table
+                var linkHref = "../issues-api/goToBuildResult?origin=" + issue.origin;
+                var $tr = $("<tr>").on("click", function () {
+                    document.location.href = linkHref;
+                }).append(
+                    $("<td>").append($("<a>").text(issue.id).attr("href", linkHref)),
+                    $("<td>").text(issue.message),
+                    $("<td>").text(issue.priority),
+                    $("<td>").text(issue.origin)
+                ).appendTo('#codehealth-issues');
+            });
+
+            var nrOfIssues = data.issues.length;
+            console.log("Nr of Issues: " + nrOfIssues);
+            $("#badgecount").remove();
+            $("#issues-title").append(
+                $("<span>").attr("id", "badgecount").attr("class", "badge").text(nrOfIssues)
+            );
+        })
+        .always(function () {
+            //console.log("JSON API called...")
+        });
+    ;
+}
+
+$("#refresh-button").on("click", function () {
+    console.log("Refreshing...");
+    issuesPerOrigin();
+    issuesTable();
+});
+
+issuesPerOrigin();
+issuesTable();
+

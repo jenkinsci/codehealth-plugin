@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.codehealth.action.issues;
 
+import com.google.common.collect.Lists;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
@@ -41,13 +42,14 @@ public class IssuesProjectAction extends AbstractIssuesAction {
     }
 
     @Exported(name = "issuesPerOrigin")
-    public Map<String, Integer> getIssuesPerOrigin() {
+    public Map<String, List<IssueEntity>> getIssuesPerOrigin() {
         Collection<IssueEntity> issues = getIssues();
-        Map<String, Integer> map = new LinkedHashMap<String, Integer>();
+        Map<String, List<IssueEntity>> map = new LinkedHashMap<String, List<IssueEntity>>();
         for (IssueEntity issue : issues) {
             String originPluginName = IssueProvider.findProvider(issue.getOrigin()).getOriginPluginName();
-            Integer count = map.getOrDefault(originPluginName, Integer.valueOf(0));
-            map.put(originPluginName, ++count);
+            List<IssueEntity> issueList = map.getOrDefault(originPluginName, new ArrayList<IssueEntity>());
+            issueList.add(issue);
+            map.put(originPluginName, issueList);
         }
         return map;
     }
