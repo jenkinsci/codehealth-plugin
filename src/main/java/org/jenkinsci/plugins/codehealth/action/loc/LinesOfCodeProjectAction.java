@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.codehealth.action.loc;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
+import net.sf.json.JSONArray;
 import org.jenkinsci.plugins.codehealth.action.ResultUrlNameProvider;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
@@ -12,6 +13,10 @@ import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author Michael Prankl
@@ -46,6 +51,25 @@ public class LinesOfCodeProjectAction extends AbstractLinesOfCodeAction implemen
             return trend;
         }
         return null;
+    }
+
+    @Exported
+    public List<List<Long>> getSeries(){
+        Random random = new Random();
+        List<Long> v1 = new ArrayList<Long>();
+        v1.add(1L);
+        v1.add(random.nextLong());
+        List<Long> v2 = new ArrayList<Long>();
+        v2.add(2L);
+        v2.add(random.nextLong());
+        List<Long> v3 = new ArrayList<Long>();
+        v3.add(3L);
+        v3.add(random.nextLong());
+        List<List<Long>> data = new ArrayList<List<Long>>();
+        data.add(v1);
+        data.add(v2);
+        data.add(v3);
+        return data;
     }
 
     @Override

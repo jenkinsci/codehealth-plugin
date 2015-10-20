@@ -2,11 +2,13 @@ var $ = require('jquery-detached').getJQuery();
 var $bootstrap = require('bootstrap-detached').getBootstrap();
 var d3 = require('d3');
 var header = $('#header');
+var Highcharts = require('highcharts-commonjs')
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin]";
 var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
-var linesOfCodeAPI = "../loc-api/api/json?depth=2";
+var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series";
+var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series";
 
 // Issues per Origin
 function issuesPerOrigin() {
@@ -91,8 +93,62 @@ $("#refresh-button").on("click", function () {
     console.log("Refreshing...");
     issuesPerOrigin();
     issuesTable();
+    updateLocGraph();
 });
+
+var graphDiv = document.getElementById("loc");
+// create chart
+var options = {
+    title: {
+        text: 'Code Trend Graphs'
+    },
+    chart: {
+        type: 'line'
+    },
+    series: [
+        {
+            name: "Lines of Code"
+        },
+        {
+            name: "Duplicate Lines"
+        }
+    ],
+    xAxis: {
+        labels: {
+            formatter: function () {
+                return '#' + this.value;
+            }
+        },
+        tickInterval: 1
+    }
+}
+function updateLocGraph() {
+    $.getJSON(linesOfCodeSeriesAPI)
+        .done(function (data) {
+            options.series[0].data = data.series;
+            var chart = Highcharts.createChart(
+                // dom element to inject the chart
+                graphDiv,
+                // graph options
+                options
+            );
+        }
+    );
+    $.getJSON(duplicateCodeSeriesAPI)
+        .done(function (data) {
+            options.series[1].data = data.series;
+            var chart = Highcharts.createChart(
+                // dom element to inject the chart
+                graphDiv,
+                // graph options
+                options
+            );
+        }
+    );
+}
+
 
 issuesPerOrigin();
 issuesTable();
+updateLocGraph();
 

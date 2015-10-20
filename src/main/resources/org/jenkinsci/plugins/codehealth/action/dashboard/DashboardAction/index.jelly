@@ -54,7 +54,7 @@
                             <h3 class="panel-title">[+] Lines Of Code</h3>
                         </div>
                         <div class="panel-content">
-                            <div id="loc" class="collapse">Lines Of Code content</div>
+                            <div id="loc" class="collapse"></div>
                         </div>
                     </div>
                 </div>
