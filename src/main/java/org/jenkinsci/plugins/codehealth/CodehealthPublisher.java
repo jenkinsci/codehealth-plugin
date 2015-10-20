@@ -195,9 +195,9 @@ public class CodehealthPublisher extends Recorder {
         this.duplicateCodeProvider = duplicateCodeProvider;
     }
 
+    @Extension(ordinal = Double.MIN_VALUE)
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
-    @Extension(ordinal = Double.MIN_VALUE)
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         @Override
