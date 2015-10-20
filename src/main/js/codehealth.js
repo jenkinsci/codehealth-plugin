@@ -7,8 +7,8 @@ var Highcharts = require('highcharts-commonjs')
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin]";
 var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
-var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series";
-var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series";
+var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode]";
+var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates]";
 
 // Issues per Origin
 function issuesPerOrigin() {
@@ -123,9 +123,19 @@ var options = {
     }
 }
 function updateLocGraph() {
+    // TODO only call createChart() when both AJAX calls are finished
     $.getJSON(linesOfCodeSeriesAPI)
         .done(function (data) {
-            options.series[0].data = data.series;
+            var dataArray = new Array();
+            var idx = 0;
+            $.each(data.series, function(key, value){
+                var obj = new Array();
+                obj[0] = parseInt(key);
+                obj[1] = value.linesOfCode;
+                dataArray[idx] = obj;
+                idx++;
+            });
+            options.series[0].data = dataArray;
             var chart = Highcharts.createChart(
                 // dom element to inject the chart
                 graphDiv,
@@ -136,7 +146,16 @@ function updateLocGraph() {
     );
     $.getJSON(duplicateCodeSeriesAPI)
         .done(function (data) {
-            options.series[1].data = data.series;
+            var dataArray = new Array();
+            var idx = 0;
+            $.each(data.series, function(key, value){
+                var obj = new Array();
+                obj[0] = parseInt(key);
+                obj[1] = value.duplicateLines;
+                dataArray[idx] = obj;
+                idx++;
+            });
+            options.series[1].data = dataArray;
             var chart = Highcharts.createChart(
                 // dom element to inject the chart
                 graphDiv,

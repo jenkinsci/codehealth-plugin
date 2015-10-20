@@ -19,13 +19,15 @@ import javax.persistence.*;
                 query = "select max(dup.build.number) from DuplicateCode dup"),
         @NamedQuery(name = DuplicateCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR,
                 query = "select max(dup.build.number) from DuplicateCode dup " +
-                        "where dup.build.number < (select max(dup2.build.number) from DuplicateCode dup2)")
+                        "where dup.build.number < (select max(dup2.build.number) from DuplicateCode dup2)"),
+        @NamedQuery(name = DuplicateCodeEntity.FIND_ALL, query = "select dup from DuplicateCode dup order by dup.build.number")
 })
 public class DuplicateCodeEntity {
 
     public static final String FIND_BY_BUILD_NR = "DuplicateCode.findByBuildNr";
     public static final String LATEST_BUILD_NR = "DuplicateCode.latestBuildNr";
     public static final String PREVIOUS_TO_LATEST_BUILD_NR = "DuplicateCode.prevToLatestBuildNr";
+    public static final String FIND_ALL = "DuplicateCode.findAll";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

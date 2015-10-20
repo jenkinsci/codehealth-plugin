@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.codehealth.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
@@ -12,12 +14,14 @@ import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -117,6 +121,25 @@ public class JPADuplicateCodeRepository extends DuplicateCodeRepository {
             LOG.log(Level.WARNING, "Unable to query latest build with duplicate code.", e);
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Unable to query latest build with duplicate code.", e);
+        }
+        return null;
+    }
+
+    @Override
+    public Map<Integer, DuplicateCodeEntity> getDuplicatesTrend(TopLevelItem topLevelItem) {
+        try {
+            EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            List<DuplicateCodeEntity> resultList = em.createNamedQuery(DuplicateCodeEntity.FIND_ALL).getResultList();
+            return Maps.uniqueIndex(resultList, new Function<DuplicateCodeEntity, Integer>() {
+                @Override
+                public Integer apply(@Nullable DuplicateCodeEntity duplicateCodeEntity) {
+                    return duplicateCodeEntity.getBuild().getNumber();
+                }
+            });
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to query duplicate code trend.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to query duplicate code trend.", e);
         }
         return null;
     }

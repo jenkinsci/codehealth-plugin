@@ -19,7 +19,8 @@ import javax.persistence.*;
                 query = "select max(loc.build.number) from LinesOfCode loc"),
         @NamedQuery(name = LinesOfCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR,
                 query = "select max(loc.build.number) from LinesOfCode loc " +
-                        "where loc.build.number < (select max(loc2.build.number) from LinesOfCode loc2)")
+                        "where loc.build.number < (select max(loc2.build.number) from LinesOfCode loc2)"),
+        @NamedQuery(name = LinesOfCodeEntity.FIND_ALL, query = "select loc from LinesOfCode loc order by loc.build.number")
 })
 @ExportedBean
 public class LinesOfCodeEntity {
@@ -27,6 +28,7 @@ public class LinesOfCodeEntity {
     public static final String FIND_BY_BUILD_NR = "LinesOfCode.findByBuildNr";
     public static final String LATEST_BUILD_NR = "LinesOfCode.latestBuildNr";
     public static final String PREVIOUS_TO_LATEST_BUILD_NR = "LinesOfCode.previousToLatestBuildNr";
+    public static final String FIND_ALL = "LinesOfCode.findAll";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

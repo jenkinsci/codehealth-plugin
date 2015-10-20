@@ -13,9 +13,7 @@ import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 /**
  * @author Michael Prankl
@@ -48,22 +46,8 @@ public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction impl
     }
 
     @Exported
-    public List<List<Long>> getSeries(){
-        Random random = new Random();
-        List<Long> v1 = new ArrayList<Long>();
-        v1.add(1L);
-        v1.add((long) random.nextInt());
-        List<Long> v2 = new ArrayList<Long>();
-        v2.add(2L);
-        v2.add((long) random.nextInt());
-        List<Long> v3 = new ArrayList<Long>();
-        v3.add(3L);
-        v3.add((long) random.nextInt());
-        List<List<Long>> data = new ArrayList<List<Long>>();
-        //data.add(v1);
-        data.add(v2);
-        data.add(v3);
-        return data;
+    public Map<Integer, DuplicateCodeEntity> getSeries() {
+        return getDuplicateCodeRepository().getDuplicatesTrend(this.getTopLevelItem());
     }
 
     private DuplicateCodeTrend makeTrend(LatestBuilds builds, DuplicateCode trend) {

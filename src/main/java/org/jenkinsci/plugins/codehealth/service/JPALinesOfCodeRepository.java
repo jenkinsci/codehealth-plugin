@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.codehealth.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
@@ -10,14 +12,15 @@ import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
-import org.kohsuke.stapler.InjectedParameter;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -119,6 +122,26 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
             LOG.log(Level.WARNING, "Unable to retrieve latest builds with lines of code.", e);
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Unable to retrieve latest builds with lines of code.", e);
+        }
+        return null;
+    }
+
+    @Override
+    public Map<Integer, LinesOfCodeEntity> getLineTrend(TopLevelItem topLevelItem) {
+        this.getInjector().injectMembers(this);
+        try {
+            EntityManager entityManager = this.persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            List<LinesOfCodeEntity> resultList = entityManager.createNamedQuery(LinesOfCodeEntity.FIND_ALL).getResultList();
+            return Maps.uniqueIndex(resultList, new Function<LinesOfCodeEntity, Integer>() {
+                @Override
+                public Integer apply(@Nullable LinesOfCodeEntity linesOfCodeEntity) {
+                    return linesOfCodeEntity.getBuild().getNumber();
+                }
+            });
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to save lines of code.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to save lines of code.", e);
         }
         return null;
     }

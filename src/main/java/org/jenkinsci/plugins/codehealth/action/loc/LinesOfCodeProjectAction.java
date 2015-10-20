@@ -14,9 +14,7 @@ import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Michael Prankl
@@ -54,22 +52,8 @@ public class LinesOfCodeProjectAction extends AbstractLinesOfCodeAction implemen
     }
 
     @Exported
-    public List<List<Long>> getSeries(){
-        Random random = new Random();
-        List<Long> v1 = new ArrayList<Long>();
-        v1.add(1L);
-        v1.add(random.nextLong());
-        List<Long> v2 = new ArrayList<Long>();
-        v2.add(2L);
-        v2.add(random.nextLong());
-        List<Long> v3 = new ArrayList<Long>();
-        v3.add(3L);
-        v3.add(random.nextLong());
-        List<List<Long>> data = new ArrayList<List<Long>>();
-        data.add(v1);
-        data.add(v2);
-        data.add(v3);
-        return data;
+    public Map<Integer, LinesOfCodeEntity> getSeries() {
+        return getLinesOfCodeRepository().getLineTrend(this.getTopLevelItem());
     }
 
     @Override
