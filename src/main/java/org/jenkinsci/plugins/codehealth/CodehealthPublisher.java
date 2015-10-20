@@ -24,6 +24,7 @@ import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCodeProvider;
 import org.jenkinsci.plugins.codehealth.provider.loc.NoLinesOfCodeProvider;
+import org.jenkinsci.plugins.codehealth.service.JPABuildRepository;
 import org.jenkinsci.plugins.codehealth.service.JPADuplicateCodeRepository;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.jenkinsci.plugins.codehealth.service.JPALinesOfCodeRepository;
@@ -53,6 +54,9 @@ public class CodehealthPublisher extends Recorder {
     @Inject
     private transient JPADuplicateCodeRepository duplicateCodeRepository;
 
+    @Inject
+    private transient JPABuildRepository buildRepository;
+
     @DataBoundConstructor
     public CodehealthPublisher(LinesOfCodeProvider linesOfCodeProvider, DuplicateCodeProvider duplicateCodeProvider) {
         this.linesOfCodeProvider = linesOfCodeProvider;
@@ -60,17 +64,23 @@ public class CodehealthPublisher extends Recorder {
     }
 
     @VisibleForTesting
-    public CodehealthPublisher(JPAIssueRepository issueRepository) {
+    public CodehealthPublisher(JPAIssueRepository issueRepository, JPABuildRepository jpaBuildRepository) {
         this.issueRepository = issueRepository;
+        this.buildRepository = jpaBuildRepository;
     }
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         this.getInjector().injectMembers(this);
+        handleNewBuild(build, listener);
         handleIssues(build, listener);
         handleLinesOfCode(build, listener);
         handleDuplicateCode(build, listener);
         return true;
+    }
+
+    private void handleNewBuild(AbstractBuild<?, ?> build, BuildListener listener) {
+        buildRepository.save(build, (hudson.model.TopLevelItem) build.getProject());
     }
 
     private void handleDuplicateCode(AbstractBuild<?, ?> build, BuildListener listener) {

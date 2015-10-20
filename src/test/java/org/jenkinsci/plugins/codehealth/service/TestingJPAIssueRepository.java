@@ -11,8 +11,8 @@ import org.mockito.Mockito;
  */
 public class TestingJPAIssueRepository extends JPAIssueRepository {
 
-    public TestingJPAIssueRepository(PersistenceService persistenceService) {
-        super(persistenceService);
+    public TestingJPAIssueRepository(PersistenceService persistenceService, JPABuildRepository jpaBuildRepository) {
+        super(persistenceService, jpaBuildRepository);
     }
 
     @Override

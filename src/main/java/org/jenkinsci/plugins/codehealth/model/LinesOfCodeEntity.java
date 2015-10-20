@@ -14,12 +14,12 @@ import javax.persistence.*;
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UNI_BUILDNR", columnNames = {"buildNr"})})
 @NamedQueries({
         @NamedQuery(name = LinesOfCodeEntity.FIND_BY_BUILD_NR,
-                query = "select loc from LinesOfCode loc where loc.buildNr = :buildNr"),
+                query = "select loc from LinesOfCode loc where loc.build.number = :buildNr"),
         @NamedQuery(name = LinesOfCodeEntity.LATEST_BUILD_NR,
-                query = "select max(loc.buildNr) from LinesOfCode loc"),
+                query = "select max(loc.build.number) from LinesOfCode loc"),
         @NamedQuery(name = LinesOfCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR,
-                query = "select max(loc.buildNr) from LinesOfCode loc " +
-                        "where loc.buildNr < (select max(loc2.buildNr) from LinesOfCode loc2)")
+                query = "select max(loc.build.number) from LinesOfCode loc " +
+                        "where loc.build.number < (select max(loc2.build.number) from LinesOfCode loc2)")
 })
 @ExportedBean
 public class LinesOfCodeEntity {
@@ -32,8 +32,9 @@ public class LinesOfCodeEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(nullable = false)
-    private int buildNr;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "buildNr", unique = true)
+    private Build build;
 
     @Column(nullable = false)
     private long linesOfCode;
@@ -42,12 +43,12 @@ public class LinesOfCodeEntity {
     private long files;
 
     @Exported
-    public int getBuildNr() {
-        return buildNr;
+    public Build getBuild() {
+        return build;
     }
 
-    public void setBuildNr(int buildNr) {
-        this.buildNr = buildNr;
+    public void setBuild(Build buildNr) {
+        this.build = buildNr;
     }
 
     @Exported
@@ -83,10 +84,10 @@ public class LinesOfCodeEntity {
 
         LinesOfCodeEntity that = (LinesOfCodeEntity) o;
 
-        if (buildNr != that.buildNr) return false;
         if (files != that.files) return false;
         if (id != that.id) return false;
         if (linesOfCode != that.linesOfCode) return false;
+        if (!build.equals(that.build)) return false;
 
         return true;
     }
@@ -94,7 +95,7 @@ public class LinesOfCodeEntity {
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + buildNr;
+        result = 31 * result + build.hashCode();
         result = 31 * result + (int) (linesOfCode ^ (linesOfCode >>> 32));
         result = 31 * result + (int) (files ^ (files >>> 32));
         return result;

@@ -5,10 +5,12 @@ import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
+import org.kohsuke.stapler.InjectedParameter;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -29,6 +31,9 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
 
     @Inject
     private transient PersistenceService persistenceService;
+
+    @Inject
+    private transient JPABuildRepository jpaBuildRepository;
 
     public JPALinesOfCodeRepository() {
     }
@@ -63,10 +68,11 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
         this.getInjector().injectMembers(this);
         final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
         final int buildNr = build.getNumber();
+        Build codehealthBuild = jpaBuildRepository.loadBuild(buildNr, topLevelItem);
         try {
             EntityManager entityManager = this.persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             entityManager.getTransaction().begin();
-            LinesOfCodeEntity locEntity = map(loc, buildNr);
+            LinesOfCodeEntity locEntity = map(loc, codehealthBuild);
             entityManager.persist(locEntity);
             entityManager.getTransaction().commit();
             entityManager.close();
@@ -78,9 +84,9 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
     }
 
     @Override
-    public LinesOfCode readDelta(TopLevelItem topLevelItem, int toBuildNr, int fromBuildNr) {
-        final LinesOfCodeEntity baseLocs = this.read(topLevelItem, fromBuildNr);
-        final LinesOfCodeEntity targetLocs = this.read(topLevelItem, toBuildNr);
+    public LinesOfCode readDelta(TopLevelItem topLevelItem, Build toBuild, Build fromBuild) {
+        final LinesOfCodeEntity baseLocs = this.read(topLevelItem, fromBuild.getNumber());
+        final LinesOfCodeEntity targetLocs = this.read(topLevelItem, toBuild.getNumber());
         if (baseLocs != null && targetLocs != null) {
             return new LinesOfCode(targetLocs.getLinesOfCode() - baseLocs.getLinesOfCode(), targetLocs.getFiles() - baseLocs.getFiles());
         } else {
@@ -98,10 +104,15 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
             List<Integer> resultListLatest = entityManager.createNamedQuery(LinesOfCodeEntity.LATEST_BUILD_NR).getResultList();
             if (!resultListLatest.isEmpty()) {
                 latestBuildNr = resultListLatest.get(0);
-                List<Integer> resultListPrev = entityManager.createNamedQuery(LinesOfCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR).getResultList();
-                if (!resultListPrev.isEmpty()) {
-                    prevToLatestBuildNr = resultListPrev.get(0);
-                    return new LatestBuilds(latestBuildNr, prevToLatestBuildNr);
+                if (latestBuildNr != null) {
+                    List<Integer> resultListPrev = entityManager.createNamedQuery(LinesOfCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR).getResultList();
+                    if (!resultListPrev.isEmpty()) {
+                        prevToLatestBuildNr = resultListPrev.get(0);
+                        if (prevToLatestBuildNr != null) {
+                            return new LatestBuilds(jpaBuildRepository.loadBuild(latestBuildNr, topLevelItem),
+                                    jpaBuildRepository.loadBuild(prevToLatestBuildNr, topLevelItem));
+                        }
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -112,9 +123,9 @@ public class JPALinesOfCodeRepository extends LinesOfCodeRepository {
         return null;
     }
 
-    private LinesOfCodeEntity map(LinesOfCode loc, int buildNr) {
+    private LinesOfCodeEntity map(LinesOfCode loc, Build build) {
         LinesOfCodeEntity locEntity = new LinesOfCodeEntity();
-        locEntity.setBuildNr(buildNr);
+        locEntity.setBuild(build);
         locEntity.setFiles(loc.getFileCount());
         locEntity.setLinesOfCode(loc.getLinesOfCode());
         return locEntity;

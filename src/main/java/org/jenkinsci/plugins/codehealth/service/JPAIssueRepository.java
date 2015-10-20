@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.model.StateHistory;
@@ -32,12 +33,16 @@ public class JPAIssueRepository extends IssueRepository {
     @Inject
     private transient PersistenceService persistenceService;
 
+    @Inject
+    private transient JPABuildRepository jpaBuildRepository;
+
     public JPAIssueRepository() {
     }
 
     @VisibleForTesting
-    public JPAIssueRepository(PersistenceService persistenceService) {
+    public JPAIssueRepository(PersistenceService persistenceService, JPABuildRepository jpaBuildRepository) {
         this.persistenceService = persistenceService;
+        this.jpaBuildRepository = jpaBuildRepository;
     }
 
 
@@ -46,6 +51,7 @@ public class JPAIssueRepository extends IssueRepository {
         this.getInjector().injectMembers(this);
         final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
         final int buildNr = build.getNumber();
+        Build codehealthBuild = jpaBuildRepository.loadBuild(buildNr, topLevelItem);
         LOG.log(Level.INFO, "Updating " + data.size() + " Issues for Top-Level-Item " + topLevelItem.getDisplayName() + " and Build #" + buildNr);
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
@@ -55,14 +61,14 @@ public class JPAIssueRepository extends IssueRepository {
                 if (resultList.size() == 1) {
                     IssueEntity result = resultList.get(0);
                     if (result.getCurrentState().getState().equals(State.NEW)) {
-                        openIssue(buildNr, em, result);
+                        openIssue(codehealthBuild, em, result);
                     } else if (result.getCurrentState().getState().equals(State.CLOSED)) {
                         // reopen issue -> State NEW
-                        reopenIssue(buildNr, em, result);
+                        reopenIssue(codehealthBuild, em, result);
                     }
                 } else {
                     if (issue.getCurrentState() == null) {
-                        newIssue(buildNr, em, issue);
+                        newIssue(codehealthBuild, em, issue);
                     }
                 }
             }
@@ -78,12 +84,12 @@ public class JPAIssueRepository extends IssueRepository {
     /**
      * Transition from CLOSED to NEW (reopen issue).
      *
-     * @param buildNr the build nr
-     * @param em      the entity manager
-     * @param result  the corresponding issue
+     * @param build  the build
+     * @param em     the entity manager
+     * @param result the corresponding issue
      */
-    private void reopenIssue(int buildNr, EntityManager em, IssueEntity result) {
-        final StateHistory stateNew = buildHistory(buildNr, State.NEW);
+    private void reopenIssue(Build build, EntityManager em, IssueEntity result) {
+        final StateHistory stateNew = buildHistory(build, State.NEW);
         result.getStateHistory().add(stateNew);
         result.setCurrentState(stateNew);
         em.persist(stateNew);
@@ -96,7 +102,7 @@ public class JPAIssueRepository extends IssueRepository {
      * @param em      the entity manager
      * @param result  the corresponding issue
      */
-    private void openIssue(int buildNr, EntityManager em, IssueEntity result) {
+    private void openIssue(Build buildNr, EntityManager em, IssueEntity result) {
         final StateHistory stateOpen = buildHistory(buildNr, State.OPEN);
         result.getStateHistory().add(stateOpen);
         result.setCurrentState(stateOpen);
@@ -110,7 +116,7 @@ public class JPAIssueRepository extends IssueRepository {
      * @param em      the entity manager
      * @param issue   the new Issue
      */
-    private void newIssue(int buildNr, EntityManager em, IssueEntity issue) {
+    private void newIssue(Build buildNr, EntityManager em, IssueEntity issue) {
         final StateHistory stateNew = buildHistory(buildNr, State.NEW);
         issue.setStateHistory(new HashSet<StateHistory>());
         issue.getStateHistory().add(stateNew);
@@ -121,13 +127,13 @@ public class JPAIssueRepository extends IssueRepository {
     /**
      * Construct a StateHistory.
      *
-     * @param buildNr the build nr
-     * @param state   the state
+     * @param build the build nr
+     * @param state the state
      * @return the constructed StateHistory
      */
-    private StateHistory buildHistory(int buildNr, State state) {
+    private StateHistory buildHistory(Build build, State state) {
         final StateHistory stateHistory = new StateHistory();
-        stateHistory.setBuildNr(buildNr);
+        stateHistory.setBuild(build);
         stateHistory.setState(state);
         stateHistory.setTimestamp(new Date());
         return stateHistory;
@@ -138,6 +144,7 @@ public class JPAIssueRepository extends IssueRepository {
         this.getInjector().injectMembers(this);
         final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
         final int buildNr = build.getNumber();
+        Build codehealthBuild = jpaBuildRepository.loadBuild(buildNr, topLevelItem);
         LOG.log(Level.INFO, data.size() + " Issues for Top-Level-Item " + topLevelItem.getDisplayName() + " and Build #" + buildNr + " have been marked as fixed.");
         try {
             final EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
@@ -147,9 +154,9 @@ public class JPAIssueRepository extends IssueRepository {
                 if (resultList.size() == 1) {
                     IssueEntity result = resultList.get(0);
                     if (result.getCurrentState().getState().equals(State.NEW) || result.getCurrentState().getState().equals(State.OPEN)) {
-                        closeIssue(buildNr, em, result);
+                        closeIssue(codehealthBuild, em, result);
                     } else if (result.getCurrentState().getState().equals(State.CLOSED)) {
-                        LOG.log(Level.INFO, String.format("Issue(ID=%s) has already been closed with build #%s", result.getId(), result.getCurrentState().getBuildNr()));
+                        LOG.log(Level.INFO, String.format("Issue(ID=%s) has already been closed with build #%s", result.getId(), result.getCurrentState().getBuild().getNumber()));
                     }
                 } else {
                     LOG.log(Level.WARNING, "Couldn't find corresponding issue to close.");
@@ -171,8 +178,8 @@ public class JPAIssueRepository extends IssueRepository {
         return (List<IssueEntity>) q.getResultList();
     }
 
-    private void closeIssue(int buildNr, EntityManager em, IssueEntity result) {
-        StateHistory closed = buildHistory(buildNr, State.CLOSED);
+    private void closeIssue(Build build, EntityManager em, IssueEntity result) {
+        StateHistory closed = buildHistory(build, State.CLOSED);
         result.getStateHistory().add(closed);
         result.setCurrentState(closed);
         em.persist(result);

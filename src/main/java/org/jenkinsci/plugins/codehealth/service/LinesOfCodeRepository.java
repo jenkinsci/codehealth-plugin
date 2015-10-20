@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.codehealth.service;
 
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
@@ -25,7 +26,7 @@ public abstract class LinesOfCodeRepository extends BaseRepository {
     /**
      * @return the LOC delta between the given build numbers
      */
-    public abstract LinesOfCode readDelta(TopLevelItem topLevelItem, int toBuildNr, int fromBuildNr);
+    public abstract LinesOfCode readDelta(TopLevelItem topLevelItem, Build toBuild, Build fromBuild);
 
     /**
      * @return the LatestBuilds which have LoC information

@@ -4,6 +4,7 @@ import com.google.inject.Injector;
 import hudson.ExtensionList;
 import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCodeProvider;
+import org.jenkinsci.plugins.codehealth.service.JPABuildRepository;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.mockito.Mockito;
 
@@ -21,8 +22,8 @@ public class TestingCodehealthPublisher extends CodehealthPublisher {
      * @param issueRepository the issue repository
      * @param issueProviders  registered issue providers
      */
-    public TestingCodehealthPublisher(final JPAIssueRepository issueRepository, final ExtensionList<IssueProvider> issueProviders, final ExtensionList<LinesOfCodeProvider> locProviders) {
-        super(issueRepository);
+    public TestingCodehealthPublisher(final JPAIssueRepository issueRepository, final JPABuildRepository jpaBuildRepository, final ExtensionList<IssueProvider> issueProviders, final ExtensionList<LinesOfCodeProvider> locProviders) {
+        super(issueRepository, jpaBuildRepository);
         this.issueProviders = issueProviders;
         this.locProviders = locProviders;
     }

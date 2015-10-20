@@ -3,10 +3,7 @@ package org.jenkinsci.plugins.codehealth.service;
 import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.model.IssueEntity;
-import org.jenkinsci.plugins.codehealth.model.Priority;
-import org.jenkinsci.plugins.codehealth.model.State;
-import org.jenkinsci.plugins.codehealth.model.StateHistory;
+import org.jenkinsci.plugins.codehealth.model.*;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +32,8 @@ public class JPAIssueRepositoryTest {
     private FreeStyleProject mockedTopLevelItem;
     private EntityManager mockedEntityManager;
     private Query mockedQuery;
+    private JPABuildRepository mockBuildRepository;
+    private Build build;
 
     @Before
     public void setUp() throws IOException, SQLException {
@@ -51,7 +50,12 @@ public class JPAIssueRepositoryTest {
         when(mockedEntityManager.getTransaction()).thenReturn(mock(EntityTransaction.class));
         mockedQuery = mock(Query.class);
         when(mockedEntityManager.createNamedQuery(Mockito.any(String.class))).thenReturn(mockedQuery);
-        this.issueRepository = new TestingJPAIssueRepository(this.mockedPersistenceService);
+        mockBuildRepository = mock(JPABuildRepository.class);
+        build = new Build();
+        build.setNumber(33);
+        build.setTimestamp(new Date());
+        when(mockBuildRepository.loadBuild(any(Integer.class), any(TopLevelItem.class))).thenReturn(build);
+        this.issueRepository = new TestingJPAIssueRepository(this.mockedPersistenceService, this.mockBuildRepository);
     }
 
     /**
@@ -95,8 +99,8 @@ public class JPAIssueRepositoryTest {
     private void addState(IssueEntity issue, State state) {
         StateHistory his = new StateHistory();
         his.setTimestamp(new Date());
-        his.setBuildNr(32);
         his.setId(1);
+        his.setBuild(build);
         his.setState(state);
         issue.setCurrentState(his);
         if (issue.getStateHistory() == null) {

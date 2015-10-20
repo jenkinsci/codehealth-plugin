@@ -6,6 +6,7 @@ import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
@@ -31,6 +32,9 @@ public class JPADuplicateCodeRepository extends DuplicateCodeRepository {
     @Inject
     private transient PersistenceService persistenceService;
 
+    @Inject
+    private transient JPABuildRepository jpaBuildRepository;
+
     public JPADuplicateCodeRepository() {
     }
 
@@ -43,8 +47,9 @@ public class JPADuplicateCodeRepository extends DuplicateCodeRepository {
     @Override
     public void save(DuplicateCode duplicateCode, AbstractBuild<?, ?> build) {
         this.getInjector().injectMembers(this);
-        DuplicateCodeEntity entity = map(duplicateCode, build);
         TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
+        Build codehealthBuild = jpaBuildRepository.loadBuild(build.getNumber(), topLevelItem);
+        DuplicateCodeEntity entity = map(duplicateCode, codehealthBuild);
         LOG.log(Level.INFO, "Persisting duplicate code information...");
         try {
             EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
@@ -59,11 +64,11 @@ public class JPADuplicateCodeRepository extends DuplicateCodeRepository {
         }
     }
 
-    private DuplicateCodeEntity map(DuplicateCode duplicateCode, AbstractBuild<?, ?> build) {
+    private DuplicateCodeEntity map(DuplicateCode duplicateCode, Build build) {
         DuplicateCodeEntity entity = new DuplicateCodeEntity();
         entity.setDuplicateFiles(duplicateCode.getFilesWithDuplicates());
         entity.setDuplicateLines(duplicateCode.getDuplicateLines());
-        entity.setBuildNr(build.getNumber());
+        entity.setBuild(build);
         return entity;
     }
 
@@ -90,18 +95,22 @@ public class JPADuplicateCodeRepository extends DuplicateCodeRepository {
     @Override
     public LatestBuilds getLatestBuildsWithDuplicates(TopLevelItem topLevelItem) {
         this.getInjector().injectMembers(this);
-        Integer latestBuildNr = null;
-        Integer prevToLatestBuildNr = null;
+        Integer latestBuildNr;
+        Integer prevToLatestBuildNr;
         try {
             EntityManager em = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             List<Integer> resultListLatest = em.createNamedQuery(DuplicateCodeEntity.LATEST_BUILD_NR).getResultList();
             if (!resultListLatest.isEmpty()) {
                 latestBuildNr = resultListLatest.get(0);
-                List<Integer> resultListPrev = em.createNamedQuery(DuplicateCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR).getResultList();
-                if (!resultListPrev.isEmpty()) {
-                    prevToLatestBuildNr = resultListPrev.get(0);
-                    LatestBuilds latestBuilds = new LatestBuilds(latestBuildNr, prevToLatestBuildNr);
-                    return latestBuilds;
+                if (latestBuildNr != null) {
+                    List<Integer> resultListPrev = em.createNamedQuery(DuplicateCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR).getResultList();
+                    if (!resultListPrev.isEmpty()) {
+                        prevToLatestBuildNr = resultListPrev.get(0);
+                        if (prevToLatestBuildNr != null) {
+                            LatestBuilds latestBuilds = new LatestBuilds(jpaBuildRepository.loadBuild(latestBuildNr, topLevelItem), jpaBuildRepository.loadBuild(prevToLatestBuildNr, topLevelItem));
+                            return latestBuilds;
+                        }
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -128,4 +137,5 @@ public class JPADuplicateCodeRepository extends DuplicateCodeRepository {
         }
         return null;
     }
+
 }

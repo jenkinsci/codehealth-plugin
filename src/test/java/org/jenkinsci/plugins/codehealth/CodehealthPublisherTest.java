@@ -9,6 +9,7 @@ import org.jenkinsci.plugins.codehealth.model.Priority;
 import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCodeProvider;
+import org.jenkinsci.plugins.codehealth.service.JPABuildRepository;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +35,7 @@ public class CodehealthPublisherTest {
     private ExtensionList<IssueProvider> issueProviders;
     private ExtensionList<LinesOfCodeProvider> locProviders;
     private JPAIssueRepository issueRepository;
+    private JPABuildRepository buildRepository;
     private FreeStyleProject topLevelItem;
     private AbstractBuild<?, ?> build;
     private Launcher launcher;
@@ -55,7 +57,8 @@ public class CodehealthPublisherTest {
         this.issueProviders = setupIssueProviders(this.jenkins, this.issueProviderList);
         this.locProviders = setupLocProviders(this.jenkins, this.locProviderList);
         this.issueRepository = mock(JPAIssueRepository.class);
-        this.publisher = new TestingCodehealthPublisher(this.issueRepository, this.issueProviders, this.locProviders);
+        this.buildRepository = mock(JPABuildRepository.class);
+        this.publisher = new TestingCodehealthPublisher(this.issueRepository, this.buildRepository, this.issueProviders, this.locProviders);
     }
 
     /**

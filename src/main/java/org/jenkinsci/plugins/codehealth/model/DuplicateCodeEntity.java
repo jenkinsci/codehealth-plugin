@@ -12,15 +12,14 @@ import javax.persistence.*;
 @Entity(name = "DuplicateCode")
 @PerItemTable
 @ExportedBean
-@Table(uniqueConstraints = {@UniqueConstraint(name = "DUP_UNI_BUILDNR", columnNames = {"buildNr"})})
 @NamedQueries({
         @NamedQuery(name = DuplicateCodeEntity.FIND_BY_BUILD_NR,
-                query = "select dup from DuplicateCode dup where dup.buildNr = :buildNr"),
+                query = "select dup from DuplicateCode dup where dup.build.number = :buildNr"),
         @NamedQuery(name = DuplicateCodeEntity.LATEST_BUILD_NR,
-                query = "select max(dup.buildNr) from DuplicateCode dup"),
+                query = "select max(dup.build.number) from DuplicateCode dup"),
         @NamedQuery(name = DuplicateCodeEntity.PREVIOUS_TO_LATEST_BUILD_NR,
-                query = "select max(dup.buildNr) from DuplicateCode dup " +
-                        "where dup.buildNr < (select max(dup2.buildNr) from DuplicateCode dup2)")
+                query = "select max(dup.build.number) from DuplicateCode dup " +
+                        "where dup.build.number < (select max(dup2.build.number) from DuplicateCode dup2)")
 })
 public class DuplicateCodeEntity {
 
@@ -38,8 +37,9 @@ public class DuplicateCodeEntity {
     @Column(nullable = false)
     private int duplicateFiles;
 
-    @Column(nullable = false)
-    private int buildNr;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "buildNr", unique = true)
+    private Build build;
 
     public Long getId() {
         return id;
@@ -68,33 +68,36 @@ public class DuplicateCodeEntity {
     }
 
     @Exported
-    public int getBuildNr() {
-        return buildNr;
+    public Build getBuild() {
+        return build;
     }
 
-    public void setBuildNr(int buildNr) {
-        this.buildNr = buildNr;
+    public void setBuild(Build build) {
+        this.build = build;
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DuplicateCodeEntity that = (DuplicateCodeEntity) o;
+        DuplicateCodeEntity entity = (DuplicateCodeEntity) o;
 
-        if (buildNr != that.buildNr) return false;
-        if (duplicateFiles != that.duplicateFiles) return false;
-        if (duplicateLines != that.duplicateLines) return false;
+        if (duplicateFiles != entity.duplicateFiles) return false;
+        if (duplicateLines != entity.duplicateLines) return false;
+        if (!build.equals(entity.build)) return false;
+        if (!id.equals(entity.id)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = duplicateLines;
+        int result = id.hashCode();
+        result = 31 * result + duplicateLines;
         result = 31 * result + duplicateFiles;
-        result = 31 * result + buildNr;
+        result = 31 * result + build.hashCode();
         return result;
     }
 }

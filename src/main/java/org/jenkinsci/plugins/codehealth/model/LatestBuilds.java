@@ -9,29 +9,29 @@ import org.kohsuke.stapler.export.ExportedBean;
 @ExportedBean
 public class LatestBuilds {
 
-    private Integer latestBuild;
-    private Integer previousToLatestBuild;
+    private Build latestBuild;
+    private Build previousToLatestBuild;
 
-    public LatestBuilds(Integer latestBuild, Integer previousToLatestBuild) {
+    public LatestBuilds(Build latestBuild, Build previousToLatestBuild) {
         this.latestBuild = latestBuild;
         this.previousToLatestBuild = previousToLatestBuild;
     }
 
     @Exported
-    public Integer getLatestBuild() {
+    public Build getLatestBuild() {
         return latestBuild;
     }
 
-    public void setLatestBuild(Integer latestBuild) {
+    public void setLatestBuild(Build latestBuild) {
         this.latestBuild = latestBuild;
     }
 
     @Exported(name = "previousBuild")
-    public Integer getPreviousToLatestBuild() {
+    public Build getPreviousToLatestBuild() {
         return previousToLatestBuild;
     }
 
-    public void setPreviousToLatestBuild(Integer previousToLatestBuild) {
+    public void setPreviousToLatestBuild(Build previousToLatestBuild) {
         this.previousToLatestBuild = previousToLatestBuild;
     }
 }

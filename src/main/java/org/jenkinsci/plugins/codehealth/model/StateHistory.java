@@ -25,8 +25,9 @@ public class StateHistory {
     @Enumerated(value = EnumType.ORDINAL)
     private State state;
 
-    @Column(nullable =  false)
-    private int buildNr;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "buildNr")
+    private Build build;
 
     public long getId() {
         return id;
@@ -55,13 +56,14 @@ public class StateHistory {
     }
 
     @Exported
-    public int getBuildNr() {
-        return buildNr;
+    public Build getBuild() {
+        return build;
     }
 
-    public void setBuildNr(int buildNr) {
-        this.buildNr = buildNr;
+    public void setBuild(Build build) {
+        this.build = build;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -70,10 +72,10 @@ public class StateHistory {
 
         StateHistory that = (StateHistory) o;
 
-        if (buildNr != that.buildNr) return false;
         if (id != that.id) return false;
+        if (!build.equals(that.build)) return false;
         if (state != that.state) return false;
-        if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) return false;
+        if (!timestamp.equals(that.timestamp)) return false;
 
         return true;
     }
@@ -81,9 +83,9 @@ public class StateHistory {
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
-        result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + buildNr;
+        result = 31 * result + timestamp.hashCode();
+        result = 31 * result + state.hashCode();
+        result = 31 * result + build.hashCode();
         return result;
     }
 }
