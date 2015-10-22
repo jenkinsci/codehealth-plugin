@@ -7,6 +7,7 @@ import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,5 +39,5 @@ public abstract class LinesOfCodeRepository extends BaseRepository {
     /**
      * @return the line count to each build (key is build nr)
      */
-    public abstract Map<Integer, LinesOfCodeEntity> getLineTrend(TopLevelItem topLevelItem);
+    public abstract List<LinesOfCodeEntity> getLineTrend(TopLevelItem topLevelItem);
 }

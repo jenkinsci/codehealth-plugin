@@ -13,6 +13,7 @@ import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,7 +47,7 @@ public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction impl
     }
 
     @Exported
-    public Map<Integer, DuplicateCodeEntity> getSeries() {
+    public List<DuplicateCodeEntity> getSeries() {
         return getDuplicateCodeRepository().getDuplicatesTrend(this.getTopLevelItem());
     }
 

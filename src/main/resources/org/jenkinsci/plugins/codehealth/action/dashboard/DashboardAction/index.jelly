@@ -28,7 +28,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading accordion-toggle" data-toggle="collapse" data-parent="#accordion"
                              href="#issue-table">
-                            <h3 class="panel-title" id="issues-title">[+] Issues</h3>
+                            <h3 class="panel-title">Issues</h3>
                         </div>
                         <div class="panel-content">
                             <div class="collapse" id="issue-table">
@@ -51,7 +51,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading accordion-toggle" data-toggle="collapse" data-parent="#accordion"
                              href="#loc">
-                            <h3 class="panel-title">[+] Lines Of Code</h3>
+                            <h3 class="panel-title">Lines Of Code</h3>
                         </div>
                         <div class="panel-content">
                             <div id="loc" class="collapse"></div>

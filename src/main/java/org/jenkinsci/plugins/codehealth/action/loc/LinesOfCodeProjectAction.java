@@ -52,7 +52,7 @@ public class LinesOfCodeProjectAction extends AbstractLinesOfCodeAction implemen
     }
 
     @Exported
-    public Map<Integer, LinesOfCodeEntity> getSeries() {
+    public List<LinesOfCodeEntity> getSeries() {
         return getLinesOfCodeRepository().getLineTrend(this.getTopLevelItem());
     }
 

@@ -7,6 +7,7 @@ import org.jenkinsci.plugins.codehealth.model.DuplicateCodeEntity;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,5 +29,5 @@ public abstract class DuplicateCodeRepository extends BaseRepository {
 
     public abstract LatestBuilds getLatestBuildsWithDuplicates(TopLevelItem topLevelItem);
 
-    public abstract Map<Integer, DuplicateCodeEntity> getDuplicatesTrend(TopLevelItem topLevelItem);
+    public abstract List<DuplicateCodeEntity> getDuplicatesTrend(TopLevelItem topLevelItem);
 }

@@ -7,8 +7,8 @@ var Highcharts = require('highcharts-commonjs')
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin]";
 var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
-var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode]";
-var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates]";
+var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode,build[number]]";
+var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
 
 // Issues per Origin
 function issuesPerOrigin() {
@@ -78,10 +78,6 @@ function issuesTable() {
 
             var nrOfIssues = data.issues.length;
             console.log("Nr of Issues: " + nrOfIssues);
-            $("#badgecount").remove();
-            $("#issues-title").append(
-                $("<span>").attr("id", "badgecount").attr("class", "badge").text(nrOfIssues)
-            );
         })
         .always(function () {
             //console.log("JSON API called...")
@@ -120,6 +116,20 @@ var options = {
             }
         },
         tickInterval: 1
+    },
+    yAxis: {
+        floor: 0,
+        min: 0
+    },
+    tooltip: {
+        formatter: function(){
+            var s = "<b>Build #" + this.x + "</b>";
+            $.each(this.points, function(){
+               s += "<br/>" + this.series.name + ": " + this.y;
+            });
+            return s;
+        },
+        shared: true
     }
 }
 function updateLocGraph() {
@@ -128,10 +138,10 @@ function updateLocGraph() {
         .done(function (data) {
             var dataArray = new Array();
             var idx = 0;
-            $.each(data.series, function(key, value){
+            $.each(data.series, function(i, item){
                 var obj = new Array();
-                obj[0] = parseInt(key);
-                obj[1] = value.linesOfCode;
+                obj[0] = parseInt(item.build.number);
+                obj[1] = item.linesOfCode;
                 dataArray[idx] = obj;
                 idx++;
             });
@@ -148,10 +158,10 @@ function updateLocGraph() {
         .done(function (data) {
             var dataArray = new Array();
             var idx = 0;
-            $.each(data.series, function(key, value){
+            $.each(data.series, function(i, item){
                 var obj = new Array();
-                obj[0] = parseInt(key);
-                obj[1] = value.duplicateLines;
+                obj[0] = parseInt(item.build.number);
+                obj[1] = item.duplicateLines;
                 dataArray[idx] = obj;
                 idx++;
             });
