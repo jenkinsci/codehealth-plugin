@@ -5,7 +5,7 @@ var header = $('#header');
 var Highcharts = require('highcharts-commonjs')
 
 // API Endpoints
-var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin]";
+var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]";
 var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
 var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode,build[number]]";
 var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
