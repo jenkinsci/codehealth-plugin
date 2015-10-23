@@ -92,11 +92,11 @@ $("#refresh-button").on("click", function () {
     updateLocGraph();
 });
 
-var graphDiv = document.getElementById("loc");
+var graphDiv = $("#loc").get(0);
 // create chart
 var options = {
     title: {
-        text: 'Code Trend Graphs'
+        text: ''
     },
     chart: {
         type: 'line'
