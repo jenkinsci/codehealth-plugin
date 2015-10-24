@@ -1,11 +1,12 @@
 package org.jenkinsci.plugins.codehealth.provider.duplicates;
 
+import hudson.DescriptorExtensionList;
+import hudson.Extension;
 import hudson.model.AbstractBuild;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Michael Prankl
@@ -38,6 +39,7 @@ public class NoDuplicateCodeProvider extends DuplicateCodeProvider {
         return null;
     }
 
+    @Extension
     public static class DescriptorImpl extends DuplicateCodeDescriptor {
         @Override
         public String getDisplayName() {
@@ -45,10 +47,7 @@ public class NoDuplicateCodeProvider extends DuplicateCodeProvider {
         }
     }
 
-    public static List<DuplicateCodeDescriptor> allPlusNone() {
-        final List<DuplicateCodeDescriptor> descriptors = new ArrayList<DuplicateCodeDescriptor>();
-        descriptors.add(new DescriptorImpl());
-        descriptors.addAll(DuplicateCodeDescriptor.all());
-        return descriptors;
+    public static DescriptorExtensionList<DuplicateCodeProvider, DuplicateCodeDescriptor> all() {
+        return Jenkins.getInstance().getDescriptorList(DuplicateCodeProvider.class);
     }
 }

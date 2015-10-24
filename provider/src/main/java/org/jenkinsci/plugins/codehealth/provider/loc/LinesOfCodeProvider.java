@@ -5,6 +5,8 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractDescribableImpl;
 import org.jenkinsci.plugins.codehealth.provider.ProvidesResultUrls;
 
+import javax.annotation.Nonnull;
+
 /**
  * Extension point for code analysis plugins which want to contribute a LOC metric.
  *
@@ -21,6 +23,7 @@ public abstract class LinesOfCodeProvider extends AbstractDescribableImpl<LinesO
     /**
      * @return unique identifier of the contributing plugin
      */
+    @Nonnull
     public abstract String getOrigin();
 
     @Override

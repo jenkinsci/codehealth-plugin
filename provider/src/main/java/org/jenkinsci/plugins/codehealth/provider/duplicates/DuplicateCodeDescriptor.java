@@ -16,7 +16,5 @@ public abstract class DuplicateCodeDescriptor extends Descriptor<DuplicateCodePr
         super(clazz);
     }
 
-    public static DescriptorExtensionList<DuplicateCodeProvider, DuplicateCodeDescriptor> all() {
-        return Jenkins.getInstance().getDescriptorList(DuplicateCodeProvider.class);
-    }
+
 }

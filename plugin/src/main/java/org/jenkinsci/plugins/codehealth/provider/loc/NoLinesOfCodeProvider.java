@@ -1,11 +1,12 @@
 package org.jenkinsci.plugins.codehealth.provider.loc;
 
+import hudson.DescriptorExtensionList;
+import hudson.Extension;
 import hudson.model.AbstractBuild;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Michael Prankl
@@ -38,6 +39,7 @@ public class NoLinesOfCodeProvider extends LinesOfCodeProvider {
         return null;
     }
 
+    @Extension
     public static class DescriptorImpl extends LinesOfCodeDescriptor {
         @Override
         public String getDisplayName() {
@@ -45,10 +47,7 @@ public class NoLinesOfCodeProvider extends LinesOfCodeProvider {
         }
     }
 
-    public static List<LinesOfCodeDescriptor> allPlusNone() {
-        final List<LinesOfCodeDescriptor> descriptors = new ArrayList<LinesOfCodeDescriptor>();
-        descriptors.add(new DescriptorImpl());
-        descriptors.addAll(LinesOfCodeDescriptor.all());
-        return descriptors;
+    public static DescriptorExtensionList<LinesOfCodeProvider, LinesOfCodeDescriptor> all() {
+        return Jenkins.getInstance().getDescriptorList(LinesOfCodeProvider.class);
     }
 }

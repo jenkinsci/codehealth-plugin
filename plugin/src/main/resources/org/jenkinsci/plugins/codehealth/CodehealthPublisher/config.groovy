@@ -6,6 +6,6 @@ import org.jenkinsci.plugins.codehealth.provider.loc.NoLinesOfCodeProvider
 def f = namespace(lib.FormTagLib)
 
 f.section(title: _("Provider plugins")) {
-    f.dropdownDescriptorSelector(field: "linesOfCodeProvider", title: _("Lines of Code"), descriptors: NoLinesOfCodeProvider.allPlusNone())
-    f.dropdownDescriptorSelector(field: "duplicateCodeProvider", title: _("Duplicate Code"), descriptors: NoDuplicateCodeProvider.allPlusNone())
+    f.dropdownDescriptorSelector(field: "linesOfCodeProvider", title: _("Lines of Code"), descriptors: NoLinesOfCodeProvider.all())
+    f.dropdownDescriptorSelector(field: "duplicateCodeProvider", title: _("Duplicate Code"), descriptors: NoDuplicateCodeProvider.all())
 }
