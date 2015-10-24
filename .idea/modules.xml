@@ -2,20 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" filepath="$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" />
-      <module fileurl="file://$PROJECT_DIR$/codehealth.iml" filepath="$PROJECT_DIR$/codehealth.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugin/codehealth (1).iml" filepath="$PROJECT_DIR$/plugin/codehealth (1).iml" />
-      <module fileurl="file://$PROJECT_DIR$/provider/codehealth (2).iml" filepath="$PROJECT_DIR$/provider/codehealth (2).iml" />
-      <module fileurl="file://$PROJECT_DIR$/../contexthashcode/contexthashcode.iml" filepath="$PROJECT_DIR$/../contexthashcode/contexthashcode.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../database-plugin/database.iml" filepath="$PROJECT_DIR$/../database-plugin/database.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" filepath="$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../dry-plugin/dry.iml" filepath="$PROJECT_DIR$/../dry-plugin/dry.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../findbugs-plugin/plugin/findbugs.iml" filepath="$PROJECT_DIR$/../findbugs-plugin/plugin/findbugs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../javancss-plugin/javancss.iml" filepath="$PROJECT_DIR$/../javancss-plugin/javancss.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../findbugs-plugin/library/library.iml" filepath="$PROJECT_DIR$/../findbugs-plugin/library/library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../findbugs-plugin/parent.iml" filepath="$PROJECT_DIR$/../findbugs-plugin/parent.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" filepath="$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../violations-plugin/violations.iml" filepath="$PROJECT_DIR$/../violations-plugin/violations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" filepath="$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" group="contrib-plugins/issues" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/codehealth.iml" filepath="$PROJECT_DIR$/plugin/codehealth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../dry-plugin/dry.iml" filepath="$PROJECT_DIR$/../dry-plugin/dry.iml" group="contrib-plugins/dry" />
+      <module fileurl="file://$PROJECT_DIR$/../javancss-plugin/javancss.iml" filepath="$PROJECT_DIR$/../javancss-plugin/javancss.iml" group="contrib-plugins/loc" />
+      <module fileurl="file://$PROJECT_DIR$/parent.iml" filepath="$PROJECT_DIR$/parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/provider/provider.iml" filepath="$PROJECT_DIR$/provider/provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" filepath="$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" group="contrib-plugins/loc" />
+      <module fileurl="file://$PROJECT_DIR$/../violations-plugin/violations.iml" filepath="$PROJECT_DIR$/../violations-plugin/violations.iml" group="contrib-plugins/issues" />
     </modules>
   </component>
 </project>

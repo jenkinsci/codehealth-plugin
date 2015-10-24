@@ -19,7 +19,6 @@ import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCodeProvider;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.NoDuplicateCodeProvider;
 import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
-import org.jenkinsci.plugins.codehealth.provider.issues.IssueFactory;
 import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCodeProvider;
@@ -28,6 +27,7 @@ import org.jenkinsci.plugins.codehealth.service.JPABuildRepository;
 import org.jenkinsci.plugins.codehealth.service.JPADuplicateCodeRepository;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.jenkinsci.plugins.codehealth.service.JPALinesOfCodeRepository;
+import org.jenkinsci.plugins.codehealth.util.IssueFactory;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;

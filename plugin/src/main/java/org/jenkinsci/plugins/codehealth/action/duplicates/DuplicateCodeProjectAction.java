@@ -40,7 +40,7 @@ public class DuplicateCodeProjectAction extends AbstractDuplicateCodeAction impl
         if (latestBuildsWithDuplicates != null) {
             DuplicateCodeEntity latestDup = getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), latestBuildsWithDuplicates.getLatestBuild().getNumber());
             DuplicateCodeEntity prevDup = getDuplicateCodeRepository().loadForBuild(getTopLevelItem(), latestBuildsWithDuplicates.getPreviousToLatestBuild().getNumber());
-            DuplicateCode dupTrend = DuplicateCode.deltaOf(prevDup, latestDup);
+            DuplicateCode dupTrend = DuplicateCodeEntity.deltaOf(prevDup, latestDup);
             return makeTrend(latestBuildsWithDuplicates, dupTrend);
         }
         return null;

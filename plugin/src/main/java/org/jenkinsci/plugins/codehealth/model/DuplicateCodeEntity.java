@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.codehealth.model;
 
+import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 import org.jenkinsci.plugins.database.jpa.PerItemTable;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -76,6 +77,10 @@ public class DuplicateCodeEntity {
 
     public void setBuild(Build build) {
         this.build = build;
+    }
+
+    public static DuplicateCode deltaOf(DuplicateCodeEntity fromDup, DuplicateCodeEntity toDup) {
+        return new DuplicateCode(toDup.getDuplicateLines() - fromDup.getDuplicateLines(), toDup.getDuplicateFiles() - fromDup.getDuplicateFiles());
     }
 
 

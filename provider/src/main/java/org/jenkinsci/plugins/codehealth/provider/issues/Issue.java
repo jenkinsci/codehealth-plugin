@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.codehealth.provider.issues;
 
-import org.jenkinsci.plugins.codehealth.model.Priority;
+
+import org.jenkinsci.plugins.codehealth.provider.Priority;
 
 /**
  * Transfer object between contributing plugins and codehealth.

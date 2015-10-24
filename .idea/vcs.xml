@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../checkstyle-plugin" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../contexthashcode" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../database-h2-plugin" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../database-plugin" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../dry-plugin" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../findbugs-plugin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../javancss-plugin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../sloccount-plugin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../violations-plugin" vcs="Git" />

@@ -4,6 +4,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.*;
+import org.jenkinsci.plugins.codehealth.provider.Priority;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 import org.junit.Before;
 import org.junit.Test;

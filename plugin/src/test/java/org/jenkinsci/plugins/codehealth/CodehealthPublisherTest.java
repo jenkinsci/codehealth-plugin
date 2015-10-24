@@ -5,7 +5,7 @@ import hudson.ExtensionPoint;
 import hudson.Launcher;
 import hudson.model.*;
 import jenkins.model.Jenkins;
-import org.jenkinsci.plugins.codehealth.model.Priority;
+import org.jenkinsci.plugins.codehealth.provider.Priority;
 import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCodeProvider;

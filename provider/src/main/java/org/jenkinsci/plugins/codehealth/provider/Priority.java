@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.codehealth.model;
+package org.jenkinsci.plugins.codehealth.provider;
 
 /**
  * @author Michael Prankl

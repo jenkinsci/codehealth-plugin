@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.codehealth.model;
 
 
+import org.jenkinsci.plugins.codehealth.provider.Priority;
 import org.jenkinsci.plugins.database.jpa.PerItemTable;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;

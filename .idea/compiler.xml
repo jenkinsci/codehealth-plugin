@@ -23,39 +23,21 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="checkstyle" />
-        <module name="codehealth (1)" />
-        <module name="codehealth (2)" />
-        <module name="contexthashcode" />
-        <module name="database" />
-        <module name="database-h2" />
+        <module name="codehealth" />
         <module name="dry" />
-        <module name="findbugs" />
         <module name="javancss" />
-        <module name="library" />
+        <module name="provider" />
         <module name="sloccount" />
         <module name="violations" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="analysis-pom" target="1.6" />
       <module name="checkstyle" target="1.6" />
-      <module name="cli" target="1.7" />
       <module name="codehealth" target="1.7" />
-      <module name="codehealth (1)" target="1.7" />
-      <module name="codehealth (2)" target="1.7" />
-      <module name="contexthashcode" target="1.7" />
-      <module name="database" target="1.6" />
-      <module name="database-h2" target="1.5" />
       <module name="dry" target="1.6" />
-      <module name="findbugs" target="1.6" />
       <module name="javancss" target="1.5" />
-      <module name="jenkins-core" target="1.7" />
-      <module name="jenkins-test-harness" target="1.7" />
-      <module name="jenkins-war" target="1.7" />
-      <module name="library" target="1.5" />
-      <module name="parent" target="1.5" />
-      <module name="plugin" target="1.6" />
-      <module name="pom" target="1.7" />
+      <module name="parent" target="1.7" />
+      <module name="provider" target="1.7" />
       <module name="sloccount" target="1.5" />
       <module name="violations" target="1.6" />
     </bytecodeTargetLevel>
