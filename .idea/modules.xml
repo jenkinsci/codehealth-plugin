@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" filepath="$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" />
       <module fileurl="file://$PROJECT_DIR$/codehealth.iml" filepath="$PROJECT_DIR$/codehealth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/codehealth (1).iml" filepath="$PROJECT_DIR$/plugin/codehealth (1).iml" />
+      <module fileurl="file://$PROJECT_DIR$/provider/codehealth (2).iml" filepath="$PROJECT_DIR$/provider/codehealth (2).iml" />
       <module fileurl="file://$PROJECT_DIR$/../contexthashcode/contexthashcode.iml" filepath="$PROJECT_DIR$/../contexthashcode/contexthashcode.iml" />
       <module fileurl="file://$PROJECT_DIR$/../database-plugin/database.iml" filepath="$PROJECT_DIR$/../database-plugin/database.iml" />
       <module fileurl="file://$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" filepath="$PROJECT_DIR$/../database-h2-plugin/database-h2.iml" />

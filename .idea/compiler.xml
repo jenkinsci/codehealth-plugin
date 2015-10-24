@@ -23,7 +23,8 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="checkstyle" />
-        <module name="codehealth" />
+        <module name="codehealth (1)" />
+        <module name="codehealth (2)" />
         <module name="contexthashcode" />
         <module name="database" />
         <module name="database-h2" />
@@ -40,6 +41,8 @@
       <module name="checkstyle" target="1.6" />
       <module name="cli" target="1.7" />
       <module name="codehealth" target="1.7" />
+      <module name="codehealth (1)" target="1.7" />
+      <module name="codehealth (2)" target="1.7" />
       <module name="contexthashcode" target="1.7" />
       <module name="database" target="1.6" />
       <module name="database-h2" target="1.5" />
