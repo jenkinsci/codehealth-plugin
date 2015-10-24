@@ -7,10 +7,12 @@ import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,10 +66,23 @@ public class JPABuildRepository extends BuildRepository {
         return null;
     }
 
+    @Nonnull
+    @Override
+    public List<Build> findAllBuilds(TopLevelItem topLevelItem) {
+        this.getInjector().injectMembers(this);
+        try {
+            final EntityManager entityManager = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            return entityManager.createNamedQuery(Build.FIND_ALL).getResultList();
+        } catch (SQLException | IOException e) {
+            LOG.log(Level.WARNING, "Unable to load all builds.", e);
+        }
+        return Collections.emptyList();
+    }
+
     private Build map(AbstractBuild<?, ?> newBuild) {
-        final Build codehealtBuild = new Build();
-        codehealtBuild.setNumber(newBuild.getNumber());
-        codehealtBuild.setTimestamp(newBuild.getTime());
-        return codehealtBuild;
+        final Build codehealthBuild = new Build();
+        codehealthBuild.setNumber(newBuild.getNumber());
+        codehealthBuild.setTimestamp(newBuild.getTime());
+        return codehealthBuild;
     }
 }

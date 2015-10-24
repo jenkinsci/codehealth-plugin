@@ -2,12 +2,14 @@ package org.jenkinsci.plugins.codehealth.service;
 
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
+import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael Prankl
@@ -69,4 +71,10 @@ public abstract class IssueRepository extends BaseRepository {
     public abstract Collection<IssueEntity> calculateFixedIssues(TopLevelItem topLevelItem,
                                                                  Collection<Issue> existingIssues, String origin);
 
+    /**
+     *
+     * @param topLevelItem the top-level-item (job)
+     * @return new/open issue count, grouped by build number
+     */
+    public abstract Map<Integer, Long> loadIssueCountPerBuild(TopLevelItem topLevelItem);
 }

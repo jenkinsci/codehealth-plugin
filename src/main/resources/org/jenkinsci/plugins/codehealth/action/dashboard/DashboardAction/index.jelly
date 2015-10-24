@@ -4,64 +4,73 @@
         <st:include it="${it.build}" page="sidepanel.jelly"/>
         <l:main-panel>
             <script src="${rootURL}/plugin/codehealth/bundles/codehealth.js"/>
-            <h2 class="codehealth_title">${it.displayName}</h2>
             <div id="codehealth_main" class="bootstrap-3">
                 <!-- content in here can use Bootstrap 3 CSS rules. -->
                 <button id="refresh-button" type="button" class="btn btn-primary">Refresh</button>
                 <div class="container-fluid">
                     <div class="row" id="row-1">
-                        <div class="panel panel-default col-sm-6">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Issues</h3>
-                            </div>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Plugin</th>
-                                        <th># HIGH</th>
-                                        <th># NORMAL</th>
-                                        <th># LOW</th>
-                                        <th># TOTAL</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="issues-per-origin">
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-sm-6" id="loc-grid">
-                            <div class="panel panel-default accordion-toggle" data-toggle="collapse"
-                                 data-parent="#row-1" href="#loc">
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Code Trend Graph</h3>
+                                    <h3 class="panel-title">Issue Trend Graph</h3>
                                 </div>
                                 <div class="panel-content">
-                                    <div id="loc"></div>
+                                    <div id="issues-graph"></div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Issues</h3>
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Plugin</th>
+                                            <th># HIGH</th>
+                                            <th># NORMAL</th>
+                                            <th># LOW</th>
+                                            <th># TOTAL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="issues-per-origin">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="panel-group" id="accordion">
+                    <div class="row">
                         <div class="panel panel-default">
-                            <div class="panel-heading accordion-toggle" data-toggle="collapse" data-parent="#accordion"
-                                 href="#issue-table">
-                                <h3 class="panel-title">All issues</h3>
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Code Trend Graph</h3>
                             </div>
                             <div class="panel-content">
-                                <div class="collapse" id="issue-table">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th># ID</th>
-                                                <th>Message</th>
-                                                <th>Priority</th>
-                                                <th>Origin</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="codehealth-issues">
-                                        </tbody>
-                                    </table>
+                                <div id="loc"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">All issues</h3>
+                                </div>
+                                <div class="panel-content">
+                                    <div id="issue-table">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th># ID</th>
+                                                    <th>Message</th>
+                                                    <th>Priority</th>
+                                                    <th>Origin</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="codehealth-issues">
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

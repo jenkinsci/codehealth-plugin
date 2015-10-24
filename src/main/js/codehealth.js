@@ -5,8 +5,9 @@ var header = $('#header');
 var Highcharts = require('highcharts-commonjs')
 
 // API Endpoints
-var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]";
+var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
 var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
+var issuesGraphAPI = "../issues-api/api/json?tree=series";
 var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode,build[number]]";
 var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
 
@@ -85,16 +86,18 @@ function issuesTable() {
     ;
 }
 
+// Refresh Button
 $("#refresh-button").on("click", function () {
     console.log("Refreshing...");
     issuesPerOrigin();
     issuesTable();
     updateLocGraph();
+    updateIssuesGraph();
 });
 
-var graphDiv = $("#loc").get(0);
-// create chart
-var options = {
+// Code Trend
+var codeGraphDiv = $("#loc").get(0);
+var codeGraphOptions = {
     title: {
         text: ''
     },
@@ -122,10 +125,10 @@ var options = {
         min: 0
     },
     tooltip: {
-        formatter: function(){
+        formatter: function () {
             var s = "<b>Build #" + this.x + "</b>";
-            $.each(this.points, function(){
-               s += "<br/>" + this.series.name + ": " + this.y;
+            $.each(this.points, function () {
+                s += "<br/>" + this.series.name + ": " + this.y;
             });
             return s;
         },
@@ -138,19 +141,19 @@ function updateLocGraph() {
         .done(function (data) {
             var dataArray = new Array();
             var idx = 0;
-            $.each(data.series, function(i, item){
+            $.each(data.series, function (i, item) {
                 var obj = new Array();
                 obj[0] = parseInt(item.build.number);
                 obj[1] = item.linesOfCode;
                 dataArray[idx] = obj;
                 idx++;
             });
-            options.series[0].data = dataArray;
+            codeGraphOptions.series[0].data = dataArray;
             var chart = Highcharts.createChart(
                 // dom element to inject the chart
-                graphDiv,
+                codeGraphDiv,
                 // graph options
-                options
+                codeGraphOptions
             );
         }
     );
@@ -158,26 +161,87 @@ function updateLocGraph() {
         .done(function (data) {
             var dataArray = new Array();
             var idx = 0;
-            $.each(data.series, function(i, item){
+            $.each(data.series, function (i, item) {
                 var obj = new Array();
                 obj[0] = parseInt(item.build.number);
                 obj[1] = item.duplicateLines;
                 dataArray[idx] = obj;
                 idx++;
             });
-            options.series[1].data = dataArray;
+            codeGraphOptions.series[1].data = dataArray;
             var chart = Highcharts.createChart(
                 // dom element to inject the chart
-                graphDiv,
+                codeGraphDiv,
                 // graph options
-                options
+                codeGraphOptions
             );
         }
     );
 }
 
+// Issue Trend
+var issueGraphDiv = $("#issues-graph").get(0);
+var issueGraphOptions = {
+    title: {
+        text: ''
+    },
+    chart: {
+        type: 'line'
+    },
+    series: [
+        {
+            name: "Issues"
+        }
+    ],
+    xAxis: {
+        labels: {
+            formatter: function () {
+                return '#' + this.value;
+            }
+        },
+        tickInterval: 1
+    },
+    yAxis: {
+        floor: 0,
+        min: 0
+    },
+    tooltip: {
+        formatter: function () {
+            var s = "<b>Build #" + this.x + "</b>";
+            $.each(this.points, function () {
+                s += "<br/>" + this.series.name + ": " + this.y;
+            });
+            return s;
+        },
+        shared: true
+    }
+}
+function updateIssuesGraph() {
+    $.getJSON(issuesGraphAPI)
+        .done(function (data) {
+            var dataArray = new Array();
+            var idx = 0;
+            $.each(data.series, function (buildNr, issueCount) {
+                var obj = new Array();
+                obj[0] = parseInt(buildNr);
+                obj[1] = issueCount;
+                dataArray[idx] = obj;
+                idx++;
+            });
+            issueGraphOptions.series[0].data = dataArray;
+            var chart = Highcharts.createChart(
+                // dom element to inject the chart
+                issueGraphDiv,
+                // graph options
+                issueGraphOptions
+            );
+        }
+    );
+    ;
+}
 
 issuesPerOrigin();
 issuesTable();
 updateLocGraph();
+updateIssuesGraph();
 

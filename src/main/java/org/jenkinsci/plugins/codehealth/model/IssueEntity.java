@@ -1,7 +1,6 @@
 package org.jenkinsci.plugins.codehealth.model;
 
 
-import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 import org.jenkinsci.plugins.database.jpa.PerItemTable;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -22,7 +21,10 @@ import java.util.Set;
         @NamedQuery(name = IssueEntity.FIND_ALL, query = "select i from Issue i"),
         @NamedQuery(name = IssueEntity.FIND_BY_STATE_AND_BUILD, query = "select i from Issue i join i.stateHistory sh where sh.build.number = :buildNr and sh.state = :state"),
         @NamedQuery(name = IssueEntity.FIND_BY_STATE, query = "select i from Issue i where i.currentState.state in :state"),
-        @NamedQuery(name = IssueEntity.FIND_BY_ORIGIN_AND_STATE, query = "select i from  Issue i where i.currentState.state in :states and i.origin = :origin")
+        @NamedQuery(name = IssueEntity.FIND_BY_ORIGIN_AND_STATE, query = "select i from  Issue i where i.currentState.state in :states and i.origin = :origin"),
+        @NamedQuery(name = IssueEntity.FIND_COUNT_FOR_BUILD,
+                query = "select count(i) from Issue i join i.currentState sh " +
+                        "where (sh.build.number <= :buildNr and sh.state in (:states))")
 })
 @ExportedBean
 public class IssueEntity implements Cloneable {
@@ -32,6 +34,7 @@ public class IssueEntity implements Cloneable {
     public static final String FIND_BY_STATE_AND_BUILD = "Issue.findByStateAndBuild";
     public static final String FIND_BY_STATE = "Issue.findByState";
     public static final String FIND_BY_ORIGIN_AND_STATE = "Issue.findByOriginAndState";
+    public static final String FIND_COUNT_FOR_BUILD = "Issue.findCountPerBuild";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

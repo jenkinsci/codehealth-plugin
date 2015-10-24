@@ -13,12 +13,14 @@ import java.util.Date;
 @Entity
 @PerItemTable
 @ExportedBean
-@NamedQueries(
-        @NamedQuery(name = Build.FIND_BY_NUMBER, query = "select b from Build b where b.number = :buildNr")
-)
+@NamedQueries({
+        @NamedQuery(name = Build.FIND_BY_NUMBER, query = "select b from Build b where b.number = :buildNr"),
+        @NamedQuery(name = Build.FIND_ALL, query = "select b from Build b order by b.number")
+})
 public class Build {
 
     public static final String FIND_BY_NUMBER = "Build.findByNumber";
+    public static final String FIND_ALL = "Build.findAll";
 
     @Id
     private int number;

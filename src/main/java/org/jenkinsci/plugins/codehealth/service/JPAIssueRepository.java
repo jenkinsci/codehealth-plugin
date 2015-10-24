@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.codehealth.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
@@ -266,6 +268,29 @@ public class JPAIssueRepository extends IssueRepository {
             LOG.log(Level.WARNING, "Unable to query issues.", e);
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    public Map<Integer, Long> loadIssueCountPerBuild(TopLevelItem topLevelItem) {
+        this.getInjector().injectMembers(this);
+        final List<Build> allBuilds = jpaBuildRepository.findAllBuilds(topLevelItem);
+        final Map<Integer, Long> issueCount = Maps.newLinkedHashMap();
+        final List<State> states = Lists.newArrayList(State.NEW, State.OPEN);
+        try {
+            final EntityManager entityManager = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
+            for (Build b : allBuilds) {
+                Query query = entityManager.createNamedQuery(IssueEntity.FIND_COUNT_FOR_BUILD);
+                query.setParameter("buildNr", b.getNumber());
+                query.setParameter("states", states);
+                Long count = (Long) query.getSingleResult();
+                issueCount.put(b.getNumber(), count);
+            }
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to query issues.", e);
+        }
+        return issueCount;
     }
 
 }

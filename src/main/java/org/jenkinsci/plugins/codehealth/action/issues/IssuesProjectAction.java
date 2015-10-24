@@ -1,9 +1,9 @@
 package org.jenkinsci.plugins.codehealth.action.issues;
 
-import com.google.common.collect.Lists;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
+import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
@@ -52,6 +52,17 @@ public class IssuesProjectAction extends AbstractIssuesAction {
             map.put(originPluginName, issueList);
         }
         return map;
+    }
+
+    @Exported(name = "series")
+    public Map<Integer, Long> getIssueCountPerBuild() {
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        try {
+            return getIssueRepository().loadIssueCountPerBuild(getTopLevelItem());
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+        }
     }
 
     public HttpResponse doGoToBuildResult(@QueryParameter String origin) {
