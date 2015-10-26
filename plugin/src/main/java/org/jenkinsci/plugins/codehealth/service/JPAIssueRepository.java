@@ -62,7 +62,8 @@ public class JPAIssueRepository extends IssueRepository {
                 List<IssueEntity> resultList = queryIssue(em, issue);
                 if (resultList.size() == 1) {
                     IssueEntity result = resultList.get(0);
-                    if (result.getCurrentState().getState().equals(State.NEW)) {
+                    if (result.getCurrentState().getState().equals(State.NEW)
+                            || result.getCurrentState().getState().equals(State.OPEN)) {
                         openIssue(codehealthBuild, em, result);
                     } else if (result.getCurrentState().getState().equals(State.CLOSED)) {
                         // reopen issue -> State NEW
@@ -98,7 +99,7 @@ public class JPAIssueRepository extends IssueRepository {
     }
 
     /**
-     * Transition from NEW to OPEN.
+     * Transition from NEW to OPEN or OPEN to OPEN.
      *
      * @param buildNr the build nr
      * @param em      the entity manager
