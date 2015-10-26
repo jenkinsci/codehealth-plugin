@@ -67,7 +67,7 @@
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>jquery-detached</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
@@ -93,6 +93,23 @@
 
 
     <profiles>
+        <!-- For local testing -->
+        <profile>
+            <id>install-plugins</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jenkins-ci.plugins</groupId>
+                    <artifactId>git</artifactId>
+                    <version>2.4.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.jvnet.hudson.plugins</groupId>
+                    <artifactId>analysis-core</artifactId>
+                    <version>1.74</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
         <!--
             Manually download node and NPM for the frontend plugin so it gets cached in the local maven repo.
             Otherwise frontend will be downloading it all the time. The download-maven-plugin
