@@ -16,8 +16,4 @@ public abstract class LinesOfCodeDescriptor extends Descriptor<LinesOfCodeProvid
         super(clazz);
     }
 
-    public static DescriptorExtensionList<LinesOfCodeProvider, LinesOfCodeDescriptor> all() {
-        return Jenkins.getInstance().getDescriptorList(LinesOfCodeProvider.class);
-    }
-
 }

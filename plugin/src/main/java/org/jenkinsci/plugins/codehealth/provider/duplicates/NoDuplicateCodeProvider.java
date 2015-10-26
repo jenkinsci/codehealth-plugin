@@ -1,9 +1,7 @@
 package org.jenkinsci.plugins.codehealth.provider.duplicates;
 
-import hudson.DescriptorExtensionList;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
-import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nullable;
@@ -47,7 +45,4 @@ public class NoDuplicateCodeProvider extends DuplicateCodeProvider {
         }
     }
 
-    public static DescriptorExtensionList<DuplicateCodeProvider, DuplicateCodeDescriptor> all() {
-        return Jenkins.getInstance().getDescriptorList(DuplicateCodeProvider.class);
-    }
 }

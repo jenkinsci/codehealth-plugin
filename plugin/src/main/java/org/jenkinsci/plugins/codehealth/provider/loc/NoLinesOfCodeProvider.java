@@ -47,7 +47,4 @@ public class NoLinesOfCodeProvider extends LinesOfCodeProvider {
         }
     }
 
-    public static DescriptorExtensionList<LinesOfCodeProvider, LinesOfCodeDescriptor> all() {
-        return Jenkins.getInstance().getDescriptorList(LinesOfCodeProvider.class);
-    }
 }
