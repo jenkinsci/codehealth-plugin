@@ -124,24 +124,15 @@ public class CodehealthPublisher extends Recorder {
                     newIssues.add(mapToInternal(issue, origin));
                 }
             }
-            if (issueProvider.canProvideFixedIssues()) {
-                Collection<Issue> issueProviderFixedIssues = issueProvider.getFixedIssues(build);
-                if (issueProviderFixedIssues != null) {
-                    for (Issue issue : issueProviderFixedIssues) {
-                        fixedIssues.add(mapToInternal(issue, origin));
-                    }
-                }
-            } else {
-                fixedIssues.addAll(calculateFixedIssues(build, existingIssues, origin));
-            }
+            fixedIssues.addAll(calculateFixedIssues(build, existingIssues, origin));
         }
         logConsole(listener, String.format("%s new/open issues, %s fixed issues.", newIssues.size(), fixedIssues.size()));
         issueRepository.updateIssues(newIssues, build);
         issueRepository.fixedIssues(fixedIssues, build);
     }
 
-    private Collection<? extends IssueEntity> calculateFixedIssues(final AbstractBuild<?, ?> build,
-                                                                   final Collection<Issue> existingIssues, final String origin) {
+    private List<IssueEntity> calculateFixedIssues(final AbstractBuild<?, ?> build,
+                                                   final Collection<Issue> existingIssues, final String origin) {
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         try {

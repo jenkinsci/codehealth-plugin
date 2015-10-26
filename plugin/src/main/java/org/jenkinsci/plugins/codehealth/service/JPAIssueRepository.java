@@ -143,7 +143,7 @@ public class JPAIssueRepository extends IssueRepository {
     }
 
     @Override
-    public void fixedIssues(Collection<IssueEntity> data, AbstractBuild<?, ?> build) {
+    public void fixedIssues(List<IssueEntity> data, AbstractBuild<?, ?> build) {
         this.getInjector().injectMembers(this);
         final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
         final int buildNr = build.getNumber();
@@ -238,9 +238,9 @@ public class JPAIssueRepository extends IssueRepository {
     }
 
     @Override
-    public Collection<IssueEntity> calculateFixedIssues(TopLevelItem topLevelItem, Collection<Issue> existingIssues, String origin) {
+    public List<IssueEntity> calculateFixedIssues(TopLevelItem topLevelItem, Collection<Issue> existingIssues, String origin) {
         this.getInjector().injectMembers(this);
-        Collection<IssueEntity> fixedIssues = new ArrayList<IssueEntity>();
+        List<IssueEntity> fixedIssues = new ArrayList<IssueEntity>();
         List<State> openStates = new ArrayList<State>();
         openStates.add(State.OPEN);
         openStates.add(State.NEW);

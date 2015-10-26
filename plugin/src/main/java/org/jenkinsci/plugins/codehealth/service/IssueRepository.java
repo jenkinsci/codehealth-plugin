@@ -30,7 +30,7 @@ public abstract class IssueRepository extends BaseRepository {
      * @param data  the issues that have been fixed
      * @param build the corresponding build
      */
-    public abstract void fixedIssues(Collection<IssueEntity> data, AbstractBuild<?, ?> build);
+    public abstract void fixedIssues(List<IssueEntity> data, AbstractBuild<?, ?> build);
 
     /**
      * Load all issues for this top-level-item.
