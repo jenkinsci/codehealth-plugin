@@ -46,4 +46,4 @@ target/
 work/
 
 # Generated JS Bundle
-src/main/webapp/bundles/
+plugin/src/main/webapp/bundles/
