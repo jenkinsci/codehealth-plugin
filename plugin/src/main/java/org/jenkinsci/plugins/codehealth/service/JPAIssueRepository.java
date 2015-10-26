@@ -1,7 +1,6 @@
 package org.jenkinsci.plugins.codehealth.service;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import hudson.Extension;
@@ -17,6 +16,7 @@ import org.jenkinsci.plugins.database.jpa.PersistenceService;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
@@ -120,11 +120,11 @@ public class JPAIssueRepository extends IssueRepository {
      * @param issue   the new Issue
      */
     private void newIssue(Build buildNr, EntityManager em, IssueEntity issue) {
+        em.persist(issue);
         final StateHistory stateNew = buildHistory(buildNr, State.NEW);
         issue.setStateHistory(new HashSet<StateHistory>());
         issue.getStateHistory().add(stateNew);
         issue.setCurrentState(stateNew);
-        em.persist(issue);
     }
 
     /**
@@ -274,17 +274,13 @@ public class JPAIssueRepository extends IssueRepository {
     @Override
     public Map<Integer, Long> loadIssueCountPerBuild(TopLevelItem topLevelItem) {
         this.getInjector().injectMembers(this);
-        final List<Build> allBuilds = jpaBuildRepository.findAllBuilds(topLevelItem);
         final Map<Integer, Long> issueCount = Maps.newLinkedHashMap();
-        final List<State> states = Lists.newArrayList(State.NEW, State.OPEN);
         try {
             final EntityManager entityManager = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
-            for (Build b : allBuilds) {
-                Query query = entityManager.createNamedQuery(IssueEntity.FIND_COUNT_FOR_BUILD);
-                query.setParameter("buildNr", b.getNumber());
-                query.setParameter("states", states);
-                Long count = (Long) query.getSingleResult();
-                issueCount.put(b.getNumber(), count);
+            Query query = entityManager.createNamedQuery(IssueEntity.NATIVE_FIND_OPEN_ISSUE_COUNT_PER_BUILD);
+            List<Object[]> resultList = query.getResultList();
+            for (Object[] row : resultList) {
+                issueCount.put((Integer) row[0], ((BigInteger) row[1]).longValue());
             }
         } catch (SQLException e) {
             LOG.log(Level.WARNING, "Unable to query issues.", e);

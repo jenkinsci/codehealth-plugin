@@ -64,6 +64,7 @@ public class StateHistory {
         this.build = build;
     }
 
+    //CHECKSTYLE:OFF
 
     @Override
     public boolean equals(Object o) {
@@ -73,11 +74,10 @@ public class StateHistory {
         StateHistory that = (StateHistory) o;
 
         if (id != that.id) return false;
-        if (!build.equals(that.build)) return false;
-        if (state != that.state) return false;
         if (!timestamp.equals(that.timestamp)) return false;
+        if (state != that.state) return false;
+        return build.equals(that.build);
 
-        return true;
     }
 
     @Override
@@ -88,4 +88,6 @@ public class StateHistory {
         result = 31 * result + build.hashCode();
         return result;
     }
+
+    //CHECKSTYLE:ON
 }

@@ -22,11 +22,21 @@ import java.util.Set;
         @NamedQuery(name = IssueEntity.FIND_ALL, query = "select i from Issue i"),
         @NamedQuery(name = IssueEntity.FIND_BY_STATE_AND_BUILD, query = "select i from Issue i join i.stateHistory sh where sh.build.number = :buildNr and sh.state = :state"),
         @NamedQuery(name = IssueEntity.FIND_BY_STATE, query = "select i from Issue i where i.currentState.state in :state"),
-        @NamedQuery(name = IssueEntity.FIND_BY_ORIGIN_AND_STATE, query = "select i from  Issue i where i.currentState.state in :states and i.origin = :origin"),
-        @NamedQuery(name = IssueEntity.FIND_COUNT_FOR_BUILD,
-                query = "select count(i) from Issue i join i.currentState sh " +
-                        "where (sh.build.number <= :buildNr and sh.state in (:states))")
+        @NamedQuery(name = IssueEntity.FIND_BY_ORIGIN_AND_STATE, query = "select i from  Issue i where i.currentState.state in :states and i.origin = :origin")
 })
+@NamedNativeQueries(
+        @NamedNativeQuery(name = IssueEntity.NATIVE_FIND_OPEN_ISSUE_COUNT_PER_BUILD,
+                query = "select b.number as buildnumber , count(i.id) as issuecount from Build b " +
+                        "join StateHistory sh on sh.buildNr = b.number " +
+                        "join Issue_StateHistory ish on ish.statehistory_id = sh.id " +
+                        "join Issue i on i.id = ish.issue_id " +
+                        "where sh.state <> 2 " +
+                        "group by b.number " +
+                        "order by b.number ",
+                resultSetMapping = "openIssueCountMapping"
+        )
+)
+@SqlResultSetMapping(name = "openIssueCountMapping", columns = {@ColumnResult(name = "buildnumber"), @ColumnResult(name = "issuecount")})
 @ExportedBean
 public class IssueEntity implements Cloneable {
 
@@ -35,7 +45,7 @@ public class IssueEntity implements Cloneable {
     public static final String FIND_BY_STATE_AND_BUILD = "Issue.findByStateAndBuild";
     public static final String FIND_BY_STATE = "Issue.findByState";
     public static final String FIND_BY_ORIGIN_AND_STATE = "Issue.findByOriginAndState";
-    public static final String FIND_COUNT_FOR_BUILD = "Issue.findCountPerBuild";
+    public static final String NATIVE_FIND_OPEN_ISSUE_COUNT_PER_BUILD = "Native_Issue.findOpenIssueCountPerBuild";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,7 +63,8 @@ public class IssueEntity implements Cloneable {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<StateHistory> stateHistory;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "currentstate_id")
     private StateHistory currentState;
 
     @Column
@@ -95,30 +106,6 @@ public class IssueEntity implements Cloneable {
         this.contextHashCode = contextHashCode;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        IssueEntity issue = (IssueEntity) o;
-
-        if (contextHashCode != issue.contextHashCode) return false;
-        if (id != issue.id) return false;
-        if (!message.equals(issue.message)) return false;
-        if (priority != issue.priority) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + message.hashCode();
-        result = 31 * result + (int) (contextHashCode ^ (contextHashCode >>> 32));
-        result = 31 * result + priority.hashCode();
-        return result;
-    }
-
     public Set<StateHistory> getStateHistory() {
         return stateHistory;
     }
@@ -149,4 +136,31 @@ public class IssueEntity implements Cloneable {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        IssueEntity that = (IssueEntity) o;
+
+        if (id != that.id) return false;
+        if (contextHashCode != that.contextHashCode) return false;
+        if (!message.equals(that.message)) return false;
+        if (priority != that.priority) return false;
+        return origin.equals(that.origin);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + message.hashCode();
+        result = 31 * result + (int) (contextHashCode ^ (contextHashCode >>> 32));
+        result = 31 * result + priority.hashCode();
+        result = 31 * result + origin.hashCode();
+        return result;
+    }
+    //CHECKSTYLE:ON
 }

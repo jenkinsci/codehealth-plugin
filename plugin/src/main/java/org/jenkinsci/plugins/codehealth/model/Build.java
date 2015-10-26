@@ -6,6 +6,8 @@ import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Michael Prankl
@@ -28,6 +30,9 @@ public class Build {
     @Column(nullable = false)
     private Date timestamp;
 
+    @OneToMany(mappedBy = "build")
+    private Set<StateHistory> issueStates;
+
     @Exported
     public int getNumber() {
         return number;
@@ -46,6 +51,15 @@ public class Build {
         this.timestamp = timestamp;
     }
 
+    public Set<StateHistory> getIssueStates() {
+        return issueStates;
+    }
+
+    public void setIssueStates(Set<StateHistory> issueStates) {
+        this.issueStates = issueStates;
+    }
+
+    //CHECKSTYLE:OFF
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,4 +79,6 @@ public class Build {
         result = 31 * result + timestamp.hashCode();
         return result;
     }
+    //CHECKSTYLE:ON
+
 }
