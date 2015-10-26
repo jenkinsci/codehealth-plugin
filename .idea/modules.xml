@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/build-tools/build-tools.iml" filepath="$PROJECT_DIR$/build-tools/build-tools.iml" />
       <module fileurl="file://$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" filepath="$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" group="contrib-plugins/issues" />
       <module fileurl="file://$PROJECT_DIR$/plugin/codehealth.iml" filepath="$PROJECT_DIR$/plugin/codehealth.iml" />
       <module fileurl="file://$PROJECT_DIR$/../dry-plugin/dry.iml" filepath="$PROJECT_DIR$/../dry-plugin/dry.iml" group="contrib-plugins/dry" />
@@ -13,4 +14,3 @@
     </modules>
   </component>
 </project>
-

@@ -3,6 +3,7 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$/../checkstyle-plugin" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/build-tools" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/plugin" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/provider" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../dry-plugin" charset="ISO-8859-1" />

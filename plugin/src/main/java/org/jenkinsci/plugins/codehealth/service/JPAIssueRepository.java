@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 @Extension
 public class JPAIssueRepository extends IssueRepository {
 
-    private final static Logger LOG = Logger.getLogger(JPAIssueRepository.class.getName());
+    private static final Logger LOG = Logger.getLogger(JPAIssueRepository.class.getName());
 
     @Inject
     private transient PersistenceService persistenceService;

@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    Checkstyle-Configuration: Ullrich Hafner
-    Description: Ullrich Hafner's Checkstyle Rules.
--->
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
         "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
@@ -34,9 +30,6 @@
     </module>
     <module name="JavadocStyle">
       <property name="severity" value="warning"/>
-    </module>
-    <module name="JavadocStyle">
-      <property name="checkEmptyJavadoc" value="true"/>
     </module>
     <module name="ConstantName"/>
     <module name="LocalFinalVariableName"/>
@@ -86,7 +79,7 @@
     <module name="LeftCurly"/>
     <module name="NeedBraces"/>
     <module name="RightCurly">
-      <property name="option" value="alone"/>
+      <property name="option" value="same"/>
     </module>
     <module name="CovariantEquals"/>
     <module name="DefaultComesLast"/>

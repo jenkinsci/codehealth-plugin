@@ -66,8 +66,16 @@
         <processorPath useClasspath="true" />
         <module name="sloccount" />
       </profile>
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="build-tools" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="build-tools" target="1.5" />
       <module name="checkstyle" target="1.6" />
       <module name="codehealth" target="1.7" />
       <module name="dry" target="1.6" />
