@@ -24,6 +24,9 @@
                                 <div class="panel-heading">
                                     <h3 class="panel-title">Issues</h3>
                                 </div>
+                                <div class="panel-body" id="issues-pie">
+                                    <!-- Here goes the pie chart -->
+                                </div>
                                 <table class="table">
                                     <thead>
                                         <tr>

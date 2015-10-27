@@ -11,12 +11,31 @@ var issuesGraphAPI = "../issues-api/api/json?tree=series";
 var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode,build[number]]";
 var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
 
+// Code Trend
+var issueByOriginChartDiv = $("#issues-pie").get(0);
+var issueByOriginChartOptions = {
+    title: {
+        text: ''
+    },
+    chart: {
+        type: 'pie'
+    },
+    series: [
+        {
+            name: "Lines of Code",
+            colorByPoint: true
+        }
+    ]
+}
+
 // Issues per Origin
 function issuesPerOrigin() {
     var totalCount = 0, totalLow = 0, totalNormal = 0, totalHigh = 0;
     $.getJSON(issuesPerOriginAPI)
         .done(function (data) {
             $("#issues-per-origin").empty();
+            var graphDataArray = new Array();
+            var idx = 0;
             $.each(data.issuesPerOrigin, function (key, value) {
                 console.log("Summing up issues for : " + key);
                 totalOriginCount = value.length;
@@ -25,6 +44,10 @@ function issuesPerOrigin() {
                 normalCount = 0;
                 highCount = 0;
                 var origin;
+                var graphDataEntry = new Object();
+                graphDataEntry.name = key;
+                graphDataEntry.y = totalOriginCount;
+                graphDataArray[idx] = graphDataEntry;
                 $.each(value, function (j, issue) {
                     if (issue.priority == "HIGH") {
                         highCount++;
@@ -47,6 +70,7 @@ function issuesPerOrigin() {
                     $("<td>").text(lowCount),
                     $("<td>").text(totalOriginCount)
                 ).appendTo("#issues-per-origin");
+                idx++;
             });
             // add totals
             $("<tr>").append(
@@ -56,6 +80,19 @@ function issuesPerOrigin() {
                 $("<td>").text(totalLow),
                 $("<td>").text(totalCount)
             ).appendTo("#issues-per-origin");
+            // update Origin Pie chart
+            $.each(graphDataArray, function(entry){
+                entry.y = entry.y / totalCount;
+                console.log("Entry - name:" + entry.name + " y: "+ entry.y);
+            });
+            console.log(graphDataArray);
+            issueByOriginChartOptions.series[0].data = graphDataArray;
+            var chart = Highcharts.createChart(
+                // dom element to inject the chart
+                issueByOriginChartDiv,
+                // graph options
+                issueByOriginChartOptions
+            );
         });
 }
 

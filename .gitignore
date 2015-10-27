@@ -47,3 +47,6 @@ work/
 
 # Generated JS Bundle
 plugin/src/main/webapp/bundles/
+
+# Cloc Output
+cloc.xml
