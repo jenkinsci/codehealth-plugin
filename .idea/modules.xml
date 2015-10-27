@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/../dry-plugin/dry.iml" filepath="$PROJECT_DIR$/../dry-plugin/dry.iml" group="contrib-plugins/dry" />
       <module fileurl="file://$PROJECT_DIR$/../javancss-plugin/javancss.iml" filepath="$PROJECT_DIR$/../javancss-plugin/javancss.iml" group="contrib-plugins/loc" />
       <module fileurl="file://$PROJECT_DIR$/parent.iml" filepath="$PROJECT_DIR$/parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../pmd-plugin/pmd.iml" filepath="$PROJECT_DIR$/../pmd-plugin/pmd.iml" group="contrib-plugins/issues" />
       <module fileurl="file://$PROJECT_DIR$/provider/provider.iml" filepath="$PROJECT_DIR$/provider/provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" filepath="$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" group="contrib-plugins/loc" />
       <module fileurl="file://$PROJECT_DIR$/../violations-plugin/violations.iml" filepath="$PROJECT_DIR$/../violations-plugin/violations.iml" group="contrib-plugins/issues" />

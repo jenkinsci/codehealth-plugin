@@ -22,7 +22,7 @@ var issueByOriginChartOptions = {
     },
     series: [
         {
-            name: "Lines of Code",
+            name: "Issues",
             colorByPoint: true
         }
     ]

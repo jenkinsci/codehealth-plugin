@@ -17,6 +17,7 @@
         <option value="$PROJECT_DIR$/../sloccount-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../violations-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../checkstyle-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../pmd-plugin/pom.xml" />
       </list>
     </option>
   </component>
@@ -24,4 +25,3 @@
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
-

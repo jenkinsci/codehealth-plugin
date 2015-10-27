@@ -73,6 +73,13 @@
         <processorPath useClasspath="true" />
         <module name="build-tools" />
       </profile>
+      <profile default="false" name="Annotation profile for pmd" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="pmd" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="build-tools" target="1.5" />
@@ -81,6 +88,7 @@
       <module name="dry" target="1.6" />
       <module name="javancss" target="1.5" />
       <module name="parent" target="1.7" />
+      <module name="pmd" target="1.6" />
       <module name="provider" target="1.7" />
       <module name="sloccount" target="1.5" />
       <module name="violations" target="1.6" />
