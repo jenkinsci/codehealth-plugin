@@ -11,22 +11,46 @@ var issuesGraphAPI = "../issues-api/api/json?tree=series";
 var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode,build[number]]";
 var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
 
+// Common functions
+function createDrilldownEntry(name, id, data) {
+    var entry = new Object();
+    entry.name = name;
+    entry.id = id;
+    entry.data = data;
+    return entry;
+}
+
+function createDrilldownData(name, value) {
+    var data = new Array();
+    data[0] = name;
+    data[1] = value;
+    return data;
+}
+
 // Code Trend
 var issueByOriginChartOptions = {
     title: {
         text: ''
     },
+    subtitle: {
+        text: 'Click slices to view priorities.'
+    },
     chart: {
         renderTo: $("#issues-pie").get(0),
         type: 'pie',
-        height: 300
+        height: 300,
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false
     },
     plotOptions: {
-        series: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
             dataLabels: {
-                enabled: true,
-                format: '{point.name}: {point.y}'
-            }
+                enabled: false
+            },
+            showInLegend: true
         }
     },
     series: [
@@ -76,24 +100,14 @@ function issuesPerOrigin() {
                 totalLow = totalLow + lowCount;
                 totalNormal = totalNormal + normalCount;
                 totalHigh = totalHigh + highCount;
-                var graphDrilldownEntry = new Object();
-                graphDrilldownEntry.name = key;
-                graphDrilldownEntry.id = key;
                 var graphDrilldownData = new Array();
-                var graphDrilldownDataEntry1 = new Array();
-                graphDrilldownDataEntry1[0] = "HIGH";
-                graphDrilldownDataEntry1[1] = highCount;
-                var graphDrilldownDataEntry2 = new Array();
-                graphDrilldownDataEntry2[0] = "NORMAL";
-                graphDrilldownDataEntry2[1] = normalCount;
-                var graphDrilldownDataEntry3 = new Array();
-                graphDrilldownDataEntry3[0] = "LOW";
-                graphDrilldownDataEntry3[1] = lowCount;
+                var graphDrilldownDataEntry1 = createDrilldownData("HIGH", highCount);
+                var graphDrilldownDataEntry2 = createDrilldownData("NORMAL", normalCount);
+                var graphDrilldownDataEntry3 = createDrilldownData("LOW", lowCount);
                 graphDrilldownData[0] = graphDrilldownDataEntry1;
                 graphDrilldownData[1] = graphDrilldownDataEntry2;
                 graphDrilldownData[2] = graphDrilldownDataEntry3;
-                graphDrilldownEntry.data = graphDrilldownData;
-                console.log(graphDrilldownEntry);
+                var graphDrilldownEntry = createDrilldownEntry(key, key, graphDrilldownData);
                 issueByOriginChartOptions.drilldown.series[idx] = graphDrilldownEntry;
                 var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
                 $("<tr>").append(
@@ -121,7 +135,6 @@ function issuesPerOrigin() {
                 // graph options
                 issueByOriginChartOptions
             );
-            chart.reflow();
         });
 }
 
