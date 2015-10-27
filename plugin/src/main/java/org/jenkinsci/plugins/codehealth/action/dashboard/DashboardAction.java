@@ -1,18 +1,17 @@
 package org.jenkinsci.plugins.codehealth.action.dashboard;
 
-import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Action;
-import org.jenkinsci.plugins.codehealth.action.CodehealthActiveChecker;
 
 /**
  * @author Michael Prankl
  */
 public class DashboardAction implements Action {
 
-    private AbstractBuild<?, ?> build;
+    private AbstractProject<?, ?> project;
 
-    public DashboardAction(AbstractBuild<?, ?> build) {
-        this.build = build;
+    public DashboardAction(AbstractProject<?, ?> project) {
+        this.project = project;
     }
 
     @Override
@@ -30,11 +29,11 @@ public class DashboardAction implements Action {
         return "codehealth";
     }
 
-    public AbstractBuild<?, ?> getBuild() {
-        return build;
+    public AbstractProject<?, ?> getProject() {
+        return project;
     }
 
-    public void setBuild(AbstractBuild<?, ?> build) {
-        this.build = build;
+    public void setProject(AbstractProject<?, ?> project) {
+        this.project = project;
     }
 }
