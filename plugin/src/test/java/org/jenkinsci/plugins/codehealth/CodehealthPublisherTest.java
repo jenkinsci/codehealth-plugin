@@ -12,6 +12,7 @@ import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCodeProvider;
 import org.jenkinsci.plugins.codehealth.service.JPABuildRepository;
 import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 
@@ -81,10 +82,12 @@ public class CodehealthPublisherTest {
         this.publisher.perform(this.build, this.launcher, this.buildListener);
         // verify 15 new/open issues are reported
         verify(issueRepository).updateIssues(argThat(hasSizeOf(15)), eq(this.build));
+        // right now all fixed issues are always calculated
         // verify 2 fixed issues are reported
-        verify(issueRepository).fixedIssues(argThat(hasSizeOf(2)), eq(this.build));
+        //verify(issueRepository).fixedIssues(argThat(hasSizeOf(2)), eq(this.build));
         // verify that for checkstyle fixed issues are calculated
         verify(issueRepository).calculateFixedIssues(eq(this.topLevelItem), anyCollection(), eq("checkstyle"));
+        verify(issueRepository).calculateFixedIssues(eq(this.topLevelItem), anyCollection(), eq("findbugs"));
     }
 
     /**
@@ -241,7 +244,7 @@ public class CodehealthPublisherTest {
     /**
      * Mockito argument matcher that only checks for collection size.
      */
-    private class CollectionSizeArgumentMatcher extends ArgumentMatcher<Collection> {
+    private class CollectionSizeArgumentMatcher extends ArgumentMatcher<List> {
 
         private final int size;
 
@@ -251,7 +254,7 @@ public class CodehealthPublisherTest {
 
         @Override
         public boolean matches(Object o) {
-            return ((Collection) o).size() == this.size;
+            return ((List) o).size() == this.size;
         }
     }
 }

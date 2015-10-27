@@ -25,27 +25,9 @@
         </license>
     </licenses>
 
-    <!-- Assuming you want to host on @jenkinsci:
-    <scm>
-      <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
-      <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-      <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    </scm>
-     -->
-    <repositories>
-        <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <dependencies>
+        <!-- ### COMPILE -->
         <!-- Provider API -->
         <dependency>
             <groupId>org.jenkins-ci.plugins.codehealth</groupId>
@@ -75,6 +57,7 @@
             <version>1.0</version>
         </dependency>
 
+        <!-- ### TEST -->
         <!--Mockito -->
         <dependency>
             <groupId>org.mockito</groupId>
@@ -82,8 +65,6 @@
             <version>1.10.8</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
     <properties>
@@ -277,7 +258,6 @@
                                     <arguments>bundle test</arguments>
                                 </configuration>
                             </execution>
-
                         </executions>
                     </plugin>
                 </plugins>

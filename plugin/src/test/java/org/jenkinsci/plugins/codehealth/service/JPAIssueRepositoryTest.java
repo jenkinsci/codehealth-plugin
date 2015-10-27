@@ -116,7 +116,7 @@ public class JPAIssueRepositoryTest {
     @Test
     public void close_issue() {
         // setup
-        Collection<IssueEntity> closedIssues = new ArrayList<IssueEntity>();
+        List<IssueEntity> closedIssues = new ArrayList<IssueEntity>();
         IssueEntity closingIssue = buildIssue(1L, ORIGIN);
         addState(closingIssue, State.OPEN);
         closedIssues.add(closingIssue);
