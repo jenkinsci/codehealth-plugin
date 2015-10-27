@@ -2,7 +2,7 @@ var $ = require('jquery-detached').getJQuery();
 var $bootstrap = require('bootstrap-detached').getBootstrap();
 var d3 = require('d3');
 var header = $('#header');
-var Highcharts = require('highcharts-commonjs')
+var Highcharts = require('highcharts-browserify/modules/drilldown')
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
@@ -12,20 +12,32 @@ var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCod
 var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
 
 // Code Trend
-var issueByOriginChartDiv = $("#issues-pie").get(0);
 var issueByOriginChartOptions = {
     title: {
         text: ''
     },
     chart: {
-        type: 'pie'
+        renderTo: $("#issues-pie").get(0),
+        type: 'pie',
+        height: 300
+    },
+    plotOptions: {
+        series: {
+            dataLabels: {
+                enabled: true,
+                format: '{point.name}: {point.y}'
+            }
+        }
     },
     series: [
         {
             name: "Issues",
             colorByPoint: true
         }
-    ]
+    ],
+    drilldown: {
+        series: []
+    }
 }
 
 // Issues per Origin
@@ -35,6 +47,7 @@ function issuesPerOrigin() {
         .done(function (data) {
             $("#issues-per-origin").empty();
             var graphDataArray = new Array();
+            var graphDrilldownArray = new Array();
             var idx = 0;
             $.each(data.issuesPerOrigin, function (key, value) {
                 console.log("Summing up issues for : " + key);
@@ -47,6 +60,7 @@ function issuesPerOrigin() {
                 var graphDataEntry = new Object();
                 graphDataEntry.name = key;
                 graphDataEntry.y = totalOriginCount;
+                graphDataEntry.drilldown = key;
                 graphDataArray[idx] = graphDataEntry;
                 $.each(value, function (j, issue) {
                     if (issue.priority == "HIGH") {
@@ -62,6 +76,25 @@ function issuesPerOrigin() {
                 totalLow = totalLow + lowCount;
                 totalNormal = totalNormal + normalCount;
                 totalHigh = totalHigh + highCount;
+                var graphDrilldownEntry = new Object();
+                graphDrilldownEntry.name = key;
+                graphDrilldownEntry.id = key;
+                var graphDrilldownData = new Array();
+                var graphDrilldownDataEntry1 = new Array();
+                graphDrilldownDataEntry1[0] = "HIGH";
+                graphDrilldownDataEntry1[1] = highCount;
+                var graphDrilldownDataEntry2 = new Array();
+                graphDrilldownDataEntry2[0] = "NORMAL";
+                graphDrilldownDataEntry2[1] = normalCount;
+                var graphDrilldownDataEntry3 = new Array();
+                graphDrilldownDataEntry3[0] = "LOW";
+                graphDrilldownDataEntry3[1] = lowCount;
+                graphDrilldownData[0] = graphDrilldownDataEntry1;
+                graphDrilldownData[1] = graphDrilldownDataEntry2;
+                graphDrilldownData[2] = graphDrilldownDataEntry3;
+                graphDrilldownEntry.data = graphDrilldownData;
+                console.log(graphDrilldownEntry);
+                issueByOriginChartOptions.drilldown.series[idx] = graphDrilldownEntry;
                 var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
                 $("<tr>").append(
                     $("<td>").append($("<a>").text(key).attr("href", linkHref)),
@@ -72,6 +105,7 @@ function issuesPerOrigin() {
                 ).appendTo("#issues-per-origin");
                 idx++;
             });
+            console.log(issueByOriginChartOptions.drilldown.series);
             // add totals
             $("<tr>").append(
                 $("<td>").text("Total"),
@@ -81,18 +115,13 @@ function issuesPerOrigin() {
                 $("<td>").text(totalCount)
             ).appendTo("#issues-per-origin");
             // update Origin Pie chart
-            $.each(graphDataArray, function(entry){
-                entry.y = entry.y / totalCount;
-                console.log("Entry - name:" + entry.name + " y: "+ entry.y);
-            });
-            console.log(graphDataArray);
+            console.log(issueByOriginChartOptions);
             issueByOriginChartOptions.series[0].data = graphDataArray;
-            var chart = Highcharts.createChart(
-                // dom element to inject the chart
-                issueByOriginChartDiv,
+            var chart = new Highcharts.Chart(
                 // graph options
                 issueByOriginChartOptions
             );
+            chart.reflow();
         });
 }
 
@@ -133,12 +162,12 @@ $("#refresh-button").on("click", function () {
 });
 
 // Code Trend
-var codeGraphDiv = $("#loc").get(0);
 var codeGraphOptions = {
     title: {
         text: ''
     },
     chart: {
+        renderTo: $("#loc").get(0),
         type: 'line'
     },
     series: [
@@ -186,10 +215,7 @@ function updateLocGraph() {
                 idx++;
             });
             codeGraphOptions.series[0].data = dataArray;
-            var chart = Highcharts.createChart(
-                // dom element to inject the chart
-                codeGraphDiv,
-                // graph options
+            var chart = new Highcharts.Chart(
                 codeGraphOptions
             );
         }
@@ -206,9 +232,7 @@ function updateLocGraph() {
                 idx++;
             });
             codeGraphOptions.series[1].data = dataArray;
-            var chart = Highcharts.createChart(
-                // dom element to inject the chart
-                codeGraphDiv,
+            var chart = new Highcharts.Chart(
                 // graph options
                 codeGraphOptions
             );
@@ -217,13 +241,14 @@ function updateLocGraph() {
 }
 
 // Issue Trend
-var issueGraphDiv = $("#issues-graph").get(0);
 var issueGraphOptions = {
     title: {
         text: ''
     },
     chart: {
-        type: 'line'
+        renderTo: $("#issues-graph").get(0),
+        type: 'line',
+        height: 300
     },
     series: [
         {
@@ -266,9 +291,7 @@ function updateIssuesGraph() {
                 idx++;
             });
             issueGraphOptions.series[0].data = dataArray;
-            var chart = Highcharts.createChart(
-                // dom element to inject the chart
-                issueGraphDiv,
+            var chart = new Highcharts.Chart(
                 // graph options
                 issueGraphOptions
             );
