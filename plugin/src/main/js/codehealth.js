@@ -35,6 +35,9 @@ var issueByOriginChartOptions = {
     subtitle: {
         text: 'Click slices to view priorities.'
     },
+    credits: {
+        enabled: false
+    },
     chart: {
         renderTo: $("#issues-pie").get(0),
         type: 'pie',
@@ -60,7 +63,7 @@ var issueByOriginChartOptions = {
         }
     ],
     drilldown: {
-        series: []
+        series: [],
     }
 }
 
@@ -181,7 +184,11 @@ var codeGraphOptions = {
     },
     chart: {
         renderTo: $("#loc").get(0),
-        type: 'line'
+        type: 'line',
+        height: 300
+    },
+    credits: {
+        enabled: false
     },
     series: [
         {
@@ -268,6 +275,9 @@ var issueGraphOptions = {
             name: "Issues"
         }
     ],
+    credits: {
+        enabled: false
+    },
     xAxis: {
         labels: {
             formatter: function () {
@@ -313,8 +323,11 @@ function updateIssuesGraph() {
     ;
 }
 
-issuesPerOrigin();
-issuesTable();
-updateLocGraph();
-updateIssuesGraph();
+$(document).ready(function () {
+    issuesPerOrigin();
+    issuesTable();
+    updateLocGraph();
+    updateIssuesGraph();
+});
+
 
