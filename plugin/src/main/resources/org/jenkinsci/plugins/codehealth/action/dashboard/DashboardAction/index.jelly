@@ -1,5 +1,8 @@
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
     <l:layout title="${%Codehealth Dashboard}" norefresh="true">
+        <l:header>
+            <link rel="stylesheet" type="text/css" href="${rootURL}/plugin/codehealth/codehealth.css"/>
+        </l:header>
         <l:main-panel>
             <script src="${rootURL}/plugin/codehealth/bundles/codehealth.js"/>
             <div id="codehealth_main" class="bootstrap-3">
@@ -13,7 +16,17 @@
                                     <h3 class="panel-title">Issue Trend Graph</h3>
                                 </div>
                                 <div class="panel-content">
-                                    <div id="issues-graph"></div>
+                                    <div class="row">
+                                        <div class="col-md-12 center-text">
+                                            <h4 id="total-issue-count">890</h4>
+                                            <span class="text-muted">Number of Issues</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="issues-graph" class="chart-container"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -22,8 +35,9 @@
                                 <div class="panel-heading">
                                     <h3 class="panel-title">Issues by Origin</h3>
                                 </div>
-                                <div class="panel-body" id="issues-pie">
-                                    <!-- Here goes the pie chart -->
+                                <div class="panel-body">
+                                    <div id="issues-pie" class="chart-container">
+                                    </div>
                                 </div>
                                 <table class="table">
                                     <thead>
@@ -46,7 +60,7 @@
                                     <h3 class="panel-title">Code Trend Graph</h3>
                                 </div>
                                 <div class="panel-content">
-                                    <div id="loc"></div>
+                                    <div id="loc" class="chart-container"></div>
                                 </div>
                             </div>
                         </div>
@@ -54,8 +68,10 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel panel-default">
-                                <div class="panel-heading" data-toggle="collapse" data-target="#issue-table-panel">
-                                    <h3 class="panel-title">All issues</h3>
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">
+                                        <a data-toggle="collapse" href="#issue-table-panel">All issues</a>
+                                    </h3>
                                 </div>
                                 <div class="panel-content collapse" id="issue-table-panel">
                                     <div id="issue-table">

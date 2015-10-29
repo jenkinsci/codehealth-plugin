@@ -261,6 +261,7 @@ function updateLocGraph() {
 }
 
 // Issue Trend
+var issueGraph;
 var issueGraphOptions = {
     title: {
         text: ''
@@ -314,7 +315,7 @@ function updateIssuesGraph() {
                 idx++;
             });
             issueGraphOptions.series[0].data = dataArray;
-            var chart = new Highcharts.Chart(
+            issueGraph = new Highcharts.Chart(
                 // graph options
                 issueGraphOptions
             );
