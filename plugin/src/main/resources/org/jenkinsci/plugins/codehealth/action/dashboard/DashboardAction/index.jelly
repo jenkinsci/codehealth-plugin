@@ -52,24 +52,26 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">All issues</h3>
-                            </div>
-                            <div class="panel-content">
-                                <div id="issue-table">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th># ID</th>
-                                                <th>Message</th>
-                                                <th>Priority</th>
-                                                <th>Origin</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="codehealth-issues">
-                                        </tbody>
-                                    </table>
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" data-toggle="collapse" data-target="#issue-table-panel">
+                                    <h3 class="panel-title">All issues</h3>
+                                </div>
+                                <div class="panel-content collapse" id="issue-table-panel">
+                                    <div id="issue-table">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th># ID</th>
+                                                    <th>Message</th>
+                                                    <th>Priority</th>
+                                                    <th>Origin</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="codehealth-issues">
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
