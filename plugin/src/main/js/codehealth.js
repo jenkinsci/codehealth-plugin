@@ -328,6 +328,8 @@ $(document).ready(function () {
     issuesTable();
     updateLocGraph();
     updateIssuesGraph();
+    $("#side-panel").remove();
+    $("#main-panel").css("margin-left", "0px");
 });
 
 
