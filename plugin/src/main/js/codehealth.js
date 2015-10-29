@@ -1,6 +1,5 @@
 var $ = require('jquery-detached').getJQuery();
 var $bootstrap = require('bootstrap-detached').getBootstrap();
-var d3 = require('d3');
 var header = $('#header');
 var Highcharts = require('highcharts-browserify/modules/drilldown')
 
