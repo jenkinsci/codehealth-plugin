@@ -9,6 +9,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
@@ -71,11 +72,13 @@ public class CodehealthPublisher extends Recorder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-        this.getInjector().injectMembers(this);
-        handleNewBuild(build, listener);
-        handleIssues(build, listener);
-        handleLinesOfCode(build, listener);
-        handleDuplicateCode(build, listener);
+        if (build.getResult().isBetterThan(Result.UNSTABLE)) {
+            this.getInjector().injectMembers(this);
+            handleNewBuild(build, listener);
+            handleIssues(build, listener);
+            handleLinesOfCode(build, listener);
+            handleDuplicateCode(build, listener);
+        }
         return true;
     }
 
