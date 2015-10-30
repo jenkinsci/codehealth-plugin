@@ -78,6 +78,8 @@ public class CodehealthPublisher extends Recorder {
             handleIssues(build, listener);
             handleLinesOfCode(build, listener);
             handleDuplicateCode(build, listener);
+        } else {
+            logConsole(listener, "Skipping Codehealth Publisher because of build result" + build.getResult().toString());
         }
         return true;
     }

@@ -51,6 +51,7 @@ public class CodehealthPublisherTest {
         this.topLevelItem = mock(FreeStyleProject.class);
         this.build = mock(AbstractBuild.class);
         when(this.build.getProject()).thenReturn((AbstractProject) this.topLevelItem);
+        when(this.build.getResult()).thenReturn(Result.SUCCESS);
         this.launcher = mock(Launcher.class);
         this.buildListener = mock(BuildListener.class);
         when(this.buildListener.getLogger()).thenReturn(System.out);

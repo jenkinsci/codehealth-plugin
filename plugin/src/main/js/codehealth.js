@@ -57,8 +57,7 @@ var issueByOriginChartOptions = {
     },
     series: [
         {
-            name: "Issues",
-            colorByPoint: true
+            name: "Issues"
         }
     ],
     drilldown: {
