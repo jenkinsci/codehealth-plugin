@@ -1,7 +1,9 @@
 var $ = require('jquery-detached').getJQuery();
 var $bootstrap = require('bootstrap-detached').getBootstrap();
 var header = $('#header');
-var Highcharts = require('highcharts-browserify/modules/drilldown')
+var Highcharts = require('highcharts-browserify/modules/drilldown');
+// Highcharts theme
+//require('highcharts-browserify/themes/dark-blue');
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
@@ -61,7 +63,7 @@ var issueByOriginChartOptions = {
         }
     ],
     drilldown: {
-        series: [],
+        series: []
     }
 }
 
