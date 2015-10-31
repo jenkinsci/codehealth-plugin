@@ -1,9 +1,7 @@
 var $ = require('jquery-detached').getJQuery();
-var $bootstrap = require('bootstrap-detached').getBootstrap();
-var header = $('#header');
+require('bootstrap-detached').getBootstrap();
 var Highcharts = require('highcharts-browserify/modules/drilldown');
-// Highcharts theme
-//require('highcharts-browserify/themes/dark-blue');
+require('highcharts-browserify/modules/data');
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
@@ -14,7 +12,7 @@ var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLi
 
 // Common functions
 function createDrilldownEntry(name, id, data) {
-    var entry = new Object();
+    var entry = {};
     entry.name = name;
     entry.id = id;
     entry.data = data;
@@ -22,7 +20,7 @@ function createDrilldownEntry(name, id, data) {
 }
 
 function createDrilldownData(name, value) {
-    var data = new Array();
+    var data = [];
     data[0] = name;
     data[1] = value;
     return data;
@@ -65,7 +63,7 @@ var issueByOriginChartOptions = {
     drilldown: {
         series: []
     }
-}
+};
 
 // Issues per Origin
 function issuesPerOrigin() {
@@ -73,8 +71,7 @@ function issuesPerOrigin() {
     $.getJSON(issuesPerOriginAPI)
         .done(function (data) {
             $("#issues-per-origin").empty();
-            var graphDataArray = new Array();
-            var graphDrilldownArray = new Array();
+            var graphDataArray = [];
             var idx = 0;
             $.each(data.issuesPerOrigin, function (key, value) {
                 console.log("Summing up issues for : " + key);
@@ -83,8 +80,8 @@ function issuesPerOrigin() {
                 lowCount = 0;
                 normalCount = 0;
                 highCount = 0;
-                var origin;
-                var graphDataEntry = new Object();
+                var origin = "";
+                var graphDataEntry = {};
                 graphDataEntry.name = key;
                 graphDataEntry.y = totalOriginCount;
                 graphDataEntry.drilldown = key;
@@ -103,15 +100,11 @@ function issuesPerOrigin() {
                 totalLow = totalLow + lowCount;
                 totalNormal = totalNormal + normalCount;
                 totalHigh = totalHigh + highCount;
-                var graphDrilldownData = new Array();
-                var graphDrilldownDataEntry1 = createDrilldownData("HIGH", highCount);
-                var graphDrilldownDataEntry2 = createDrilldownData("NORMAL", normalCount);
-                var graphDrilldownDataEntry3 = createDrilldownData("LOW", lowCount);
-                graphDrilldownData[0] = graphDrilldownDataEntry1;
-                graphDrilldownData[1] = graphDrilldownDataEntry2;
-                graphDrilldownData[2] = graphDrilldownDataEntry3;
-                var graphDrilldownEntry = createDrilldownEntry(key, key, graphDrilldownData);
-                issueByOriginChartOptions.drilldown.series[idx] = graphDrilldownEntry;
+                var graphDrilldownData = [];
+                graphDrilldownData[0] = createDrilldownData("HIGH", highCount);
+                graphDrilldownData[1] = createDrilldownData("NORMAL", normalCount);
+                graphDrilldownData[2] = createDrilldownData("LOW", lowCount);
+                issueByOriginChartOptions.drilldown.series[idx] = createDrilldownEntry(key, key, graphDrilldownData);
                 var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
                 $("<tr>").append(
                     $("<td>").append($("<a>").text(key).attr("href", linkHref)),
@@ -131,10 +124,11 @@ function issuesPerOrigin() {
                 $("<td>").text(totalLow),
                 $("<td>").text(totalCount)
             ).appendTo("#issues-per-origin");
+            $("#total-issue-count").text(totalCount);
             // update Origin Pie chart
             console.log(issueByOriginChartOptions);
             issueByOriginChartOptions.series[0].data = graphDataArray;
-            var chart = new Highcharts.Chart(
+            new Highcharts.Chart(
                 // graph options
                 issueByOriginChartOptions
             );
@@ -149,7 +143,7 @@ function issuesTable() {
             $.each(data.issues, function (i, issue) {
                 // add to table
                 var linkHref = "../issues-api/goToBuildResult?origin=" + issue.origin;
-                var $tr = $("<tr>").on("click", function () {
+                $("<tr>").on("click", function () {
                     document.location.href = linkHref;
                 }).append(
                     $("<td>").append($("<a>").text(issue.id).attr("href", linkHref)),
@@ -165,7 +159,6 @@ function issuesTable() {
         .always(function () {
             //console.log("JSON API called...")
         });
-    ;
 }
 
 // Refresh Button
@@ -220,39 +213,39 @@ var codeGraphOptions = {
         },
         shared: true
     }
-}
+};
 function updateLocGraph() {
     // TODO only call createChart() when both AJAX calls are finished
     $.getJSON(linesOfCodeSeriesAPI)
         .done(function (data) {
-            var dataArray = new Array();
+            var dataArray = [];
             var idx = 0;
             $.each(data.series, function (i, item) {
-                var obj = new Array();
+                var obj = [];
                 obj[0] = parseInt(item.build.number);
                 obj[1] = item.linesOfCode;
                 dataArray[idx] = obj;
                 idx++;
             });
             codeGraphOptions.series[0].data = dataArray;
-            var chart = new Highcharts.Chart(
+            new Highcharts.Chart(
                 codeGraphOptions
             );
         }
     );
     $.getJSON(duplicateCodeSeriesAPI)
         .done(function (data) {
-            var dataArray = new Array();
+            var dataArray = [];
             var idx = 0;
             $.each(data.series, function (i, item) {
-                var obj = new Array();
+                var obj = [];
                 obj[0] = parseInt(item.build.number);
                 obj[1] = item.duplicateLines;
                 dataArray[idx] = obj;
                 idx++;
             });
             codeGraphOptions.series[1].data = dataArray;
-            var chart = new Highcharts.Chart(
+            new Highcharts.Chart(
                 // graph options
                 codeGraphOptions
             );
@@ -301,19 +294,30 @@ var issueGraphOptions = {
         },
         shared: true
     }
-}
+};
 function updateIssuesGraph() {
     $.getJSON(issuesGraphAPI)
         .done(function (data) {
-            var dataArray = new Array();
+            var dataArray = [];
             var idx = 0;
+            var lastCount = 0;
+            var lastTrend = 0;
             $.each(data.series, function (buildNr, issueCount) {
-                var obj = new Array();
+                var obj = [];
                 obj[0] = parseInt(buildNr);
                 obj[1] = issueCount;
+                lastTrend = issueCount - lastCount;
+                lastCount = issueCount;
                 dataArray[idx] = obj;
                 idx++;
             });
+            var trendChar = "";
+            if (lastTrend > 0) {
+                trendChar = "+";
+            } else if (lastTrend < 0) {
+                trendChar = "-";
+            }
+            $("#total-issue-trend").text(trendChar + lastTrend);
             issueGraphOptions.series[0].data = dataArray;
             issueGraph = new Highcharts.Chart(
                 // graph options
@@ -321,7 +325,6 @@ function updateIssuesGraph() {
             );
         }
     );
-    ;
 }
 
 $(document).ready(function () {
