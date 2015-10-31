@@ -8,7 +8,9 @@ var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,s
 var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
 var issuesGraphAPI = "../issues-api/api/json?tree=series";
 var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode,build[number]]";
+var linesOfCodeAPI = "../loc-api/api/json?pretty=true&tree=linesOfCode[fileCount,linesOfCode]";
 var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
+var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateLines]";
 
 // Common functions
 function createDrilldownEntry(name, id, data) {
@@ -220,13 +222,18 @@ function updateLocGraph() {
         .done(function (data) {
             var dataArray = [];
             var idx = 0;
+            var lastCount = 0;
+            var lastTrend = 0;
             $.each(data.series, function (i, item) {
                 var obj = [];
                 obj[0] = parseInt(item.build.number);
                 obj[1] = item.linesOfCode;
+                lastTrend = item.linesOfCode - lastCount;
+                lastCount = item.linesOfCode;
                 dataArray[idx] = obj;
                 idx++;
             });
+            $("#total-line-trend").text(getTrendFormat(lastTrend));
             codeGraphOptions.series[0].data = dataArray;
             new Highcharts.Chart(
                 codeGraphOptions
@@ -251,6 +258,13 @@ function updateLocGraph() {
             );
         }
     );
+    $.getJSON(linesOfCodeAPI).done(function(data){
+        $("#total-line-count").text(data.linesOfCode.linesOfCode);
+        $("#total-file-count").text(data.linesOfCode.fileCount);
+    });
+    $.getJSON(duplicateCodeAPI).done(function(data){
+        $("#total-duplicate-count").text(data.duplicateCode.duplicateLines);
+    });
 }
 
 // Issue Trend
@@ -295,6 +309,21 @@ var issueGraphOptions = {
         shared: true
     }
 };
+
+function getTrendChar(trendNumber) {
+    if (trendNumber > 0) {
+        return "+";
+    } else if (trendNumber < 0) {
+        return "-";
+    } else {
+        return "";
+    }
+}
+
+function getTrendFormat(trendNumber){
+    return getTrendChar(trendNumber) + trendNumber;
+}
+
 function updateIssuesGraph() {
     $.getJSON(issuesGraphAPI)
         .done(function (data) {
@@ -311,13 +340,7 @@ function updateIssuesGraph() {
                 dataArray[idx] = obj;
                 idx++;
             });
-            var trendChar = "";
-            if (lastTrend > 0) {
-                trendChar = "+";
-            } else if (lastTrend < 0) {
-                trendChar = "-";
-            }
-            $("#total-issue-trend").text(trendChar + lastTrend);
+            $("#total-issue-trend").text(getTrendFormat(lastTrend));
             issueGraphOptions.series[0].data = dataArray;
             issueGraph = new Highcharts.Chart(
                 // graph options

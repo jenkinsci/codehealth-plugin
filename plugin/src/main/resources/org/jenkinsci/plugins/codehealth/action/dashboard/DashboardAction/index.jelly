@@ -64,7 +64,29 @@
                                     <h3 class="panel-title">Code Trend Graph</h3>
                                 </div>
                                 <div class="panel-content">
-                                    <div id="loc" class="chart-container"></div>
+                                    <div class="row">
+                                        <div class="col-md-3 center-text">
+                                            <h4 id="total-line-count"></h4>
+                                            <span class="text-muted">Lines of Code</span>
+                                        </div>
+                                        <div class="col-md-3 center-text">
+                                            <h4 id="total-file-count"></h4>
+                                            <span class="text-muted">Files</span>
+                                        </div>
+                                        <div class="col-md-3 center-text">
+                                            <h4 id="total-line-trend"></h4>
+                                            <span class="text-muted">LOC Trend</span>
+                                        </div>
+                                        <div class="col-md-3 center-text">
+                                            <h4 id="total-duplicate-count"></h4>
+                                            <span class="text-muted">Duplicate lines</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="loc" class="chart-container"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
