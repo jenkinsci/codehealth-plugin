@@ -21,10 +21,11 @@ function createDrilldownEntry(name, id, data) {
     return entry;
 }
 
-function createDrilldownData(name, value) {
-    var data = [];
-    data[0] = name;
-    data[1] = value;
+function createDrilldownData(name, value, color) {
+    var data = {};
+    data.name = name;
+    data.y = value;
+    data.color = color;
     return data;
 }
 
@@ -103,9 +104,9 @@ function issuesPerOrigin() {
                 totalNormal = totalNormal + normalCount;
                 totalHigh = totalHigh + highCount;
                 var graphDrilldownData = [];
-                graphDrilldownData[0] = createDrilldownData("HIGH", highCount);
-                graphDrilldownData[1] = createDrilldownData("NORMAL", normalCount);
-                graphDrilldownData[2] = createDrilldownData("LOW", lowCount);
+                graphDrilldownData[0] = createDrilldownData("HIGH", highCount, "#FF0000");
+                graphDrilldownData[1] = createDrilldownData("NORMAL", normalCount, "#FFFF00");
+                graphDrilldownData[2] = createDrilldownData("LOW", lowCount, "#024700");
                 issueByOriginChartOptions.drilldown.series[idx] = createDrilldownEntry(key, key, graphDrilldownData);
                 var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
                 $("<tr>").append(
