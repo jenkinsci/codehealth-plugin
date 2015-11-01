@@ -79,20 +79,13 @@
                 <groupId>com.cj.jshintmojo</groupId>
                 <artifactId>jshint-maven-plugin</artifactId>
                 <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>lint</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <options>maxparams:3,indent,camelcase,eqeqeq,forin,immed,latedef,noarg,noempty,nonew</options>
                     <directories>
                         <directory>src/main/js</directory>
                     </directories>
                     <reporter>jslint</reporter>
-                    <reportFile>target/jshint.xml</reportFile>
+                    <reportFile>${project.build.directory}/jshint.xml</reportFile>
                     <failOnError>false</failOnError>
                 </configuration>
             </plugin>
