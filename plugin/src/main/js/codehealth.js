@@ -306,8 +306,6 @@ var issueGraphOptions = {
 function getTrendChar(trendNumber) {
     if (trendNumber > 0) {
         return "+";
-    } else if (trendNumber < 0) {
-        return "-";
     } else {
         return "";
     }
