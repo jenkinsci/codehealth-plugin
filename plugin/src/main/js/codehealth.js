@@ -336,6 +336,31 @@ function updateIssuesGraph() {
     );
 }
 
+function compareChangeSet(a, b) {
+    if (a.timestamp != null && b.timestamp != null) {
+        if (a.timestamp > b.timestamp) {
+            return 1;
+        } else if (a.timestamp < b.timestamp) {
+            return -1;
+        } else {
+            return 0;
+        }
+    } else {
+        if (a.revision != null && b.revision != null) {
+            if (a.revision > b.revision) {
+                return 1;
+            } else if (a.revision < b.revision) {
+                return -1;
+            }
+            else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+}
+
 function updateChangesets() {
     var changeSetAPI = "../api/json?tree=builds[number,timestamp,changeSet[items[msg,comment,author[id,fullName,property[address]],date,commitId]]]{0,10}";
     // default image src is gravatar default image (if no mail specified)
@@ -367,9 +392,12 @@ function updateChangesets() {
                         gravatarSrc = "http://www.gravatar.com/avatar/" + cryptoJSMD5(authorMail) + "?d=retro&s=64"
                     }
                     var momDate = null;
+                    var timestamp = null;
                     if (date != null) {
                         // 2015-10-29 17:39:36 +0100
-                        momDate = moment(date, "YYYY.MM.DD HH:mm:ss ZZ").calendar();
+                        var parsedDate = moment(date, "YYYY.MM.DD HH:mm:ss ZZ");
+                        momDate = parsedDate.calendar();
+                        timestamp = parsedDate.format('x');
                     }
                     var singleChange = {
                         message: msg,
@@ -377,11 +405,14 @@ function updateChangesets() {
                         authorId: authorId,
                         revision: revision,
                         gravatarSrc: gravatarSrc,
-                        date: momDate
+                        date: momDate,
+                        timestamp: timestamp,
+                        changeHref: "../" + buildNr + "/changes#" + revision
                     };
                     changeSetsForBuild.push(singleChange);
                 });
                 if (changeSetsForBuild.length > 0) {
+                    changeSetsForBuild.sort(compareChangeSet).reverse();
                     var buildRes = buildTemplate({
                         number: buildNr,
                         timestamp: moment(new Date(timestamp)).calendar(),

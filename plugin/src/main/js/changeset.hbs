@@ -10,7 +10,9 @@
         <div class="{{#if date}}col-md-8{{else}}col-md-10{{/if}}">
             <h5>{{message}}</h5>
             <span class="text-muted">by <a
-                    href="../../../user/{{authorId}}">{{author}}</a> at revision <small>{{revision}}</small></span>
+                    href="../../../user/{{authorId}}">{{author}}</a> at revision <a href="{{changeHref}}">
+                <small>{{revision}}</small>
+            </a></span>
         </div>
         {{#if date}}
             <div class="col-md-2">
