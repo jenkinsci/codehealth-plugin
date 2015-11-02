@@ -20,6 +20,7 @@ var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateL
 var changesetTemplate = require('./changeset.hbs');
 var buildTemplate = require('./build.hbs');
 var issueRowTemplate = require('./issue.hbs');
+var issueOriginRowTemplate = require('./issue-origin.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
 
 // Common functions
@@ -124,24 +125,24 @@ function issuesPerOrigin() {
                 totalHigh = totalHigh + highCount;
                 issueByOriginChartOptions.drilldown.series[idx] = createDrilldownEntry(key, key, createPriorityDrilldownDataArray(lowCount, normalCount, highCount));
                 var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
-                // TODO Handlebars template
-                $("<tr>").append(
-                    $("<td>").append($("<a>").text(key).attr("href", linkHref)),
-                    $("<td>").text(highCount),
-                    $("<td>").text(normalCount),
-                    $("<td>").text(lowCount),
-                    $("<td>").text(totalOriginCount)
-                ).appendTo("#issues-per-origin");
+                $("#issues-per-origin").append(issueOriginRowTemplate({
+                    key: key,
+                    linkHref: linkHref,
+                    highCount: highCount,
+                    normalCount: normalCount,
+                    lowCount: lowCount,
+                    totalOriginCount: totalOriginCount
+                }));
                 idx++;
             });
             // add totals
-            $("<tr>").append(
-                $("<td>").text("Total"),
-                $("<td>").text(totalHigh),
-                $("<td>").text(totalNormal),
-                $("<td>").text(totalLow),
-                $("<td>").text(totalCount)
-            ).appendTo("#issues-per-origin");
+            $("#issues-per-origin").append(issueOriginRowTemplate({
+                key: "Total",
+                highCount: totalHigh,
+                normalCount: totalNormal,
+                lowCount: totalLow,
+                totalOriginCount: totalCount
+            }));
             $("#total-issue-count").text(numeral(totalCount).format('0,0'));
             // update Origin Pie chart
             issueByOriginChartOptions.series[0].data = graphDataArray;
