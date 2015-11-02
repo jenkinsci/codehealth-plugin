@@ -1,0 +1,8 @@
+<li class="list-group-item">
+    <span>Build #{{number}}</span>
+    <ul class="list-group">
+        {{#each changesets}}
+            {{> changeset}}
+        {{/each}}
+    </ul>
+</li>

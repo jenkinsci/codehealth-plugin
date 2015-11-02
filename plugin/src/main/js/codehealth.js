@@ -3,7 +3,7 @@ require('bootstrap-detached').getBootstrap();
 var Highcharts = require('highcharts-browserify/modules/drilldown');
 require('highcharts-browserify/modules/data');
 var cryptoJSMD5 = require("crypto-js/md5");
-require("handlebars");
+var handlebars = require("handlebars");
 var moment = require('moment');
 
 // API Endpoints
@@ -14,6 +14,11 @@ var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCod
 var linesOfCodeAPI = "../loc-api/api/json?pretty=true&tree=linesOfCode[fileCount,linesOfCode]";
 var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
 var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateLines]";
+
+// Handlebars templates & partials
+var changesetTemplate = require('./changeset.hbs');
+var issueRowTemplate = require('./issue.hbs');
+handlebars.registerPartial('changeset', changesetTemplate);
 
 // Common functions
 function createDrilldownEntry(name, id, data) {
@@ -80,7 +85,6 @@ function issuesPerOrigin() {
             var graphDataArray = [];
             var idx = 0;
             $.each(data.issuesPerOrigin, function (key, value) {
-                console.log("Summing up issues for : " + key);
                 totalOriginCount = value.length;
                 totalCount = totalCount + totalOriginCount;
                 lowCount = 0;
@@ -102,7 +106,6 @@ function issuesPerOrigin() {
                     }
                     origin = issue.origin;
                 });
-                console.log("HIGH: " + highCount + " NORMAL: " + normalCount + " LOW: " + lowCount + " -- TOTAL: " + totalOriginCount);
                 totalLow = totalLow + lowCount;
                 totalNormal = totalNormal + normalCount;
                 totalHigh = totalHigh + highCount;
@@ -112,6 +115,7 @@ function issuesPerOrigin() {
                 graphDrilldownData[2] = createDrilldownData("LOW", lowCount, "#024700");
                 issueByOriginChartOptions.drilldown.series[idx] = createDrilldownEntry(key, key, graphDrilldownData);
                 var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
+                // TODO Handlebars template
                 $("<tr>").append(
                     $("<td>").append($("<a>").text(key).attr("href", linkHref)),
                     $("<td>").text(highCount),
@@ -121,7 +125,6 @@ function issuesPerOrigin() {
                 ).appendTo("#issues-per-origin");
                 idx++;
             });
-            console.log(issueByOriginChartOptions.drilldown.series);
             // add totals
             $("<tr>").append(
                 $("<td>").text("Total"),
@@ -132,7 +135,6 @@ function issuesPerOrigin() {
             ).appendTo("#issues-per-origin");
             $("#total-issue-count").text(totalCount);
             // update Origin Pie chart
-            console.log(issueByOriginChartOptions);
             issueByOriginChartOptions.series[0].data = graphDataArray;
             new Highcharts.Chart(
                 // graph options
@@ -149,18 +151,14 @@ function issuesTable() {
             $.each(data.issues, function (i, issue) {
                 // add to table
                 var linkHref = "../issues-api/goToBuildResult?origin=" + issue.origin;
-                $("<tr>").on("click", function () {
-                    document.location.href = linkHref;
-                }).append(
-                    $("<td>").append($("<a>").text(issue.id).attr("href", linkHref)),
-                    $("<td>").text(issue.message),
-                    $("<td>").text(issue.priority),
-                    $("<td>").text(issue.origin)
-                ).appendTo('#codehealth-issues');
+                var row = issueRowTemplate({
+                    linkHref: linkHref,
+                    issue: issue
+                });
+                $('#codehealth-issues').append(row);
             });
 
             var nrOfIssues = data.issues.length;
-            console.log("Nr of Issues: " + nrOfIssues);
         })
         .always(function () {
             //console.log("JSON API called...")
@@ -346,36 +344,39 @@ function updateIssuesGraph() {
 }
 
 function updateChangesets() {
-    var changeSetAPI = "../api/json?tree=builds[changeSet[items[msg,author[id,fullName,property[address]],date,commitId]]]{0,10}";
+    // TODO group by build, use build.hbs with partials in each-loop
+    var changeSetAPI = "../api/json?tree=builds[changeSet[items[msg,comment,author[id,fullName,property[address]],date,commitId]]]{0,10}";
     // default image src is gravatar default image (if no mail specified)
     var gravatarSrc = "http://www.gravatar.com/avatar/default?f=y&s=64";
     $.getJSON(changeSetAPI)
         .done(function (data) {
-            console.log(data);
+            $("#changeset-container").empty();
             $.each(data.builds, function (buildIdx, build) {
                 var changeSet = build.changeSet;
                 $.each(changeSet.items, function (itemIdx, changeItem) {
                     var revision = changeItem.commitId;
                     var author = changeItem.author;
                     var date = changeItem.date;
-                    console.log("Date: " + date);
                     var authorId = author.id;
                     var authorName = author.fullName;
                     var authorMail = "";
+                    // find mail address
                     $.each(author.property, function (key, value) {
                         if (value.address != null) {
                             authorMail = value.address;
                             return false;
                         }
                     });
-                    var msg = changeItem.msg;
+                    var msg = (changeItem.comment != null) ? changeItem.comment : changeItem.msg;
                     if (authorMail !== "") {
                         gravatarSrc = "http://www.gravatar.com/avatar/" + cryptoJSMD5(authorMail) + "?d=retro&s=64"
                     }
-                    // 2015-10-29 17:39:36 +0100
-                    var momDate = moment(date, "YYYY.MM.DD HH:mm:ss ZZ").format("DD.MM.YYYY HH:mm");
-                    var template = require("./changeset.hbs");
-                    var tempRes = template({
+                    var momDate = null;
+                    if (date != null) {
+                        // 2015-10-29 17:39:36 +0100
+                        momDate = moment(date, "YYYY.MM.DD HH:mm:ss ZZ").calendar();
+                    }
+                    var tempRes = changesetTemplate({
                         message: msg,
                         author: authorName,
                         authorId: authorId,
