@@ -6,3 +6,9 @@
 .center-text {
     text-align: center;
 }
+
+.gravatar-container {
+    vertical-align:middle;
+    text-align: center;
+    padding: 8px;
+}

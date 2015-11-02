@@ -2,6 +2,8 @@ var $ = require('jquery-detached').getJQuery();
 require('bootstrap-detached').getBootstrap();
 var Highcharts = require('highcharts-browserify/modules/drilldown');
 require('highcharts-browserify/modules/data');
+var cryptoJSMD5 = require("crypto-js/md5");
+require("handlebars");
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
@@ -259,11 +261,11 @@ function updateLocGraph() {
             );
         }
     );
-    $.getJSON(linesOfCodeAPI).done(function(data){
+    $.getJSON(linesOfCodeAPI).done(function (data) {
         $("#total-line-count").text(data.linesOfCode.linesOfCode);
         $("#total-file-count").text(data.linesOfCode.fileCount);
     });
-    $.getJSON(duplicateCodeAPI).done(function(data){
+    $.getJSON(duplicateCodeAPI).done(function (data) {
         $("#total-duplicate-count").text(data.duplicateCode.duplicateLines);
     });
 }
@@ -321,7 +323,7 @@ function getTrendChar(trendNumber) {
     }
 }
 
-function getTrendFormat(trendNumber){
+function getTrendFormat(trendNumber) {
     return getTrendChar(trendNumber) + trendNumber;
 }
 
@@ -351,11 +353,26 @@ function updateIssuesGraph() {
     );
 }
 
+function getGravatars() {
+    var hash = cryptoJSMD5('eidottermihi@gmail.com');
+    var src = "http://www.gravatar.com/avatar/" + hash + "?d=retro&s=64";
+    var template = require("./changeset.hbs");
+    var tempRes = template({
+        message: "Added Handlebars templating to project.",
+        author: "Michael Prankl",
+        revision: "78dffsdf8ghdfugdf8",
+        gravatarSrc: src
+    });
+    $("#hbs_container").append(tempRes);
+    $("#hbs_container2").append(tempRes);
+}
+
 $(document).ready(function () {
     issuesPerOrigin();
     issuesTable();
     updateLocGraph();
     updateIssuesGraph();
+    getGravatars();
     $("#side-panel").remove();
     $("#main-panel").css("margin-left", "0px");
 });

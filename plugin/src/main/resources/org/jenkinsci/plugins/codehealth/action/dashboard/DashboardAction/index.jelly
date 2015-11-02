@@ -76,7 +76,8 @@
                                         <div class="col-md-3 center-text">
                                             <h4 id="total-line-trend"></h4>
                                             <span class="text-muted">LOC Trend</span>
-                                            <img src="${rootURL}/plugin/codehealth/images/up.svg#param(--text-color=red)" width="24px" height="24px"></img>
+                                            <img src="${rootURL}/plugin/codehealth/images/up.svg#param(--text-color=red)"
+                                                 width="24px" height="24px"></img>
                                         </div>
                                         <div class="col-md-3 center-text">
                                             <h4 id="total-duplicate-count"></h4>
@@ -93,7 +94,20 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-sd-6">
+                        <div class="col-md-6 col-sd-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Latest changes</h3>
+                                </div>
+                                <div class="panel-content">
+                                </div>
+                                <ul class="list-group">
+                                    <li id="hbs_container" class="list-group-item container-fluid"></li>
+                                    <li id="hbs_container2" class="list-group-item container-fluid"></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sd-12">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">Build information</h3>
@@ -138,7 +152,7 @@
                 from
                 <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>
                 is licensed by
-                <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>
+                <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
             </div>
         </l:main-panel>
     </l:layout>
