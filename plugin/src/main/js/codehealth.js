@@ -5,6 +5,7 @@ require('highcharts-browserify/modules/data');
 var cryptoJSMD5 = require("crypto-js/md5");
 var handlebars = require("handlebars");
 var moment = require('moment');
+var numeral = require('numeral');
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
@@ -37,10 +38,25 @@ function createDrilldownData(name, value, color) {
     return data;
 }
 
+function createPriorityDrilldownDataArray(lowCount, normalCount, highCount) {
+    var idx = 0;
+    var dataArr = [];
+    if (lowCount > 0) {
+        dataArr[idx++] = createDrilldownData("LOW", lowCount, "024700");
+    }
+    if (normalCount > 0) {
+        dataArr[idx++] = createDrilldownData("NORMAL", normalCount, "#FFFF00");
+    }
+    if (highCount > 0) {
+        dataArr[idx++] = createDrilldownData("HIGH", highCount, "#FF0000");
+    }
+    return dataArr;
+}
+
 // Code Trend
 var issueByOriginChartOptions = {
     title: {
-        text: ''
+        text: null
     },
     subtitle: {
         text: 'Click slices to view priorities.'
@@ -49,21 +65,17 @@ var issueByOriginChartOptions = {
         enabled: false
     },
     chart: {
-        renderTo: $("#issues-pie").get(0),
-        type: 'pie',
-        height: 300,
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false
+        renderTo: "issues-pie",
+        type: 'pie'
     },
     plotOptions: {
         pie: {
             allowPointSelect: true,
             cursor: 'pointer',
             dataLabels: {
-                enabled: false
-            },
-            showInLegend: true
+                distance: -40,
+                connectorPadding: 0
+            }
         }
     },
     series: [
@@ -109,11 +121,7 @@ function issuesPerOrigin() {
                 totalLow = totalLow + lowCount;
                 totalNormal = totalNormal + normalCount;
                 totalHigh = totalHigh + highCount;
-                var graphDrilldownData = [];
-                graphDrilldownData[0] = createDrilldownData("HIGH", highCount, "#FF0000");
-                graphDrilldownData[1] = createDrilldownData("NORMAL", normalCount, "#FFFF00");
-                graphDrilldownData[2] = createDrilldownData("LOW", lowCount, "#024700");
-                issueByOriginChartOptions.drilldown.series[idx] = createDrilldownEntry(key, key, graphDrilldownData);
+                issueByOriginChartOptions.drilldown.series[idx] = createDrilldownEntry(key, key, createPriorityDrilldownDataArray(lowCount, normalCount, highCount));
                 var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
                 // TODO Handlebars template
                 $("<tr>").append(
@@ -133,7 +141,7 @@ function issuesPerOrigin() {
                 $("<td>").text(totalLow),
                 $("<td>").text(totalCount)
             ).appendTo("#issues-per-origin");
-            $("#total-issue-count").text(totalCount);
+            $("#total-issue-count").text(numeral(totalCount).format('0,0'));
             // update Origin Pie chart
             issueByOriginChartOptions.series[0].data = graphDataArray;
             new Highcharts.Chart(
@@ -168,12 +176,11 @@ function issuesTable() {
 // Code Trend
 var codeGraphOptions = {
     title: {
-        text: ''
+        text: null
     },
     chart: {
-        renderTo: $("#loc").get(0),
-        type: 'line',
-        height: 300
+        renderTo: "loc",
+        type: 'line'
     },
     credits: {
         enabled: false
@@ -226,7 +233,7 @@ function updateLocGraph() {
                 dataArray[idx] = obj;
                 idx++;
             });
-            $("#total-line-trend").text(getTrendFormat(lastTrend));
+            $("#total-line-trend").text(numeral(lastTrend).format('+0,0'));
             codeGraphOptions.series[0].data = dataArray;
             new Highcharts.Chart(
                 codeGraphOptions
@@ -252,11 +259,11 @@ function updateLocGraph() {
         }
     );
     $.getJSON(linesOfCodeAPI).done(function (data) {
-        $("#total-line-count").text(data.linesOfCode.linesOfCode);
-        $("#total-file-count").text(data.linesOfCode.fileCount);
+        $("#total-line-count").text(numeral(data.linesOfCode.linesOfCode).format('0,0'));
+        $("#total-file-count").text(numeral(data.linesOfCode.fileCount).format('0,0'));
     });
     $.getJSON(duplicateCodeAPI).done(function (data) {
-        $("#total-duplicate-count").text(data.duplicateCode.duplicateLines);
+        $("#total-duplicate-count").text(numeral(data.duplicateCode.duplicateLines).format('0,0'));
     });
 }
 
@@ -264,12 +271,11 @@ function updateLocGraph() {
 var issueGraph;
 var issueGraphOptions = {
     title: {
-        text: ''
+        text: null
     },
     chart: {
-        renderTo: $("#issues-graph").get(0),
-        type: 'line',
-        height: 300
+        renderTo: "issues-graph",
+        type: 'line'
     },
     series: [
         {
@@ -303,18 +309,6 @@ var issueGraphOptions = {
     }
 };
 
-function getTrendChar(trendNumber) {
-    if (trendNumber > 0) {
-        return "+";
-    } else {
-        return "";
-    }
-}
-
-function getTrendFormat(trendNumber) {
-    return getTrendChar(trendNumber) + trendNumber;
-}
-
 function updateIssuesGraph() {
     $.getJSON(issuesGraphAPI)
         .done(function (data) {
@@ -331,7 +325,7 @@ function updateIssuesGraph() {
                 dataArray[idx] = obj;
                 idx++;
             });
-            $("#total-issue-trend").text(getTrendFormat(lastTrend));
+            $("#total-issue-trend").text(numeral(lastTrend).format('+0,0'));
             issueGraphOptions.series[0].data = dataArray;
             issueGraph = new Highcharts.Chart(
                 // graph options
@@ -398,6 +392,10 @@ function refreshData() {
 }
 
 $(document).ready(function () {
+    Highcharts.setOptions({
+        colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9',
+            '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1']
+    });
     refreshData();
     // remove empty Jenkins sidepanel
     $("#side-panel").remove();

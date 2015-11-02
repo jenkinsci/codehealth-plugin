@@ -22,9 +22,10 @@
     "crypto-js": "^3.1.5",
     "gulp": "^3.9.0",
     "highcharts-browserify": "^2.0.0",
+    "jenkins-handlebars-rt": "^1.0.1",
     "jenkins-js-builder": "0.0.26",
     "jenkins-js-modules": "^1.1.0",
     "jquery-detached": "^2.1.4-v2",
-    "jenkins-handlebars-rt": "^1.0.1"
+    "numeral": "^1.5.3"
   }
 }
