@@ -10,3 +10,7 @@
     vertical-align: middle;
     text-align: center;
 }
+
+.bootstrap-3 .list-group .changeset {
+    margin-bottom: 0px;
+}

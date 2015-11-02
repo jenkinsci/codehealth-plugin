@@ -18,6 +18,7 @@ var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateL
 
 // Handlebars templates & partials
 var changesetTemplate = require('./changeset.hbs');
+var buildTemplate = require('./build.hbs');
 var issueRowTemplate = require('./issue.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
 
@@ -336,14 +337,16 @@ function updateIssuesGraph() {
 }
 
 function updateChangesets() {
-    // TODO group by build, use build.hbs with partials in each-loop
-    var changeSetAPI = "../api/json?tree=builds[changeSet[items[msg,comment,author[id,fullName,property[address]],date,commitId]]]{0,10}";
+    var changeSetAPI = "../api/json?tree=builds[number,timestamp,changeSet[items[msg,comment,author[id,fullName,property[address]],date,commitId]]]{0,10}";
     // default image src is gravatar default image (if no mail specified)
     var gravatarSrc = "http://www.gravatar.com/avatar/default?f=y&s=64";
     $.getJSON(changeSetAPI)
         .done(function (data) {
             $("#changeset-container").empty();
             $.each(data.builds, function (buildIdx, build) {
+                var changeSetsForBuild = [];
+                var buildNr = build.number;
+                var timestamp = build.timestamp;
                 var changeSet = build.changeSet;
                 $.each(changeSet.items, function (itemIdx, changeItem) {
                     var revision = changeItem.commitId;
@@ -368,17 +371,24 @@ function updateChangesets() {
                         // 2015-10-29 17:39:36 +0100
                         momDate = moment(date, "YYYY.MM.DD HH:mm:ss ZZ").calendar();
                     }
-                    var tempRes = changesetTemplate({
+                    var singleChange = {
                         message: msg,
                         author: authorName,
                         authorId: authorId,
                         revision: revision,
                         gravatarSrc: gravatarSrc,
                         date: momDate
-                    });
-                    // TODO order by build, sort changes by date
-                    $("#changeset-container").append(tempRes);
+                    };
+                    changeSetsForBuild.push(singleChange);
                 });
+                if (changeSetsForBuild.length > 0) {
+                    var buildRes = buildTemplate({
+                        number: buildNr,
+                        timestamp: moment(new Date(timestamp)).calendar(),
+                        changesets: changeSetsForBuild
+                    });
+                    $("#changeset-container").append(buildRes);
+                }
             });
         });
 }

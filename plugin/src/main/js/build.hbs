@@ -1,8 +1,12 @@
-<li class="list-group-item">
-    <span>Build #{{number}}</span>
-    <ul class="list-group">
+<div class="list-group-item">
+    <div>
+        <a href="../{{number}}">
+            <h5>Build #{{number}} <span class="pull-right">{{timestamp}}</span></h5>
+        </a>
+    </div>
+    <ul class="list-group changeset">
         {{#each changesets}}
-            {{> changeset}}
+            {{> changeset this}}
         {{/each}}
     </ul>
-</li>
+</div>
