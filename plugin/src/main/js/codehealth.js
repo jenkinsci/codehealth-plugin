@@ -373,7 +373,7 @@ function updateChangesets() {
                         gravatarSrc = "http://www.gravatar.com/avatar/" + cryptoJSMD5(authorMail) + "?d=retro&s=64"
                     }
                     // 2015-10-29 17:39:36 +0100
-                    var momDate = moment(date, "YYYY.MM.DD hh:mm:ss ZZ").format("DD.MM.YYYY hh:mm");
+                    var momDate = moment(date, "YYYY.MM.DD HH:mm:ss ZZ").format("DD.MM.YYYY HH:mm");
                     var template = require("./changeset.hbs");
                     var tempRes = template({
                         message: msg,
@@ -383,6 +383,7 @@ function updateChangesets() {
                         gravatarSrc: gravatarSrc,
                         date: momDate
                     });
+                    // TODO order by build, sort changes by date
                     $("#changeset-container").append(tempRes);
                 });
             });
