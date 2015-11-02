@@ -4,6 +4,7 @@ var Highcharts = require('highcharts-browserify/modules/drilldown');
 require('highcharts-browserify/modules/data');
 var cryptoJSMD5 = require("crypto-js/md5");
 require("handlebars");
+var moment = require('moment');
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
@@ -345,7 +346,7 @@ function updateIssuesGraph() {
 }
 
 function updateChangesets() {
-    var changeSetAPI = "../api/json?tree=builds[changeSet[items[msg,author[id,fullName,property[address]],commitId]]]{0,10}";
+    var changeSetAPI = "../api/json?tree=builds[changeSet[items[msg,author[id,fullName,property[address]],date,commitId]]]{0,10}";
     // default image src is gravatar default image (if no mail specified)
     var gravatarSrc = "http://www.gravatar.com/avatar/default?f=y&s=64";
     $.getJSON(changeSetAPI)
@@ -356,6 +357,8 @@ function updateChangesets() {
                 $.each(changeSet.items, function (itemIdx, changeItem) {
                     var revision = changeItem.commitId;
                     var author = changeItem.author;
+                    var date = changeItem.date;
+                    console.log("Date: " + date);
                     var authorId = author.id;
                     var authorName = author.fullName;
                     var authorMail = "";
@@ -369,13 +372,16 @@ function updateChangesets() {
                     if (authorMail !== "") {
                         gravatarSrc = "http://www.gravatar.com/avatar/" + cryptoJSMD5(authorMail) + "?d=retro&s=64"
                     }
+                    // 2015-10-29 17:39:36 +0100
+                    var momDate = moment(date, "YYYY.MM.DD hh:mm:ss ZZ").format("DD.MM.YYYY hh:mm");
                     var template = require("./changeset.hbs");
                     var tempRes = template({
                         message: msg,
                         author: authorName,
                         authorId: authorId,
                         revision: revision,
-                        gravatarSrc: gravatarSrc
+                        gravatarSrc: gravatarSrc,
+                        date: momDate
                     });
                     $("#changeset-container").append(tempRes);
                 });

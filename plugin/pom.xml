@@ -61,6 +61,11 @@
             <artifactId>handlebars</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.ui</groupId>
+            <artifactId>momentjs</artifactId>
+            <version>1.0</version>
+        </dependency>
 
         <!-- ### TEST -->
         <!--Mockito -->

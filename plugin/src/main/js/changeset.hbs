@@ -1,16 +1,19 @@
 <li class="list-group-item container-fluid">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="gravatar-container">
                 <a href="../../../user/{{authorId}}">
                     <img src="{{gravatarSrc}}" title="{{author}}" alt="Gravatar image of the change author."/>
                 </a>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <h5>{{message}}</h5>
             <span class="text-muted">by <a
-                    href="../../../user/{{authorId}}">{{author}}</a> at revision {{revision}}</span>
+                    href="../../../user/{{authorId}}">{{author}}</a> at revision <small>{{revision}}</small></span>
+        </div>
+        <div class="col-md-2">
+            <span class="text-muted">{{date}}</span>
         </div>
     </div>
 </li>
