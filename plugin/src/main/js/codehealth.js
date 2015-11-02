@@ -99,11 +99,11 @@ function issuesPerOrigin() {
             var graphDataArray = [];
             var idx = 0;
             $.each(data.issuesPerOrigin, function (key, value) {
-                totalOriginCount = value.length;
+                var totalOriginCount = value.length;
                 totalCount = totalCount + totalOriginCount;
-                lowCount = 0;
-                normalCount = 0;
-                highCount = 0;
+                var lowCount = 0;
+                var normalCount = 0;
+                var highCount = 0;
                 var origin = "";
                 var graphDataEntry = {};
                 graphDataEntry.name = key;
@@ -167,8 +167,6 @@ function issuesTable() {
                 });
                 $('#codehealth-issues').append(row);
             });
-
-            var nrOfIssues = data.issues.length;
         })
         .always(function () {
             //console.log("JSON API called...")
@@ -390,7 +388,7 @@ function updateChangesets() {
                     });
                     var msg = (changeItem.comment != null) ? changeItem.comment : changeItem.msg;
                     if (authorMail !== "") {
-                        gravatarSrc = "http://www.gravatar.com/avatar/" + cryptoJSMD5(authorMail) + "?d=retro&s=64"
+                        gravatarSrc = "http://www.gravatar.com/avatar/" + cryptoJSMD5(authorMail) + "?d=retro&s=64";
                     }
                     var momDate = null;
                     var timestamp = null;
