@@ -1,11 +1,18 @@
-<div class="row">
-    <div class="col-md-3">
-        <div class="gravatar-container">
-            <img src="{{gravatarSrc}}" title="{{author}}"/>
+<li class="list-group-item container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="gravatar-container">
+                <a href="../../../user/{{authorId}}" class="thumbnail">
+                    <img src="{{gravatarSrc}}" title="{{author}}" alt="Gravatar image of the change author."
+                         style="min-height:64px;height:64px;"/>
+                </a>
+
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h5>{{message}}</h5>
+            <span class="text-muted">by <a
+                    href="../../../user/{{authorId}}">{{author}}</a> at revision {{revision}}</span>
         </div>
     </div>
-    <div class="col-md-9">
-        <h5>{{message}}</h5>
-        <span class="text-muted">by {{author}} at revision {{revision}}</span>
-    </div>
-</div>
+</li>

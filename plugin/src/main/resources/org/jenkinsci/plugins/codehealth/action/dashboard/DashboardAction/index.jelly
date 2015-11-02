@@ -101,9 +101,7 @@
                                 </div>
                                 <div class="panel-content">
                                 </div>
-                                <ul class="list-group">
-                                    <li id="hbs_container" class="list-group-item container-fluid"></li>
-                                    <li id="hbs_container2" class="list-group-item container-fluid"></li>
+                                <ul id="changeset-container" class="list-group">
                                 </ul>
                             </div>
                         </div>

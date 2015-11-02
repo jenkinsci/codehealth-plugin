@@ -166,15 +166,6 @@ function issuesTable() {
         });
 }
 
-// Refresh Button
-$("#refresh-button").on("click", function () {
-    console.log("Refreshing...");
-    issuesPerOrigin();
-    issuesTable();
-    updateLocGraph();
-    updateIssuesGraph();
-});
-
 // Code Trend
 var codeGraphOptions = {
     title: {
@@ -353,28 +344,63 @@ function updateIssuesGraph() {
     );
 }
 
-function getGravatars() {
-    var hash = cryptoJSMD5('eidottermihi@gmail.com');
-    var src = "http://www.gravatar.com/avatar/" + hash + "?d=retro&s=64";
-    var template = require("./changeset.hbs");
-    var tempRes = template({
-        message: "Added Handlebars templating to project.",
-        author: "Michael Prankl",
-        revision: "78dffsdf8ghdfugdf8",
-        gravatarSrc: src
-    });
-    $("#hbs_container").append(tempRes);
-    $("#hbs_container2").append(tempRes);
+function updateChangesets() {
+    var changeSetAPI = "../api/json?tree=builds[changeSet[items[msg,author[id,fullName,property[address]],commitId]]]{0,10}";
+    // default image src is gravatar default image (if no mail specified)
+    var gravatarSrc = "http://www.gravatar.com/avatar/default?f=y&s=64";
+    $.getJSON(changeSetAPI)
+        .done(function (data) {
+            console.log(data);
+            $.each(data.builds, function (buildIdx, build) {
+                var changeSet = build.changeSet;
+                $.each(changeSet.items, function (itemIdx, changeItem) {
+                    var revision = changeItem.commitId;
+                    var author = changeItem.author;
+                    var authorId = author.id;
+                    var authorName = author.fullName;
+                    var authorMail = "";
+                    $.each(author.property, function (key, value) {
+                        if (value.address != null) {
+                            authorMail = value.address;
+                            return false;
+                        }
+                    });
+                    var msg = changeItem.msg;
+                    if (authorMail !== "") {
+                        gravatarSrc = "http://www.gravatar.com/avatar/" + cryptoJSMD5(authorMail) + "?d=retro&s=64"
+                    }
+                    var template = require("./changeset.hbs");
+                    var tempRes = template({
+                        message: msg,
+                        author: authorName,
+                        authorId: authorId,
+                        revision: revision,
+                        gravatarSrc: gravatarSrc
+                    });
+                    $("#changeset-container").append(tempRes);
+                });
+            });
+        });
 }
 
-$(document).ready(function () {
+function refreshData() {
     issuesPerOrigin();
     issuesTable();
     updateLocGraph();
     updateIssuesGraph();
-    getGravatars();
+    updateChangesets();
+}
+
+$(document).ready(function () {
+    refreshData();
+    // remove empty Jenkins sidepanel
     $("#side-panel").remove();
     $("#main-panel").css("margin-left", "0px");
+});
+
+// Refresh Button
+$("#refresh-button").on("click", function () {
+    refreshData();
 });
 
 
