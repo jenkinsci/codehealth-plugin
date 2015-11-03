@@ -1,7 +1,6 @@
 var $ = require('jquery-detached').getJQuery();
 require('bootstrap-detached').getBootstrap();
 var Highcharts = require('highcharts-browserify/modules/drilldown');
-require('highcharts-browserify/modules/data');
 var cryptoJSMD5 = require("crypto-js/md5");
 var handlebars = require("handlebars");
 var moment = require('moment');

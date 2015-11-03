@@ -80,13 +80,62 @@
         <processorPath useClasspath="true" />
         <module name="pmd" />
       </profile>
+      <profile default="false" name="Annotation profile for jquery-detached" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="jquery-detached" />
+      </profile>
+      <profile default="false" name="Annotation profile for bootstrap" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="bootstrap" />
+      </profile>
+      <profile default="false" name="Annotation profile for handlebars" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="handlebars" />
+      </profile>
+      <profile default="false" name="Annotation profile for momentjs" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="momentjs" />
+      </profile>
+      <profile default="false" name="Annotation profile for ace-editor" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="ace-editor" />
+      </profile>
+      <profile default="false" name="Annotation profile for numeraljs" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ace-editor" target="1.6" />
+      <module name="bootstrap" target="1.6" />
       <module name="build-tools" target="1.5" />
       <module name="checkstyle" target="1.6" />
       <module name="codehealth" target="1.7" />
       <module name="dry" target="1.6" />
+      <module name="handlebars" target="1.6" />
       <module name="javancss" target="1.5" />
+      <module name="jenkins-js-libs" target="1.5" />
+      <module name="jquery-detached" target="1.6" />
+      <module name="js-module-base" target="1.6" />
+      <module name="momentjs" target="1.6" />
+      <module name="numeraljs" target="1.6" />
       <module name="parent" target="1.7" />
       <module name="pmd" target="1.6" />
       <module name="provider" target="1.7" />

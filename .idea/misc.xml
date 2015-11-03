@@ -18,6 +18,8 @@
         <option value="$PROJECT_DIR$/../violations-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../checkstyle-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../pmd-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../js-libs/pom.xml" />
+        <option value="$PROJECT_DIR$/../js-libs/numeraljs/pom.xml" />
       </list>
     </option>
   </component>
