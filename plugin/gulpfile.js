@@ -7,6 +7,5 @@ builder.bundle('src/main/js/codehealth.js')
     .withExternalModuleMapping('bootstrap-detached', 'bootstrap:bootstrap3')
     .withExternalModuleMapping('handlebars', 'handlebars:handlebars3')
     .withExternalModuleMapping('moment', 'momentjs:momentjs2')
+    .withExternalModuleMapping('numeral', 'numeraljs:numeraljs1')
     .inDir('src/main/webapp/bundles');
-
-
