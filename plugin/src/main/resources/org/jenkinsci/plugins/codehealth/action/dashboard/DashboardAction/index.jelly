@@ -1,10 +1,10 @@
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
     <l:layout title="${%Codehealth Dashboard}" norefresh="true">
         <l:header>
-            <link rel="stylesheet" type="text/css" href="${rootURL}/plugin/codehealth/codehealth.css"/>
+            <link rel="stylesheet" type="text/css" href="${resURL}/plugin/codehealth/codehealth.css"/>
         </l:header>
         <l:main-panel>
-            <script src="${rootURL}/plugin/codehealth/bundles/codehealth.js"/>
+            <script src="${resURL}/plugin/codehealth/bundles/codehealth.js"/>
             <div id="codehealth_main" class="bootstrap-3">
                 <!-- content in here can use Bootstrap 3 CSS rules. -->
                 <!--
