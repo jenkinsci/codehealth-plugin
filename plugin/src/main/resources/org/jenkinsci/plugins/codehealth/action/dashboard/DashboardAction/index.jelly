@@ -7,7 +7,7 @@
             <script src="${resURL}/plugin/codehealth/bundles/codehealth.js"/>
             <div id="codehealth_main" class="bootstrap-3">
                 <!-- content in here can use Bootstrap 3 CSS rules. -->
-                <st:include page="./configuration.jelly"/>
+                <st:include page="./changeset_configuration.jelly"/>
                 <!--
                 <button id="refresh-button" type="button" class="btn btn-primary">Refresh</button>
                 -->
@@ -97,9 +97,16 @@
                     <div class="row">
                         <div class="col-md-8 col-sd-12">
                             <div class="panel panel-default">
-                                <div class="panel-heading collapsible" data-toggle="collapse"
-                                     data-target="#changeset-container">
-                                    <span class="panel-title">Latest changes</span>
+                                <div class="panel-heading clearfix">
+                                    <h4 class="panel-title pull-left collapsible" data-toggle="collapse"
+                                        data-target="#changeset-container">Latest changes
+                                    </h4>
+                                    <div class="pull-right">
+                                        <button type="button" class="btn btn-sm pull-right" data-toggle="modal"
+                                                data-target="#modal-config">
+                                            Configure
+                                        </button>
+                                    </div>
                                 </div>
                                 <ul id="changeset-container" class="list-group collapse in">
                                 </ul>
