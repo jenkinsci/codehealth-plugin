@@ -1,4 +1,4 @@
-<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
     <l:layout title="${%Codehealth Dashboard}" norefresh="true">
         <l:header>
             <link rel="stylesheet" type="text/css" href="${resURL}/plugin/codehealth/codehealth.css"/>
@@ -7,6 +7,7 @@
             <script src="${resURL}/plugin/codehealth/bundles/codehealth.js"/>
             <div id="codehealth_main" class="bootstrap-3">
                 <!-- content in here can use Bootstrap 3 CSS rules. -->
+                <st:include page="./configuration.jelly"/>
                 <!--
                 <button id="refresh-button" type="button" class="btn btn-primary">Refresh</button>
                 -->

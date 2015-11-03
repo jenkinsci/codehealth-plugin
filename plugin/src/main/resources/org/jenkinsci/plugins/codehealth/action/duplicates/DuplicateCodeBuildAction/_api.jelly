@@ -1,5 +1,4 @@
-<j:jelly xmlns:j="jelly:core"
-        >
+<j:jelly xmlns:j="jelly:core">
     This Jelly will be included on the /api page of the Action and can be used to further describe
     which data is available.
 </j:jelly>

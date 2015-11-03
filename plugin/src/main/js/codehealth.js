@@ -1,10 +1,15 @@
+// Libraries
 var $ = require('jquery-detached').getJQuery();
-require('bootstrap-detached').getBootstrap();
+var bootstrap = require('bootstrap-detached').getBootstrap();
 var Highcharts = require('highcharts-browserify/modules/drilldown');
 var cryptoJSMD5 = require("crypto-js/md5");
 var handlebars = require("handlebars");
 var moment = require('moment');
 var numeral = require('numeral');
+
+// Own libraries
+require('./storage.js');
+require('./drilldown.js');
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
@@ -21,38 +26,6 @@ var buildTemplate = require('./build.hbs');
 var issueRowTemplate = require('./issue.hbs');
 var issueOriginRowTemplate = require('./issue-origin.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
-
-// Common functions
-function createDrilldownEntry(name, id, data) {
-    var entry = {};
-    entry.name = name;
-    entry.id = id;
-    entry.data = data;
-    return entry;
-}
-
-function createDrilldownData(name, value, color) {
-    var data = {};
-    data.name = name;
-    data.y = value;
-    data.color = color;
-    return data;
-}
-
-function createPriorityDrilldownDataArray(lowCount, normalCount, highCount) {
-    var idx = 0;
-    var dataArr = [];
-    if (lowCount > 0) {
-        dataArr[idx++] = createDrilldownData("LOW", lowCount, "024700");
-    }
-    if (normalCount > 0) {
-        dataArr[idx++] = createDrilldownData("NORMAL", normalCount, "#FFFF00");
-    }
-    if (highCount > 0) {
-        dataArr[idx++] = createDrilldownData("HIGH", highCount, "#FF0000");
-    }
-    return dataArr;
-}
 
 // Code Trend
 var issueByOriginChartOptions = {
@@ -385,7 +358,8 @@ function compareChangeSet(a, b) {
 }
 
 function updateChangesets() {
-    var changeSetAPI = "../api/json?tree=builds[number,timestamp,changeSet[items[msg,comment,author[id,fullName,property[address]],date,commitId]]]{0,10}";
+    var nrOfBuildsToShow = loadBuildConfiguration();
+    var changeSetAPI = "../api/json?tree=builds[number,timestamp,changeSet[items[msg,comment,author[id,fullName,property[address]],date,commitId]]]{0," + nrOfBuildsToShow + "}";
     // default image src is gravatar default image (if no mail specified)
     var gravatarSrc = "http://www.gravatar.com/avatar/default?f=y&s=64";
     $.getJSON(changeSetAPI)
@@ -455,16 +429,31 @@ function refreshData() {
     updateChangesets();
 }
 
+/**
+ * Register on-click event for save button in modal configuration dialog.
+ */
+function bindSaveButton() {
+    $("#btSaveConfig").click(function () {
+        var builds = $("#shownBuildsInput").val();
+        saveBuildConfiguration(builds);
+    });
+}
+
+function initConfigurationModal() {
+    $("#shownBuildsInput").val(loadBuildConfiguration());
+}
+
 $(document).ready(function () {
-    refreshData();
+    bindSaveButton();
+    initConfigurationModal();
     // remove empty Jenkins sidepanel
     $("#side-panel").remove();
     $("#main-panel").css("margin-left", "0px");
+    // load data
+    refreshData();
 });
 
 // Refresh Button
 $("#refresh-button").on("click", function () {
     refreshData();
 });
-
-
