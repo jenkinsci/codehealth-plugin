@@ -3,7 +3,6 @@ package org.jenkinsci.plugins.codehealth.action.loc;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
-import net.sf.json.JSONArray;
 import org.jenkinsci.plugins.codehealth.action.ResultUrlNameProvider;
 import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
@@ -14,7 +13,7 @@ import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * @author Michael Prankl

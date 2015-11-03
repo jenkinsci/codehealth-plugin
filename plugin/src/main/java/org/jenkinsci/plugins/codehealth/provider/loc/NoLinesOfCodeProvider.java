@@ -1,9 +1,7 @@
 package org.jenkinsci.plugins.codehealth.provider.loc;
 
-import hudson.DescriptorExtensionList;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
-import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nullable;

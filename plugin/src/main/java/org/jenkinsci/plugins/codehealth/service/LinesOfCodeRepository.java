@@ -8,7 +8,6 @@ import org.jenkinsci.plugins.codehealth.model.LinesOfCodeEntity;
 import org.jenkinsci.plugins.codehealth.provider.loc.LinesOfCode;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Michael Prankl

@@ -8,7 +8,6 @@ import org.jenkinsci.plugins.codehealth.model.LatestBuilds;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Michael Prankl

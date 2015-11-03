@@ -6,7 +6,6 @@ import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 /**

@@ -3,7 +3,6 @@ package org.jenkinsci.plugins.codehealth.action.issues;
 import hudson.model.AbstractProject;
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
-import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;

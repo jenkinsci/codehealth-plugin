@@ -2,7 +2,6 @@ package org.jenkinsci.plugins.codehealth.service;
 
 import hudson.model.AbstractBuild;
 import hudson.model.TopLevelItem;
-import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
@@ -72,7 +71,6 @@ public abstract class IssueRepository extends BaseRepository {
                                                                  Collection<Issue> existingIssues, String origin);
 
     /**
-     *
      * @param topLevelItem the top-level-item (job)
      * @return new/open issue count, grouped by build number
      */

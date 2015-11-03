@@ -7,6 +7,7 @@ import org.jenkinsci.plugins.codehealth.service.LinesOfCodeRepository;
 
 /**
  * Abstract Action for Lines of Code.
+ *
  * @author Michael Prankl
  */
 public abstract class AbstractLinesOfCodeAction extends AbstractCodehealthAction {
@@ -16,9 +17,10 @@ public abstract class AbstractLinesOfCodeAction extends AbstractCodehealthAction
 
     /**
      * Public constructor.
-     * @param topLevelItem the top-level-item
+     *
+     * @param topLevelItem          the top-level-item
      * @param linesOfCodeRepository the LoC Repository to use
-     * @param linesOfCodeProvider the LoC Provider
+     * @param linesOfCodeProvider   the LoC Provider
      */
     public AbstractLinesOfCodeAction(TopLevelItem topLevelItem, LinesOfCodeRepository linesOfCodeRepository, LinesOfCodeProvider linesOfCodeProvider) {
         super(topLevelItem);

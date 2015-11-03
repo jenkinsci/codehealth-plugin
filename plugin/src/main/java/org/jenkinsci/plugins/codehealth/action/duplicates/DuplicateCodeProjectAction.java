@@ -14,7 +14,6 @@ import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Michael Prankl
