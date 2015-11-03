@@ -14,3 +14,7 @@
 .bootstrap-3 .list-group .changeset {
     margin-bottom: 0px;
 }
+
+.collapsible {
+    cursor: pointer;
+}

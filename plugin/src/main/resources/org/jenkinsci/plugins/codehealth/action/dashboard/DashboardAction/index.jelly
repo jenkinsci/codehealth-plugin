@@ -7,7 +7,9 @@
             <script src="${rootURL}/plugin/codehealth/bundles/codehealth.js"/>
             <div id="codehealth_main" class="bootstrap-3">
                 <!-- content in here can use Bootstrap 3 CSS rules. -->
+                <!--
                 <button id="refresh-button" type="button" class="btn btn-primary">Refresh</button>
+                -->
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6 col-lg-4">
@@ -94,12 +96,11 @@
                     <div class="row">
                         <div class="col-md-8 col-sd-12">
                             <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">Latest changes</h3>
+                                <div class="panel-heading collapsible" data-toggle="collapse"
+                                     data-target="#changeset-container">
+                                    <span class="panel-title">Latest changes</span>
                                 </div>
-                                <div class="panel-content">
-                                </div>
-                                <ul id="changeset-container" class="list-group">
+                                <ul id="changeset-container" class="list-group collapse in">
                                 </ul>
                             </div>
                         </div>
@@ -117,10 +118,9 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        <a data-toggle="collapse" href="#issue-table-panel">All issues</a>
-                                    </h3>
+                                <div class="panel-heading collapsible" data-toggle="collapse"
+                                     data-target="#issue-table-panel">
+                                    <span class="panel-title">All issues</span>
                                 </div>
                                 <div class="panel-content collapse" id="issue-table-panel">
                                     <div id="issue-table">

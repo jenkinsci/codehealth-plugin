@@ -68,7 +68,8 @@ var issueByOriginChartOptions = {
     },
     chart: {
         renderTo: "issues-pie",
-        type: 'pie'
+        type: 'pie',
+        height: 275
     },
     plotOptions: {
         pie: {
@@ -180,7 +181,8 @@ var codeGraphOptions = {
     },
     chart: {
         renderTo: "loc",
-        type: 'line'
+        type: 'line',
+        height: 275
     },
     credits: {
         enabled: false
@@ -275,7 +277,8 @@ var issueGraphOptions = {
     },
     chart: {
         renderTo: "issues-graph",
-        type: 'line'
+        type: 'line',
+        height: 275
     },
     series: [
         {
@@ -336,7 +339,7 @@ function updateIssuesGraph() {
 }
 
 function compareChangeSet(a, b) {
-    if (a.timestamp != null && b.timestamp != null) {
+    if (!a.timestamp && !b.timestamp) {
         if (a.timestamp > b.timestamp) {
             return 1;
         } else if (a.timestamp < b.timestamp) {
@@ -345,7 +348,7 @@ function compareChangeSet(a, b) {
             return 0;
         }
     } else {
-        if (a.revision != null && b.revision != null) {
+        if (!a.revision && !b.revision) {
             if (a.revision > b.revision) {
                 return 1;
             } else if (a.revision < b.revision) {
@@ -381,18 +384,18 @@ function updateChangesets() {
                     var authorMail = "";
                     // find mail address
                     $.each(author.property, function (key, value) {
-                        if (value.address != null) {
+                        if (value.address) {
                             authorMail = value.address;
                             return false;
                         }
                     });
-                    var msg = (changeItem.comment != null) ? changeItem.comment : changeItem.msg;
+                    var msg = (changeItem.comment) ? changeItem.comment : changeItem.msg;
                     if (authorMail !== "") {
                         gravatarSrc = "http://www.gravatar.com/avatar/" + cryptoJSMD5(authorMail) + "?d=retro&s=64";
                     }
                     var momDate = null;
                     var timestamp = null;
-                    if (date != null) {
+                    if (date) {
                         // 2015-10-29 17:39:36 +0100
                         var parsedDate = moment(date, "YYYY.MM.DD HH:mm:ss ZZ");
                         momDate = parsedDate.calendar();
@@ -432,10 +435,6 @@ function refreshData() {
 }
 
 $(document).ready(function () {
-    Highcharts.setOptions({
-        colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9',
-            '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1']
-    });
     refreshData();
     // remove empty Jenkins sidepanel
     $("#side-panel").remove();
