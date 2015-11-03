@@ -1,30 +1,56 @@
+function save(key, value) {
+    if (typeof(Storage) !== "undefined") {
+        localStorage.setItem(key, value);
+    } else {
+        window.alert("Sorry, your browser does not support HTML5 local storage.");
+    }
+}
+
+function load(key, defaultValue) {
+    var value = defaultValue;
+    if (typeof(Storage) !== "undefined") {
+        var storageVal = localStorage.getItem(key);
+        if (storageVal) {
+            value = storageVal;
+        }
+    }
+    return value;
+}
+
 /**
  *
  * @param builds nr of builds for latest changes
  */
 var saveBuildConfiguration = function (builds) {
-    if (typeof(Storage) !== "undefined") {
-        localStorage.builds = builds;
-        console.log("Saving builds: " + builds);
-    } else {
-        window.alert("Sorry, your browser does not support HTML5 local storage.");
-    }
+    save("builds", builds);
 };
 
 /**
  * @return number number of builds to display (default: 10)
  */
 var loadBuildConfiguration = function () {
-    var builds = 10;
-    if (typeof(Storage) !== "undefined") {
-        var storageVal = localStorage.builds;
-        if (storageVal) {
-            builds = storageVal;
-        }
-        console.log("Read builds from local storage: " + builds);
-    }
-    return builds;
+    return load("builds", 10);
 }
+
+/**
+ * @param enabled boolean
+ */
+var saveGravatarEnabled = function (enabled) {
+    console.log(enabled);
+    save("gravatarEnabled", enabled);
+};
+
+/**
+ *
+ * @return boolean if gravatar is enabled (default: true)
+ */
+var loadGravatarEnabled = function () {
+    return load("gravatarEnabled", true);
+};
 // Exports
-module.exports.saveBuildConfiguration = saveBuildConfiguration;
-module.exports.loadBuildConfiguration = loadBuildConfiguration;
+module.exports = {
+    saveBuildConfiguration: saveBuildConfiguration,
+    loadBuildConfiguration: loadBuildConfiguration,
+    saveGravatarEnabled: saveGravatarEnabled,
+    loadGravatarEnabled: loadGravatarEnabled
+};
