@@ -84,9 +84,9 @@ function issuesPerOrigin() {
                 graphDataEntry.drilldown = key;
                 graphDataArray[idx] = graphDataEntry;
                 $.each(value, function (j, issue) {
-                    if (issue.priority == "HIGH") {
+                    if (issue.priority === "HIGH") {
                         highCount++;
-                    } else if (issue.priority == "NORMAL") {
+                    } else if (issue.priority === "NORMAL") {
                         normalCount++;
                     } else {
                         lowCount++;
