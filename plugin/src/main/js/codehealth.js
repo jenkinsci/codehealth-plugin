@@ -218,54 +218,76 @@ var codeGraphOptions = {
         shared: true
     }
 };
-function updateLocGraph() {
-    // TODO only call createChart() when both AJAX calls are finished
-    $.getJSON(linesOfCodeSeriesAPI)
-        .done(function (data) {
-            var dataArray = [];
-            var idx = 0;
-            var lastCount = 0;
-            var lastTrend = 0;
-            $.each(data.series, function (i, item) {
-                var obj = [];
-                obj[0] = parseInt(item.build.number);
-                obj[1] = item.linesOfCode;
-                lastTrend = item.linesOfCode - lastCount;
-                lastCount = item.linesOfCode;
-                dataArray[idx] = obj;
-                idx++;
-            });
-            $("#total-line-trend").text(numeral(lastTrend).format('+0,0'));
-            codeGraphOptions.series[0].data = dataArray;
-            new Highcharts.Chart(
-                codeGraphOptions
-            );
-        }
-    );
-    $.getJSON(duplicateCodeSeriesAPI)
-        .done(function (data) {
-            var dataArray = [];
-            var idx = 0;
-            $.each(data.series, function (i, item) {
-                var obj = [];
-                obj[0] = parseInt(item.build.number);
-                obj[1] = item.duplicateLines;
-                dataArray[idx] = obj;
-                idx++;
-            });
-            codeGraphOptions.series[1].data = dataArray;
-            new Highcharts.Chart(
-                // graph options
-                codeGraphOptions
-            );
-        }
-    );
-    $.getJSON(linesOfCodeAPI).done(function (data) {
-        $("#total-line-count").text(numeral(data.linesOfCode.linesOfCode).format('0,0'));
-        $("#total-file-count").text(numeral(data.linesOfCode.fileCount).format('0,0'));
+
+function getLoCSeries() {
+    return $.getJSON(linesOfCodeSeriesAPI);
+}
+
+function getDuplicateSeries() {
+    return $.getJSON(duplicateCodeSeriesAPI);
+}
+
+function parseLocSeries(data) {
+    var dataArray = [];
+    var idx = 0;
+    var lastCount = 0;
+    var lastTrend = 0;
+    $.each(data.series, function (i, item) {
+        var obj = [];
+        obj[0] = parseInt(item.build.number);
+        obj[1] = item.linesOfCode;
+        lastTrend = item.linesOfCode - lastCount;
+        lastCount = item.linesOfCode;
+        dataArray[idx] = obj;
+        idx++;
     });
-    $.getJSON(duplicateCodeAPI).done(function (data) {
-        $("#total-duplicate-count").text(numeral(data.duplicateCode.duplicateLines).format('0,0'));
+    $("#total-line-trend").text(numeral(lastTrend).format('+0,0'));
+    codeGraphOptions.series[0].data = dataArray;
+}
+
+function parseDupSeries(data) {
+    var dataArray = [];
+    var idx = 0;
+    $.each(data.series, function (i, item) {
+        var arr = [];
+        arr[0] = parseInt(item.build.number);
+        arr[1] = item.duplicateLines;
+        dataArray[idx] = arr;
+        idx++;
+    });
+    codeGraphOptions.series[1].data = dataArray;
+}
+
+function getLoCCount() {
+    return $.getJSON(linesOfCodeAPI);
+}
+
+function getDupCount() {
+    return $.getJSON(duplicateCodeAPI);
+}
+
+function updateLoCandDuplicates() {
+    $.when(getLoCSeries(), getDuplicateSeries()).done(function (locResponse, dupResponse) {
+        parseLocSeries(locResponse[0]);
+        parseDupSeries(dupResponse[0]);
+        // render graph
+        new Highcharts.Chart(
+            codeGraphOptions
+        );
+
+    });
+    $.when(getDupCount(), getLoCCount()).done(function (dupResponse, locResponse) {
+        var dupData = dupResponse[0];
+        var locData = locResponse[0];
+        if (locData.linesOfCode) {
+            var lines = locData.linesOfCode.linesOfCode;
+            var files = locData.linesOfCode.fileCount;
+            $("#total-line-count").text(numeral(lines).format('0,0'));
+            $("#total-file-count").text(numeral(files).format('0,0'));
+            var duplicateLines = dupData.duplicateCode.duplicateLines;
+            var dupPercentage = duplicateLines / lines;
+            $("#total-duplications").text(numeral(dupPercentage).format('0.00%')).attr('title', duplicateLines + ' lines');
+        }
     });
 }
 
@@ -429,7 +451,7 @@ function updateChangesets() {
 function refreshData() {
     issuesPerOrigin();
     issuesTable();
-    updateLocGraph();
+    updateLoCandDuplicates();
     updateIssuesGraph();
     updateChangesets();
 }

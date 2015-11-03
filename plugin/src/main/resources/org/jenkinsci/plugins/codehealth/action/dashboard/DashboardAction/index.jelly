@@ -80,8 +80,8 @@
                                             <span class="text-muted">LOC Trend</span>
                                         </div>
                                         <div class="col-md-3 center-text">
-                                            <h4 id="total-duplicate-count"></h4>
-                                            <span class="text-muted">Duplicate lines</span>
+                                            <h4 id="total-duplications"></h4>
+                                            <span class="text-muted">Duplications</span>
                                         </div>
                                     </div>
                                     <div class="row">
