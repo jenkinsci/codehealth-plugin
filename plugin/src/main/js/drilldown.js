@@ -1,12 +1,4 @@
-// Common functions
-function createDrilldownEntry(name, id, data) {
-    var entry = {};
-    entry.name = name;
-    entry.id = id;
-    entry.data = data;
-    return entry;
-}
-
+// private
 function createDrilldownData(name, value, color) {
     var data = {};
     data.name = name;
@@ -15,7 +7,17 @@ function createDrilldownData(name, value, color) {
     return data;
 }
 
-function createPriorityDrilldownDataArray(lowCount, normalCount, highCount) {
+// public
+
+var createDrilldownEntry = function (name, id, data) {
+    var entry = {};
+    entry.name = name;
+    entry.id = id;
+    entry.data = data;
+    return entry;
+};
+
+var createPriorityDrilldownDataArray = function (lowCount, normalCount, highCount) {
     var idx = 0;
     var dataArr = [];
     if (lowCount > 0) {
@@ -28,4 +30,7 @@ function createPriorityDrilldownDataArray(lowCount, normalCount, highCount) {
         dataArr[idx++] = createDrilldownData("HIGH", highCount, "#FF0000");
     }
     return dataArr;
-}
+};
+
+module.exports.createPriorityDrilldownDataArray = createPriorityDrilldownDataArray;
+module.exports.createDrilldownEntry = createDrilldownEntry;

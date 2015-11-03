@@ -8,8 +8,8 @@ var moment = require('moment');
 var numeral = require('numeral');
 
 // Own libraries
-require('./storage.js');
-require('./drilldown.js');
+var storage = require('./storage.js');
+var drilldown = require('./drilldown.js');
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
@@ -96,7 +96,7 @@ function issuesPerOrigin() {
                 totalLow = totalLow + lowCount;
                 totalNormal = totalNormal + normalCount;
                 totalHigh = totalHigh + highCount;
-                issueByOriginChartOptions.drilldown.series[idx] = createDrilldownEntry(key, key, createPriorityDrilldownDataArray(lowCount, normalCount, highCount));
+                issueByOriginChartOptions.drilldown.series[idx] = drilldown.createDrilldownEntry(key, key, drilldown.createPriorityDrilldownDataArray(lowCount, normalCount, highCount));
                 var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
                 $("#issues-per-origin").append(issueOriginRowTemplate({
                     key: key,
@@ -272,7 +272,31 @@ var issueGraphOptions = {
     chart: {
         renderTo: "issues-graph",
         type: 'line',
-        height: 275
+        height: 275,
+        area: {
+            fillColor: {
+                linearGradient: {
+                    x1: 0,
+                    y1: 0,
+                    x2: 0,
+                    y2: 1
+                },
+                stops: [
+                    [0, Highcharts.getOptions().colors[0]],
+                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                ]
+            },
+            marker: {
+                radius: 2
+            },
+            lineWidth: 1,
+            states: {
+                hover: {
+                    lineWidth: 1
+                }
+            },
+            threshold: null
+        }
     },
     series: [
         {
@@ -358,7 +382,7 @@ function compareChangeSet(a, b) {
 }
 
 function updateChangesets() {
-    var nrOfBuildsToShow = loadBuildConfiguration();
+    var nrOfBuildsToShow = storage.loadBuildConfiguration();
     var changeSetAPI = "../api/json?tree=builds[number,timestamp,changeSet[items[msg,comment,author[id,fullName,property[address]],date,commitId]]]{0," + nrOfBuildsToShow + "}";
     // default image src is gravatar default image (if no mail specified)
     var gravatarSrc = "http://www.gravatar.com/avatar/default?f=y&s=64";
@@ -435,12 +459,12 @@ function refreshData() {
 function bindSaveButton() {
     $("#btSaveConfig").click(function () {
         var builds = $("#shownBuildsInput").val();
-        saveBuildConfiguration(builds);
+        storage.saveBuildConfiguration(builds);
     });
 }
 
 function initConfigurationModal() {
-    $("#shownBuildsInput").val(loadBuildConfiguration());
+    $("#shownBuildsInput").val(storage.loadBuildConfiguration());
 }
 
 $(document).ready(function () {
