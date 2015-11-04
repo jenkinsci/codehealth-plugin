@@ -9,7 +9,7 @@
                 </div>
             </div>
         {{/if}}
-        <div class="{{#if date}}col-md-8{{else}}col-md-10{{/if}}">
+        <div class="{{#if date}}{{#if gravatarEnabled}}col-md-7{{else}}col-md-9{{/if}}{{else}}col-md-12{{/if}}">
             <h5>{{message}}</h5>
             <span class="text-muted">by <a
                     href="../../../user/{{authorId}}">{{author}}</a> at revision <a href="{{changeHref}}">
@@ -17,8 +17,8 @@
             </a></span>
         </div>
         {{#if date}}
-            <div class="col-md-2">
-                <span class="text-muted">{{date}}</span>
+            <div class="col-md-3">
+                <span class="text-muted pull-right">{{date}}</span>
             </div>
         {{/if}}
     </div>

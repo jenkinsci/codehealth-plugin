@@ -30,13 +30,12 @@ var saveBuildConfiguration = function (builds) {
  */
 var loadBuildConfiguration = function () {
     return load("builds", 10);
-}
+};
 
 /**
  * @param enabled boolean
  */
 var saveGravatarEnabled = function (enabled) {
-    console.log(enabled);
     save("gravatarEnabled", enabled);
 };
 
@@ -45,7 +44,8 @@ var saveGravatarEnabled = function (enabled) {
  * @return boolean if gravatar is enabled (default: true)
  */
 var loadGravatarEnabled = function () {
-    return load("gravatarEnabled", true);
+    var stringVal = load("gravatarEnabled", "true");
+    return stringVal === "true" ? true : false;
 };
 // Exports
 module.exports = {

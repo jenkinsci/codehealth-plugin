@@ -363,7 +363,6 @@ function updateChangesets() {
     // default image src is gravatar default image (if no mail specified)
     var gravatarSrc = "http://www.gravatar.com/avatar/default?f=y&s=64";
     var gravatarEnabled = storage.loadGravatarEnabled();
-    console.log("Gravatar: " + gravatarEnabled);
     $.getJSON(changeSetAPI)
         .done(function (data) {
             $("#changeset-container").empty();
@@ -404,7 +403,7 @@ function updateChangesets() {
                         authorId: authorId,
                         revision: revision,
                         gravatarSrc: gravatarSrc,
-                        gravatarEnabled: (gravatarEnabled) ? "true" : null,
+                        gravatarEnabled: gravatarEnabled,
                         date: momDate,
                         timestamp: timestamp,
                         changeHref: "../" + buildNr + "/changes#" + revision
@@ -440,14 +439,15 @@ function bindSaveButton() {
         var builds = $("#shownBuildsInput").val();
         storage.saveBuildConfiguration(builds);
         var gravatarEnabled = $("#cbGravatar").is(':checked');
-        console.log("HTML val: "+ gravatarEnabled)
-        storage.saveGravatarEnabled(gravatarEnabled);
+        storage.saveGravatarEnabled(gravatarEnabled ? "true" : "false");
     });
 }
 
 function initConfigurationModal() {
     $("#shownBuildsInput").val(storage.loadBuildConfiguration());
-    $("#cbGravatar").val(storage.loadGravatarEnabled());
+    if(storage.loadGravatarEnabled()){
+        $("#cbGravatar").prop("checked", "checked");
+    }
 }
 
 $(document).ready(function () {
