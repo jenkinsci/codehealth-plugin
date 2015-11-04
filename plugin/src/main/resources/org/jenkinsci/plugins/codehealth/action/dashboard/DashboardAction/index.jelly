@@ -11,7 +11,6 @@
                 <!--
                 <button id="refresh-button" type="button" class="btn btn-primary">Refresh</button>
                 -->
-                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6 col-lg-4">
@@ -103,9 +102,9 @@
                                         data-target="#changeset-container">Latest changes
                                     </h4>
                                     <div class="pull-right">
-                                        <button type="button" class="btn btn-sm pull-right" data-toggle="modal"
-                                                data-target="#modal-config">
-                                            Configure
+                                        <button type="button" class="btn btn-default btn-xs pull-right"
+                                                aria-label="Configure" data-toggle="modal" data-target="#modal-config">
+                                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                                         </button>
                                     </div>
                                 </div>
