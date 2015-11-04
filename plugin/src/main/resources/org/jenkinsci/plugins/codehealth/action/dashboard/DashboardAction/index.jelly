@@ -104,7 +104,7 @@
                                     <div class="pull-right">
                                         <button type="button" class="btn btn-default btn-xs pull-right"
                                                 aria-label="Configure" data-toggle="modal" data-target="#modal-config">
-                                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                                            <span class="glyphicon glyphicon-cog" aria-hidden="true"/>
                                         </button>
                                     </div>
                                 </div>
