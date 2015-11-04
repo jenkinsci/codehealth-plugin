@@ -18,3 +18,19 @@
 .collapsible {
     cursor: pointer;
 }
+
+.good {
+    color: #59ff3d;
+}
+
+.bad {
+    color: #990000;
+}
+
+.metric {
+    font-size: 18px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-weight: 500;
+    line-height: 1.1;
+}

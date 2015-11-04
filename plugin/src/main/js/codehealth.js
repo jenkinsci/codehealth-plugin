@@ -214,6 +214,16 @@ function parseLocSeries(data) {
         idx++;
     });
     $("#total-line-trend").text(numeral(lastTrend).format('+0,0'));
+    if (lastTrend !== 0) {
+        var glyphElement = $("#total-line-trend-glyph");
+        glyphElement.removeClass("glyphicon glyphicon-circle-arrow-up glyphicon-circle-arrow-down");
+        glyphElement.addClass("glyphicon");
+        if (lastTrend > 0) {
+            glyphElement.addClass("glyphicon-circle-arrow-up");
+        } else {
+            glyphElement.addClass("glyphicon-circle-arrow-down");
+        }
+    }
     codeGraphOptions.series[0].data = dataArray;
 }
 
@@ -323,6 +333,16 @@ function updateIssuesGraph() {
                 idx++;
             });
             $("#total-issue-trend").text(numeral(lastTrend).format('+0,0'));
+            if (lastTrend !== 0) {
+                var glyphElement = $("#total-issue-trend-glyph");
+                glyphElement.removeClass("glyphicon glyphicon-circle-arrow-up glyphicon-circle-arrow-down good bad");
+                glyphElement.addClass("glyphicon");
+                if (lastTrend > 0) {
+                    glyphElement.addClass("glyphicon-circle-arrow-up bad");
+                } else {
+                    glyphElement.addClass("glyphicon-circle-arrow-down good");
+                }
+            }
             issueGraphOptions.series[0].data = dataArray;
             issueGraph = new Highcharts.Chart(
                 // graph options
@@ -445,7 +465,7 @@ function bindSaveButton() {
 
 function initConfigurationModal() {
     $("#shownBuildsInput").val(storage.loadBuildConfiguration());
-    if(storage.loadGravatarEnabled()){
+    if (storage.loadGravatarEnabled()) {
         $("#cbGravatar").prop("checked", "checked");
     }
 }

@@ -21,17 +21,22 @@
                                 <div class="panel-content">
                                     <div class="row">
                                         <div class="col-md-6 center-text">
-                                            <h4 id="total-issue-count"></h4>
+                                            <div class="metric">
+                                                <span id="total-issue-count"/>
+                                            </div>
                                             <span class="text-muted">Number of Issues</span>
                                         </div>
                                         <div class="col-md-6 center-text">
-                                            <h4 id="total-issue-trend"></h4>
+                                            <div class="metric">
+                                                <span id="total-issue-trend"/>
+                                                <span id="total-issue-trend-glyph"/>
+                                            </div>
                                             <span class="text-muted">Issue Trend</span>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div id="issues-graph" class="chart-container"></div>
+                                            <div id="issues-graph" class="chart-container"/>
                                         </div>
                                     </div>
                                 </div>
@@ -67,27 +72,36 @@
                                     <h3 class="panel-title">Code Trend</h3>
                                 </div>
                                 <div class="panel-content">
-                                    <div class="row">
-                                        <div class="col-md-3 center-text">
-                                            <h4 id="total-line-count"></h4>
+                                    <div class="row clearfix">
+                                        <div class="col-md-3 col-sd-6 center-text">
+                                            <div class="metric">
+                                                <span id="total-line-count"/>
+                                            </div>
                                             <span class="text-muted">Lines of Code</span>
                                         </div>
-                                        <div class="col-md-3 center-text">
-                                            <h4 id="total-file-count"></h4>
+                                        <div class="col-md-3 col-sd-6 center-text">
+                                            <div class="metric">
+                                                <span id="total-file-count"/>
+                                            </div>
                                             <span class="text-muted">Files</span>
                                         </div>
-                                        <div class="col-md-3 center-text">
-                                            <h4 id="total-line-trend"></h4>
+                                        <div class="col-md-3 col-sd-6 center-text">
+                                            <div class="metric">
+                                                <span id="total-line-trend"/>
+                                                <span id="total-line-trend-glyph"/>
+                                            </div>
                                             <span class="text-muted">LOC Trend</span>
                                         </div>
-                                        <div class="col-md-3 center-text">
-                                            <h4 id="total-duplications"></h4>
+                                        <div class="col-md-3 col-sd-6 center-text">
+                                            <div class="metric">
+                                                <span id="total-duplications"/>
+                                            </div>
                                             <span class="text-muted">Duplications</span>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div id="loc" class="chart-container"></div>
+                                            <div id="loc" class="chart-container"/>
                                         </div>
                                     </div>
                                 </div>
