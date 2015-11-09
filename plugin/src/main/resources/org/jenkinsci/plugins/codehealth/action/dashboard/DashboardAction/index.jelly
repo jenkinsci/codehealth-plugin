@@ -5,8 +5,20 @@
         </l:header>
         <l:main-panel>
             <script src="${resURL}/plugin/codehealth/bundles/codehealth.js"/>
-            <div id="codehealth_main" class="bootstrap-3">
+            <div id="codehealth_main" class="bootstrap-3 codehealth-container">
                 <!-- content in here can use Bootstrap 3 CSS rules. -->
+                <div class="btn-overlay">
+                    <button id="dash-configure-btn" type="button" class="btn btn-default btn-xs"
+                            aria-label="Configure">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"/>
+                    </button>
+                    <br/>
+                    <button id="dash-kiosk-btn" type="button" class="btn btn-default btn-xs"
+                            aria-label="Kiosk mode">
+                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"/>
+                    </button>
+                </div>
+
                 <st:include page="./changeset_configuration.jelly"/>
                 <!--
                 <button id="refresh-button" type="button" class="btn btn-primary">Refresh</button>

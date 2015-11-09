@@ -1,3 +1,12 @@
+.codehealth-container {
+    position: relative;
+}
+
+.btn-overlay {
+    position: absolute;
+    right: -12px;
+}
+
 .chart-container {
     margin: 8px;
 }

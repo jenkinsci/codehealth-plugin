@@ -21,10 +21,10 @@ var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLi
 var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateLines]";
 
 // Handlebars templates & partials
-var changesetTemplate = require('./changeset.hbs');
-var buildTemplate = require('./build.hbs');
-var issueRowTemplate = require('./issue.hbs');
-var issueOriginRowTemplate = require('./issue-origin.hbs');
+var changesetTemplate = require('./handlebars/changeset.hbs');
+var buildTemplate = require('./handlebars/build.hbs');
+var issueRowTemplate = require('./handlebars/issue.hbs');
+var issueOriginRowTemplate = require('./handlebars/issue-origin.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
 
 // Code Trend
@@ -470,9 +470,42 @@ function initConfigurationModal() {
     }
 }
 
+function goFullscreen(contentId) {
+    console.log("Requesting fullscreen for contentId: " + contentId);
+    var element = $('#' + contentId).get(0);
+    if (element.requestFullScreen) {
+        if (!document.fullScreen) {
+            element.requestFullscreen();
+        } else {
+            document.exitFullScreen();
+        }
+    } else if (element.mozRequestFullScreen) {
+        if (!document.mozFullScreen) {
+            element.mozRequestFullScreen();
+        } else {
+            document.mozCancelFullScreen();
+        }
+    } else if (element.webkitRequestFullScreen) {
+        if (!document.webkitIsFullScreen) {
+            element.webkitRequestFullScreen();
+        } else {
+            document.webkitCancelFullScreen();
+        }
+    }
+}
+
+function addFullscreenEvent(contentId, triggerId) {
+    console.log("Adding click event for contentId: " + contentId + ", trigger: " + triggerId);
+    $("#" + triggerId).click(function () {
+        console.log("Clicked!")
+        goFullscreen(contentId);
+    });
+};
+
 $(document).ready(function () {
     bindSaveButton();
     initConfigurationModal();
+    addFullscreenEvent("codehealth_main", "dash-kiosk-btn");
     // remove empty Jenkins sidepanel
     $("#side-panel").remove();
     $("#main-panel").css("margin-left", "0px");
