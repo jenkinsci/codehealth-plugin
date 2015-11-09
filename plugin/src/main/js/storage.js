@@ -39,18 +39,35 @@ var saveGravatarEnabled = function (enabled) {
     save("gravatarEnabled", enabled);
 };
 
+
 /**
- *
- * @return boolean if gravatar is enabled (default: true)
+ * @return {boolean} if gravatar is enabled (default: true)
  */
 var loadGravatarEnabled = function () {
     var stringVal = load("gravatarEnabled", "true");
-    return stringVal === "true" ? true : false;
+    return stringVal === "true";
+};
+
+/**
+ * @param enabled boolean
+ */
+var saveRefreshEnabled = function (enabled) {
+    save("refreshEnabled", enabled);
+};
+
+/**
+ * @return {boolean} if automatic refresh is enabled (default: false)
+ */
+var loadRefreshEnabled = function () {
+    var stringVal = load("refreshEnabled", "false");
+    return stringVal === "true";
 };
 // Exports
 module.exports = {
     saveBuildConfiguration: saveBuildConfiguration,
     loadBuildConfiguration: loadBuildConfiguration,
     saveGravatarEnabled: saveGravatarEnabled,
-    loadGravatarEnabled: loadGravatarEnabled
+    loadGravatarEnabled: loadGravatarEnabled,
+    saveRefreshEnabled: saveRefreshEnabled,
+    loadRefreshEnabled: loadRefreshEnabled
 };

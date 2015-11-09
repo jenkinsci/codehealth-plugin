@@ -444,6 +444,7 @@ function updateChangesets() {
 }
 
 function refreshData() {
+    console.log("Refreshing....")
     issuesPerOrigin();
     issuesTable();
     updateLoCandDuplicates();
@@ -454,8 +455,8 @@ function refreshData() {
 /**
  * Register on-click event for save button in modal configuration dialog.
  */
-function bindSaveButton() {
-    $("#btSaveConfig").click(function () {
+function bindChangesetSaveButton() {
+    $("#btSaveChangeset").click(function () {
         var builds = $("#shownBuildsInput").val();
         storage.saveBuildConfiguration(builds);
         var gravatarEnabled = $("#cbGravatar").is(':checked');
@@ -463,15 +464,51 @@ function bindSaveButton() {
     });
 }
 
-function initConfigurationModal() {
+var refreshInterval;
+
+/**
+ * @param refreshEnabled true or false
+ * @param interval refresh interval in seconds
+ */
+function registerAutoRefresh(refreshEnabled, interval) {
+    if (refreshEnabled) {
+        console.log("Activating automatic refresh.");
+        // TODO configurable refresh interval
+        refreshInterval = setInterval(refreshData, 10000);
+    } else {
+        console.log("Disabled automatic refresh.")
+        clearInterval(refreshInterval);
+    }
+}
+
+/**
+ * Register on-click event for save button in modal configuration dialog.
+ */
+function bindConfigurationSaveButton() {
+    $("#btSaveConfig").click(function () {
+        var refreshEnabled = $("#cbRefresh").is(':checked');
+        storage.saveRefreshEnabled(refreshEnabled ? "true" : "false");
+        registerAutoRefresh(refreshEnabled);
+    });
+}
+
+function initChangesetModal() {
+    bindChangesetSaveButton();
     $("#shownBuildsInput").val(storage.loadBuildConfiguration());
     if (storage.loadGravatarEnabled()) {
         $("#cbGravatar").prop("checked", "checked");
     }
 }
 
+function initConfigurationModal() {
+    bindConfigurationSaveButton();
+    if (storage.loadRefreshEnabled()) {
+        $("#cbRefresh").prop("checked", "checked");
+        registerAutoRefresh(true);
+    }
+}
+
 function goFullscreen(contentId) {
-    console.log("Requesting fullscreen for contentId: " + contentId);
     var element = $('#' + contentId).get(0);
     if (element.requestFullScreen) {
         if (!document.fullScreen) {
@@ -495,15 +532,13 @@ function goFullscreen(contentId) {
 }
 
 function addFullscreenEvent(contentId, triggerId) {
-    console.log("Adding click event for contentId: " + contentId + ", trigger: " + triggerId);
     $("#" + triggerId).click(function () {
-        console.log("Clicked!")
         goFullscreen(contentId);
     });
-};
+}
 
 $(document).ready(function () {
-    bindSaveButton();
+    initChangesetModal();
     initConfigurationModal();
     addFullscreenEvent("codehealth_main", "dash-kiosk-btn");
     // remove empty Jenkins sidepanel

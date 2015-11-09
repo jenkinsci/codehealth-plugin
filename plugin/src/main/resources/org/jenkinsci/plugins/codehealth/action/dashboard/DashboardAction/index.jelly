@@ -7,9 +7,14 @@
             <script src="${resURL}/plugin/codehealth/bundles/codehealth.js"/>
             <div id="codehealth_main" class="bootstrap-3 codehealth-container">
                 <!-- content in here can use Bootstrap 3 CSS rules. -->
+
+                <st:include page="./changeset_configuration.jelly"/>
+                <st:include page="./dashboard_configuration.jelly"/>
+
+
                 <div class="btn-overlay">
                     <button id="dash-configure-btn" type="button" class="btn btn-default btn-xs"
-                            aria-label="Configure">
+                            aria-label="Configure" data-toggle="modal" data-target="#modal-dashboard">
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"/>
                     </button>
                     <br/>
@@ -19,7 +24,6 @@
                     </button>
                 </div>
 
-                <st:include page="./changeset_configuration.jelly"/>
                 <!--
                 <button id="refresh-button" type="button" class="btn btn-primary">Refresh</button>
                 -->
@@ -129,7 +133,7 @@
                                     </h4>
                                     <div class="pull-right">
                                         <button type="button" class="btn btn-default btn-xs pull-right"
-                                                aria-label="Configure" data-toggle="modal" data-target="#modal-config">
+                                                aria-label="Configure Changeset panel" data-toggle="modal" data-target="#modal-changeset">
                                             <span class="glyphicon glyphicon-cog" aria-hidden="true"/>
                                         </button>
                                     </div>

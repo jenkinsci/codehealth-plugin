@@ -1,6 +1,6 @@
 <j:jelly xmlns:j="jelly:core">
     <!-- Modal -->
-    <div class="modal fade" id="modal-changeset" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="modal-dashboard" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -12,20 +12,11 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            <label for="shownBuildsInput" class="col-sm-3">Max builds to show</label>
-                            <div class="col-sm-9">
-                                <input id="shownBuildsInput" type="number" class="form-control" placeholder="10" min="1"
-                                       required="true"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-9">
                                 <div class="checkbox">
                                     <label>
-                                        <input id="cbGravatar" type="checkbox"/>
-                                        Use
-                                        <a href="http://www.gravatar.com">Gravatar</a>
-                                        avatars
+                                        <input id="cbRefresh" type="checkbox"/>
+                                        Refresh data every 30 seconds
                                     </label>
                                 </div>
                             </div>
@@ -33,7 +24,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button id="btSaveChangeset" type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+                    <button id="btSaveConfig" type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
                 </div>
             </div>
         </div>
