@@ -25,7 +25,10 @@ var changesetTemplate = require('./handlebars/changeset.hbs');
 var buildTemplate = require('./handlebars/build.hbs');
 var issueRowTemplate = require('./handlebars/issue.hbs');
 var issueOriginRowTemplate = require('./handlebars/issue-origin.hbs');
+var buildInfoTemplate = require('./handlebars/buildinfo.hbs');
+var healthReportTemplate = require('./handlebars/healthreport.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
+handlebars.registerPartial('healthreport', healthReportTemplate);
 
 // Code Trend
 var issueByOriginChartOptions = {
@@ -443,6 +446,44 @@ function updateChangesets() {
         });
 }
 
+function updateBuildInfo() {
+    var buildInfoAPI = "../api/json?pretty=true&tree=displayName,color,healthReport[description,score,iconUrl],lastBuild[actions[causes[shortDescription]],number,timestamp,url,result]";
+    var $buildInfoDiv = $('#build-info-content');
+    $buildInfoDiv.empty();
+    var baseResourceUrl = $('#resourceUrl').val();
+    $.getJSON(buildInfoAPI)
+        .done(function (data) {
+            var healthReports = [];
+            var causes = [];
+            $.each(data.healthReport, function (idx, healthReport) {
+                var report = {};
+                report.iconUrl = baseResourceUrl + "/images/48x48/" + healthReport.iconUrl;
+                report.description = healthReport.description;
+                report.score = healthReport.score;
+                healthReports.push(report);
+            });
+            $.each(data.lastBuild.actions, function (idx, action) {
+                if (action.causes) {
+                    $.each(action.causes, function (idx, cause) {
+                        causes.push(cause.shortDescription);
+                    });
+                }
+            });
+            var lastBuild = data.lastBuild;
+            lastBuild.time = moment(lastBuild.timestamp).format('DD.MM.YYYY HH:mm');
+            var buildInfoRes = buildInfoTemplate({
+                iconUrl: baseResourceUrl + "/images/48x48/" + data.color + ".png",
+                displayName: data.displayName,
+                lastBuild: lastBuild,
+                causes: causes,
+                healthreports: healthReports
+            });
+            $buildInfoDiv.append(buildInfoRes);
+
+        });
+
+}
+
 function refreshData() {
     console.log("Refreshing....")
     issuesPerOrigin();
@@ -450,6 +491,7 @@ function refreshData() {
     updateLoCandDuplicates();
     updateIssuesGraph();
     updateChangesets();
+    updateBuildInfo();
 }
 
 /**
@@ -476,7 +518,7 @@ function registerAutoRefresh(refreshEnabled, interval) {
         // TODO configurable refresh interval
         refreshInterval = setInterval(refreshData, 10000);
     } else {
-        console.log("Disabled automatic refresh.")
+        console.log("Disabled automatic refresh.");
         clearInterval(refreshInterval);
     }
 }
@@ -545,10 +587,5 @@ $(document).ready(function () {
     $("#side-panel").remove();
     $("#main-panel").css("margin-left", "0px");
     // load data
-    refreshData();
-});
-
-// Refresh Button
-$("#refresh-button").on("click", function () {
     refreshData();
 });
