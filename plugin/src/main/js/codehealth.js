@@ -480,20 +480,19 @@ function bindChangesetSaveButton() {
         storage.saveBuildConfiguration(builds);
         var gravatarEnabled = $("#cbGravatar").is(':checked');
         storage.saveGravatarEnabled(gravatarEnabled ? "true" : "false");
+        bootstrap("#modal-changeset").modal('hide');
     });
 }
 
 var refreshInterval;
 
 /**
- * @param refreshEnabled true or false
- * @param interval refresh interval in seconds
+ * @param interval refresh interval in seconds (if 0 then refresh disabled)
  */
-function registerAutoRefresh(refreshEnabled, interval) {
-    if (refreshEnabled) {
+function registerAutoRefresh(interval) {
+    if (interval > 0) {
         console.log("Activating automatic refresh.");
-        // TODO configurable refresh interval
-        refreshInterval = setInterval(refreshData, 10000);
+        refreshInterval = setInterval(refreshData, interval * 1000);
     } else {
         console.log("Disabled automatic refresh.");
         clearInterval(refreshInterval);
@@ -505,9 +504,19 @@ function registerAutoRefresh(refreshEnabled, interval) {
  */
 function bindConfigurationSaveButton() {
     $("#btSaveConfig").click(function () {
+        // always disable the auto refresh (so new time setting is used)
+        registerAutoRefresh(0);
+        var interval = 0;
         var refreshEnabled = $("#cbRefresh").is(':checked');
-        storage.saveRefreshEnabled(refreshEnabled ? "true" : "false");
-        registerAutoRefresh(refreshEnabled);
+        if (refreshEnabled) {
+            interval = parseInt($("#inputRefreshInterval").val());
+            if (interval < 0) {
+                interval = 0;
+            }
+        }
+        storage.saveRefreshInterval(interval);
+        registerAutoRefresh(interval);
+        bootstrap("#modal-dashboard").modal('hide');
     });
 }
 
@@ -521,9 +530,11 @@ function initChangesetModal() {
 
 function initConfigurationModal() {
     bindConfigurationSaveButton();
-    if (storage.loadRefreshEnabled()) {
+    var interval = storage.loadRefreshInterval();
+    if (interval > 0) {
         $("#cbRefresh").prop("checked", "checked");
-        registerAutoRefresh(true);
+        $("#inputRefreshInterval").val(interval);
+        registerAutoRefresh(interval);
     }
 }
 

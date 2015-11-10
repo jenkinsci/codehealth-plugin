@@ -49,25 +49,25 @@ var loadGravatarEnabled = function () {
 };
 
 /**
- * @param enabled boolean
+ * @param interval refresh interval in seconds. if 0 then refresh disabled
  */
-var saveRefreshEnabled = function (enabled) {
-    save("refreshEnabled", enabled);
+var saveRefreshInterval = function (interval) {
+    save("refreshInterval", interval);
 };
 
 /**
- * @return {boolean} if automatic refresh is enabled (default: false)
+ * @return {number} refresh interval (default = 0 => refresh disabled)
  */
-var loadRefreshEnabled = function () {
-    var stringVal = load("refreshEnabled", "false");
-    return stringVal === "true";
+var loadRefreshInterval = function () {
+    return load("refreshInterval", 0);
 };
+
 // Exports
 module.exports = {
     saveBuildConfiguration: saveBuildConfiguration,
     loadBuildConfiguration: loadBuildConfiguration,
     saveGravatarEnabled: saveGravatarEnabled,
     loadGravatarEnabled: loadGravatarEnabled,
-    saveRefreshEnabled: saveRefreshEnabled,
-    loadRefreshEnabled: loadRefreshEnabled
+    saveRefreshInterval: saveRefreshInterval,
+    loadRefreshInterval: loadRefreshInterval
 };
