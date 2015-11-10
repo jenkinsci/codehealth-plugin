@@ -17,57 +17,22 @@ function load(key, defaultValue) {
     return value;
 }
 
-/**
- *
- * @param builds nr of builds for latest changes
- */
-var saveBuildConfiguration = function (builds) {
-    save("builds", builds);
+var Storage = function (projectId) {
+    console.log("Init storage for projectId: " + projectId);
+    this.projectId = projectId;
 };
 
-/**
- * @return number number of builds to display (default: 10)
- */
-var loadBuildConfiguration = function () {
-    return load("builds", 10);
+Storage.prototype.get = function (key, defaultValue) {
+    return load(this.projectId + "." + key, defaultValue);
 };
 
-/**
- * @param enabled boolean
- */
-var saveGravatarEnabled = function (enabled) {
-    save("gravatarEnabled", enabled);
+Storage.prototype.put = function (key, value) {
+    return save(this.projectId + "." + key, value);
 };
 
-
-/**
- * @return {boolean} if gravatar is enabled (default: true)
- */
-var loadGravatarEnabled = function () {
-    var stringVal = load("gravatarEnabled", "true");
-    return stringVal === "true";
-};
-
-/**
- * @param interval refresh interval in seconds. if 0 then refresh disabled
- */
-var saveRefreshInterval = function (interval) {
-    save("refreshInterval", interval);
-};
-
-/**
- * @return {number} refresh interval (default = 0 => refresh disabled)
- */
-var loadRefreshInterval = function () {
-    return load("refreshInterval", 0);
+Storage.prototype.toBoolean = function (value) {
+    return value === "true";
 };
 
 // Exports
-module.exports = {
-    saveBuildConfiguration: saveBuildConfiguration,
-    loadBuildConfiguration: loadBuildConfiguration,
-    saveGravatarEnabled: saveGravatarEnabled,
-    loadGravatarEnabled: loadGravatarEnabled,
-    saveRefreshInterval: saveRefreshInterval,
-    loadRefreshInterval: loadRefreshInterval
-};
+module.exports = Storage;

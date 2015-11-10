@@ -7,6 +7,8 @@
             <script src="${resURL}/plugin/codehealth/bundles/codehealth.js"/>
             <!--provides resource url for use in javascript -->
             <input id="resourceUrl" type="hidden" value="${resURL}"/>
+            <!--provides project/job name for use in javascript -->
+            <input id="projectId" type="hidden" value="${it.project.name}"/>
             <div id="codehealth_main" class="bootstrap-3 codehealth-container">
                 <!-- content in here can use Bootstrap 3 CSS rules. -->
                 <st:include page="./changeset_configuration.jelly"/>

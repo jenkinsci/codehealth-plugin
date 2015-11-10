@@ -8,7 +8,7 @@ var moment = require('moment');
 var numeral = require('numeral');
 
 // Own libraries
-var storage = require('./storage.js');
+var Storage = require('./storage.js');
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
@@ -28,6 +28,10 @@ var buildInfoTemplate = require('./handlebars/buildinfo.hbs');
 var healthReportTemplate = require('./handlebars/healthreport.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
 handlebars.registerPartial('healthreport', healthReportTemplate);
+
+// storage for current job/project name
+var projectId;
+var projectStorage;
 
 // Issues Table
 function issuesTable() {
@@ -339,11 +343,11 @@ function compareChangeSet(a, b) {
 }
 
 function updateChangesets() {
-    var nrOfBuildsToShow = storage.loadBuildConfiguration();
+    var nrOfBuildsToShow = projectStorage.get("builds", 10);
     var changeSetAPI = "../api/json?tree=builds[number,timestamp,changeSet[items[msg,comment,author[id,fullName,property[address]],date,commitId]]]{0," + nrOfBuildsToShow + "}";
     // default image src is gravatar default image (if no mail specified)
     var gravatarSrc = "http://www.gravatar.com/avatar/default?f=y&s=64";
-    var gravatarEnabled = storage.loadGravatarEnabled();
+    var gravatarEnabled = projectStorage.get("gravatarEnabled", "true");
     $.getJSON(changeSetAPI)
         .done(function (data) {
             $("#changeset-container").empty();
@@ -477,9 +481,9 @@ function refreshData() {
 function bindChangesetSaveButton() {
     $("#btSaveChangeset").click(function () {
         var builds = $("#shownBuildsInput").val();
-        storage.saveBuildConfiguration(builds);
+        projectStorage.put("builds", builds);
         var gravatarEnabled = $("#cbGravatar").is(':checked');
-        storage.saveGravatarEnabled(gravatarEnabled ? "true" : "false");
+        projectStorage.put("gravatarEnabled", gravatarEnabled ? "true" : "false");
         bootstrap("#modal-changeset").modal('hide');
     });
 }
@@ -514,7 +518,7 @@ function bindConfigurationSaveButton() {
                 interval = 0;
             }
         }
-        storage.saveRefreshInterval(interval);
+        projectStorage.put("refreshInterval", interval);
         registerAutoRefresh(interval);
         bootstrap("#modal-dashboard").modal('hide');
     });
@@ -522,15 +526,15 @@ function bindConfigurationSaveButton() {
 
 function initChangesetModal() {
     bindChangesetSaveButton();
-    $("#shownBuildsInput").val(storage.loadBuildConfiguration());
-    if (storage.loadGravatarEnabled()) {
+    $("#shownBuildsInput").val(projectStorage.get("builds", 10));
+    if (projectStorage.toBoolean(projectStorage.get("gravatarEnabled", "true"))) {
         $("#cbGravatar").prop("checked", "checked");
     }
 }
 
 function initConfigurationModal() {
     bindConfigurationSaveButton();
-    var interval = storage.loadRefreshInterval();
+    var interval = projectStorage.get("refreshInterval", 0);
     if (interval > 0) {
         $("#cbRefresh").prop("checked", "checked");
         $("#inputRefreshInterval").val(interval);
@@ -568,6 +572,9 @@ function addFullscreenEvent(contentId, triggerId) {
 }
 
 $(document).ready(function () {
+    // init storage
+    projectId = $("#projectId").val();
+    projectStorage = new Storage(projectId);
     initChangesetModal();
     initConfigurationModal();
     addFullscreenEvent("codehealth_main", "dash-kiosk-btn");
