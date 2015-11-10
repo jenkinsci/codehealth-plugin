@@ -23,7 +23,6 @@ var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateL
 var changesetTemplate = require('./handlebars/changeset.hbs');
 var buildTemplate = require('./handlebars/build.hbs');
 var issueRowTemplate = require('./handlebars/issue.hbs');
-var issueOriginRowTemplate = require('./handlebars/issue-origin.hbs');
 var buildInfoTemplate = require('./handlebars/buildinfo.hbs');
 var healthReportTemplate = require('./handlebars/healthreport.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
