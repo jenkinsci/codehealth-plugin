@@ -18,6 +18,7 @@ var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCod
 var linesOfCodeAPI = "../loc-api/api/json?tree=linesOfCode[fileCount,linesOfCode]";
 var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
 var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateLines]";
+var testResultsAPI = "../lastCompletedBuild/testReport/api/json?tree=duration,failCount,passCount,skipCount,empty";
 
 // Handlebars templates & partials
 var changesetTemplate = require('./handlebars/changeset.hbs');
@@ -444,6 +445,20 @@ function updateBuildInfo() {
 
 }
 
+function updateTestResults() {
+    $.getJSON(testResultsAPI).done(function (data) {
+        var durationInSec = parseFloat(data.duration);
+        var totalRunCount = data.passCount + data.failCount;
+        var successPercentage = data.passCount / totalRunCount;
+
+        $("#test-duration").text(numeral(durationInSec).format('0.00') + ' s');
+        $("#test-success-percentage").text(numeral(successPercentage).format('0.00%')).attr('title', data.passCount + ' tests passed.');
+        $("#test-passed").text(numeral(data.passCount).format('0,0'));
+        $("#test-failed").text(numeral(data.failCount).format('0,0'));
+        $("#test-skipped").text(numeral(data.skipCount).format('0,0'));
+    });
+}
+
 function refreshData() {
     console.log("Refreshing....")
     issuesTable();
@@ -451,6 +466,7 @@ function refreshData() {
     updateIssuesGraph();
     updateChangesets();
     updateBuildInfo();
+    updateTestResults();
 }
 
 /**

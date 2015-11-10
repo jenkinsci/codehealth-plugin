@@ -24,7 +24,7 @@
                 </div>
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">Issue Trend</h3>
@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">Code Trend</h3>
@@ -94,6 +94,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-3 col-sd-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Build information</h3>
+                                </div>
+                                <div class="panel-content">
+                                    <div id="build-info-content"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-8 col-sd-12">
@@ -114,13 +124,56 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-md-4 col-sd-12">
+                        <div class="col-md-4">
                             <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">Build information</h3>
+                                <div class="panel-heading clearfix">
+                                    <h4 class="panel-title pull-left">Test results
+                                    </h4>
+                                    <div class="pull-right">
+                                        <a href="../lastCompletedBuild/testReport" title="Open test report">
+                                            <button type="button" class="btn btn-default btn-xs pull-right">
+                                                <span class="glyphicon glyphicon-stats" aria-hidden="true"/>
+                                            </button>
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="panel-content">
-                                    <div id="build-info-content"></div>
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-6 center-text">
+                                                <div class="metric">
+                                                    <span id="test-success-percentage"/>
+                                                </div>
+                                                <span class="text-muted">Test Success</span>
+                                            </div>
+                                            <div class="col-md-6 center-text">
+                                                <div class="metric">
+                                                    <span id="test-duration"/>
+                                                </div>
+                                                <span class="text-muted">Duration</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4 center-text">
+                                                <div class="metric">
+                                                    <span id="test-passed"/>
+                                                </div>
+                                                <span class="text-muted">Passed</span>
+                                            </div>
+                                            <div class="col-md-4 center-text">
+                                                <div class="metric">
+                                                    <span id="test-failed"/>
+                                                </div>
+                                                <span class="text-muted">Failed</span>
+                                            </div>
+                                            <div class="col-md-4 center-text">
+                                                <div class="metric">
+                                                    <span id="test-skipped"/>
+                                                </div>
+                                                <span class="text-muted">Skipped</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
