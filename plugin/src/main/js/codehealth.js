@@ -187,10 +187,12 @@ var issueGraphOptions = {
     },
     chart: {
         renderTo: "issues-graph",
-        height: 275
+        height: 275,
+        type: "area"
     },
     plotOptions: {
         area: {
+            stacking: "normal",
             marker: {
                 enabled: false
             }
@@ -198,20 +200,16 @@ var issueGraphOptions = {
     },
     series: [
         {
-            name: "All priorities",
-            type: "area"
-        },
-        {
             name: "High priority",
-            type: "area"
+            color: '#f44336'
         },
         {
             name: "Normal priority",
-            type: "area"
+            color: '#cddc39'
         },
         {
             name: "Low priority",
-            type: "area"
+            color: '#4caf50'
         }
     ],
     credits: {
@@ -270,10 +268,9 @@ function parseIssueCounts(data) {
             glyphElement.addClass("glyphicon-circle-arrow-down good");
         }
     }
-    issueGraphOptions.series[0].data = dataArrayTotal;
-    issueGraphOptions.series[1].data = dataArrayHigh;
-    issueGraphOptions.series[2].data = dataArrayNormal;
-    issueGraphOptions.series[3].data = dataArrayLow;
+    issueGraphOptions.series[0].data = dataArrayHigh;
+    issueGraphOptions.series[1].data = dataArrayNormal;
+    issueGraphOptions.series[2].data = dataArrayLow;
 }
 
 function parseIssueCountPerOrigin(data) {
@@ -289,7 +286,7 @@ function parseIssueCountPerOrigin(data) {
         graphDataArray.push(graphDataEntry);
     });
     $('#total-issue-count').text(numeral(totalIssueCount).format('0,0'));
-    issueGraphOptions.series[4] = {
+    issueGraphOptions.series[3] = {
         data: graphDataArray,
         name: "Issues",
         type: "pie",
@@ -446,16 +443,21 @@ function updateBuildInfo() {
 }
 
 function updateTestResults() {
+    $('#test-content').empty();
+    var testreportTemplate = require('./handlebars/testreport.hbs');
     $.getJSON(testResultsAPI).done(function (data) {
         var durationInSec = parseFloat(data.duration);
         var totalRunCount = data.passCount + data.failCount;
         var successPercentage = data.passCount / totalRunCount;
-
-        $("#test-duration").text(numeral(durationInSec).format('0.00') + ' s');
-        $("#test-success-percentage").text(numeral(successPercentage).format('0.00%')).attr('title', data.passCount + ' tests passed.');
-        $("#test-passed").text(numeral(data.passCount).format('0,0'));
-        $("#test-failed").text(numeral(data.failCount).format('0,0'));
-        $("#test-skipped").text(numeral(data.skipCount).format('0,0'));
+        var templateRendered = testreportTemplate({
+            successPercentage: numeral(successPercentage).format('0.00%'),
+            successTitle: data.passCount + ' tests passed.',
+            duration: numeral(durationInSec).format('0.00') + ' s',
+            passCount: numeral(data.passCount).format('0,0'),
+            failCount: numeral(data.failCount).format('0,0'),
+            skipCount: numeral(data.skipCount).format('0,0')
+        });
+        $('#test-content').append(templateRendered);
     });
 }
 
