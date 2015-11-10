@@ -121,6 +121,13 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
       </profile>
+      <profile default="false" name="Annotation profile for junit" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="junit" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ace-editor" target="1.6" />
@@ -134,6 +141,7 @@
       <module name="jenkins-js-libs" target="1.5" />
       <module name="jquery-detached" target="1.6" />
       <module name="js-module-base" target="1.6" />
+      <module name="junit" target="1.6" />
       <module name="momentjs" target="1.6" />
       <module name="numeraljs" target="1.6" />
       <module name="parent" target="1.7" />

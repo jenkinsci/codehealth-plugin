@@ -72,7 +72,7 @@ public abstract class IssueRepository extends BaseRepository {
 
     /**
      * @param topLevelItem the top-level-item (job)
-     * @return new/open issue count, grouped by build number
+     * @return new/open issue count by priority, grouped by build number
      */
-    public abstract Map<Integer, Long> loadIssueCountPerBuild(TopLevelItem topLevelItem);
+    public abstract Map<Integer, JPAIssueRepository.IssuesByPriority> loadIssueCountPerBuild(TopLevelItem topLevelItem);
 }

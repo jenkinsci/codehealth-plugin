@@ -12,6 +12,8 @@ import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.model.StateHistory;
 import org.jenkinsci.plugins.codehealth.provider.issues.Issue;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -271,16 +273,68 @@ public class JPAIssueRepository extends IssueRepository {
         return Collections.emptyList();
     }
 
+    @ExportedBean
+    public class IssuesByPriority {
+        private Long total;
+        private Long high;
+        private Long normal;
+        private Long low;
+
+        public IssuesByPriority(Long total, Long high, Long normal, Long low) {
+            this.total = total;
+            this.high = high;
+            this.normal = normal;
+            this.low = low;
+        }
+
+        @Exported
+        public Long getTotal() {
+            return total;
+        }
+
+        public void setTotal(Long total) {
+            this.total = total;
+        }
+
+        @Exported
+        public Long getHigh() {
+            return high;
+        }
+
+        public void setHigh(Long high) {
+            this.high = high;
+        }
+
+        @Exported
+        public Long getNormal() {
+            return normal;
+        }
+
+        public void setNormal(Long normal) {
+            this.normal = normal;
+        }
+
+        @Exported
+        public Long getLow() {
+            return low;
+        }
+
+        public void setLow(Long low) {
+            this.low = low;
+        }
+    }
+
     @Override
-    public Map<Integer, Long> loadIssueCountPerBuild(TopLevelItem topLevelItem) {
+    public Map<Integer, IssuesByPriority> loadIssueCountPerBuild(TopLevelItem topLevelItem) {
         this.getInjector().injectMembers(this);
-        final Map<Integer, Long> issueCount = Maps.newLinkedHashMap();
+        final Map<Integer, IssuesByPriority> issueCount = Maps.newLinkedHashMap();
         try {
             final EntityManager entityManager = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             Query query = entityManager.createNamedQuery(IssueEntity.NATIVE_FIND_OPEN_ISSUE_COUNT_PER_BUILD);
             List<Object[]> resultList = query.getResultList();
             for (Object[] row : resultList) {
-                issueCount.put((Integer) row[0], ((BigInteger) row[1]).longValue());
+                issueCount.put((Integer) row[0],
+                        new IssuesByPriority(((BigInteger) row[1]).longValue(), ((BigInteger) row[2]).longValue(), ((BigInteger) row[3]).longValue(), ((BigInteger) row[4]).longValue()));
             }
         } catch (SQLException e) {
             LOG.log(Level.WARNING, "Unable to query issues.", e);

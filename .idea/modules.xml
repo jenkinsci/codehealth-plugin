@@ -13,6 +13,7 @@
       <module fileurl="file://$PROJECT_DIR$/../js-libs/jenkins-js-libs.iml" filepath="$PROJECT_DIR$/../js-libs/jenkins-js-libs.iml" />
       <module fileurl="file://$PROJECT_DIR$/../js-libs/jquery-detached/jquery-detached.iml" filepath="$PROJECT_DIR$/../js-libs/jquery-detached/jquery-detached.iml" />
       <module fileurl="file://$PROJECT_DIR$/../js-libs/js-module-base/js-module-base.iml" filepath="$PROJECT_DIR$/../js-libs/js-module-base/js-module-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../junit-plugin/junit.iml" filepath="$PROJECT_DIR$/../junit-plugin/junit.iml" group="contrib-plugins/test" />
       <module fileurl="file://$PROJECT_DIR$/../js-libs/momentjs/momentjs.iml" filepath="$PROJECT_DIR$/../js-libs/momentjs/momentjs.iml" />
       <module fileurl="file://$PROJECT_DIR$/parent.iml" filepath="$PROJECT_DIR$/parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/../pmd-plugin/pmd.iml" filepath="$PROJECT_DIR$/../pmd-plugin/pmd.iml" group="contrib-plugins/issues" />

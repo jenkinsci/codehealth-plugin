@@ -9,14 +9,13 @@ var numeral = require('numeral');
 
 // Own libraries
 var storage = require('./storage.js');
-var drilldown = require('./drilldown.js');
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
 var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
-var issuesGraphAPI = "../issues-api/api/json?tree=series";
+var issuesGraphAPI = "../issues-api/api/json?tree=series[*]";
 var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode,build[number]]";
-var linesOfCodeAPI = "../loc-api/api/json?pretty=true&tree=linesOfCode[fileCount,linesOfCode]";
+var linesOfCodeAPI = "../loc-api/api/json?tree=linesOfCode[fileCount,linesOfCode]";
 var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
 var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateLines]";
 
@@ -29,105 +28,6 @@ var buildInfoTemplate = require('./handlebars/buildinfo.hbs');
 var healthReportTemplate = require('./handlebars/healthreport.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
 handlebars.registerPartial('healthreport', healthReportTemplate);
-
-// Code Trend
-var issueByOriginChartOptions = {
-    title: {
-        text: null
-    },
-    subtitle: {
-        text: 'Click slices to view priorities.'
-    },
-    credits: {
-        enabled: false
-    },
-    chart: {
-        renderTo: "issues-pie",
-        type: 'pie',
-        height: 275
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                distance: -40,
-                connectorPadding: 0
-            }
-        }
-    },
-    series: [
-        {
-            name: "Issues"
-        }
-    ],
-    drilldown: {
-        series: []
-    }
-};
-
-// Issues per Origin
-function issuesPerOrigin() {
-    var totalCount = 0, totalLow = 0, totalNormal = 0, totalHigh = 0;
-    $.getJSON(issuesPerOriginAPI)
-        .done(function (data) {
-            $("#issues-per-origin").empty();
-            var graphDataArray = [];
-            var idx = 0;
-            $.each(data.issuesPerOrigin, function (key, value) {
-                var totalOriginCount = value.length;
-                totalCount = totalCount + totalOriginCount;
-                var lowCount = 0;
-                var normalCount = 0;
-                var highCount = 0;
-                var origin = "";
-                var graphDataEntry = {};
-                graphDataEntry.name = key;
-                graphDataEntry.y = totalOriginCount;
-                graphDataEntry.drilldown = key;
-                graphDataArray[idx] = graphDataEntry;
-                $.each(value, function (j, issue) {
-                    if (issue.priority === "HIGH") {
-                        highCount++;
-                    } else if (issue.priority === "NORMAL") {
-                        normalCount++;
-                    } else {
-                        lowCount++;
-                    }
-                    origin = issue.origin;
-                });
-                totalLow = totalLow + lowCount;
-                totalNormal = totalNormal + normalCount;
-                totalHigh = totalHigh + highCount;
-                issueByOriginChartOptions.drilldown.series[idx] = drilldown.createDrilldownEntry(key, key, drilldown.createPriorityDrilldownDataArray(lowCount, normalCount, highCount));
-                var linkHref = "../issues-api/goToBuildResult?origin=" + origin;
-                $("#issues-per-origin").append(issueOriginRowTemplate({
-                    key: key,
-                    linkHref: linkHref,
-                    highCount: highCount,
-                    normalCount: normalCount,
-                    lowCount: lowCount,
-                    totalOriginCount: totalOriginCount
-                }));
-                idx++;
-            });
-            // add totals
-            $("#issues-per-origin").append(issueOriginRowTemplate({
-                key: "Total",
-                highCount: totalHigh,
-                normalCount: totalNormal,
-                lowCount: totalLow,
-                totalOriginCount: totalCount
-            }));
-            $("#total-issue-count").text(numeral(totalCount).format('0,0'));
-            // update Origin Pie chart
-            issueByOriginChartOptions.series[0].data = graphDataArray;
-            new Highcharts.Chart(
-                // graph options
-                issueByOriginChartOptions
-            );
-        });
-}
 
 // Issues Table
 function issuesTable() {
@@ -143,9 +43,6 @@ function issuesTable() {
                 });
                 $('#codehealth-issues').append(row);
             });
-        })
-        .always(function () {
-            //console.log("JSON API called...")
         });
 }
 
@@ -158,6 +55,13 @@ var codeGraphOptions = {
         renderTo: "loc",
         type: 'area',
         height: 275
+    },
+    plotOptions: {
+        area: {
+            marker: {
+                enabled: false
+            }
+        }
     },
     credits: {
         enabled: false
@@ -277,19 +181,37 @@ function updateLoCandDuplicates() {
 }
 
 // Issue Trend
-var issueGraph;
 var issueGraphOptions = {
     title: {
         text: null
     },
     chart: {
         renderTo: "issues-graph",
-        height: 275,
-        type: "area"
+        height: 275
+    },
+    plotOptions: {
+        area: {
+            marker: {
+                enabled: false
+            }
+        }
     },
     series: [
         {
-            name: "Issues"
+            name: "All priorities",
+            type: "area"
+        },
+        {
+            name: "High priority",
+            type: "area"
+        },
+        {
+            name: "Normal priority",
+            type: "area"
+        },
+        {
+            name: "Low priority",
+            type: "area"
         }
     ],
     credits: {
@@ -306,53 +228,92 @@ var issueGraphOptions = {
     yAxis: {
         floor: 0,
         min: 0
-    },
-    tooltip: {
-        formatter: function () {
-            var s = "<b>Build #" + this.x + "</b>";
-            $.each(this.points, function () {
-                s += "<br/>" + this.series.name + ": " + this.y;
-            });
-            return s;
-        },
-        shared: true
     }
 };
 
-function updateIssuesGraph() {
-    $.getJSON(issuesGraphAPI)
-        .done(function (data) {
-            var dataArray = [];
-            var idx = 0;
-            var lastCount = 0;
-            var lastTrend = 0;
-            $.each(data.series, function (buildNr, issueCount) {
-                var obj = [];
-                obj[0] = parseInt(buildNr);
-                obj[1] = issueCount;
-                lastTrend = issueCount - lastCount;
-                lastCount = issueCount;
-                dataArray[idx] = obj;
-                idx++;
-            });
-            $("#total-issue-trend").text(numeral(lastTrend).format('+0,0'));
-            if (lastTrend !== 0) {
-                var glyphElement = $("#total-issue-trend-glyph");
-                glyphElement.removeClass("glyphicon glyphicon-circle-arrow-up glyphicon-circle-arrow-down good bad");
-                glyphElement.addClass("glyphicon");
-                if (lastTrend > 0) {
-                    glyphElement.addClass("glyphicon-circle-arrow-up bad");
-                } else {
-                    glyphElement.addClass("glyphicon-circle-arrow-down good");
-                }
-            }
-            issueGraphOptions.series[0].data = dataArray;
-            issueGraph = new Highcharts.Chart(
-                // graph options
-                issueGraphOptions
-            );
+function buildDataEntry(buildNumber, count) {
+    return [buildNumber, count];
+}
+
+function getIssueCounts() {
+    return $.getJSON(issuesGraphAPI);
+}
+
+function getIssueCountPerOrigin() {
+    return $.getJSON(issuesPerOriginAPI);
+}
+
+function parseIssueCounts(data) {
+    var dataArrayTotal = [];
+    var dataArrayHigh = [];
+    var dataArrayNormal = [];
+    var dataArrayLow = [];
+    var lastCount = 0;
+    var lastTrend = 0;
+    $.each(data.series, function (buildNr, issueCount) {
+        var buildNumber = parseInt(buildNr);
+        dataArrayTotal.push(buildDataEntry(buildNumber, issueCount.total));
+        dataArrayHigh.push(buildDataEntry(buildNumber, issueCount.high));
+        dataArrayNormal.push(buildDataEntry(buildNumber, issueCount.normal));
+        dataArrayLow.push(buildDataEntry(buildNumber, issueCount.low));
+        lastTrend = issueCount.total - lastCount;
+        lastCount = issueCount.total;
+    });
+    $("#total-issue-trend").text(numeral(lastTrend).format('+0,0'));
+    if (lastTrend !== 0) {
+        var glyphElement = $("#total-issue-trend-glyph");
+        glyphElement.removeClass("glyphicon glyphicon-circle-arrow-up glyphicon-circle-arrow-down good bad");
+        glyphElement.addClass("glyphicon");
+        if (lastTrend > 0) {
+            glyphElement.addClass("glyphicon-circle-arrow-up bad");
+        } else {
+            glyphElement.addClass("glyphicon-circle-arrow-down good");
         }
-    );
+    }
+    issueGraphOptions.series[0].data = dataArrayTotal;
+    issueGraphOptions.series[1].data = dataArrayHigh;
+    issueGraphOptions.series[2].data = dataArrayNormal;
+    issueGraphOptions.series[3].data = dataArrayLow;
+}
+
+function parseIssueCountPerOrigin(data) {
+    var totalIssueCount = 0;
+    var graphDataArray = [];
+    $.each(data.issuesPerOrigin, function (key, value) {
+        var totalOriginCount = value.length;
+        totalIssueCount += totalOriginCount;
+        var graphDataEntry = {};
+        graphDataEntry.name = key;
+        graphDataEntry.y = totalOriginCount;
+        graphDataEntry.drilldown = key;
+        graphDataArray.push(graphDataEntry);
+    });
+    $('#total-issue-count').text(numeral(totalIssueCount).format('0,0'));
+    issueGraphOptions.series[4] = {
+        data: graphDataArray,
+        name: "Issues",
+        type: "pie",
+        center: [80, 50],
+        size: 100,
+        showInLegend: false,
+        dataLabels: {
+            enabled: true,
+            connectorPadding: 0,
+            distance: 0
+        }
+    };
+}
+
+function updateIssuesGraph() {
+    $.when(getIssueCounts(), getIssueCountPerOrigin()).done(function (countResponse, countPerOriginResponse) {
+        parseIssueCounts(countResponse[0]);
+        parseIssueCountPerOrigin(countPerOriginResponse[0]);
+        // render graph
+        new Highcharts.Chart(
+            issueGraphOptions
+        );
+
+    });
 }
 
 function compareChangeSet(a, b) {
@@ -447,7 +408,7 @@ function updateChangesets() {
 }
 
 function updateBuildInfo() {
-    var buildInfoAPI = "../api/json?pretty=true&tree=displayName,color,healthReport[description,score,iconUrl],lastBuild[actions[causes[shortDescription]],number,timestamp,url,result]";
+    var buildInfoAPI = "../api/json?tree=displayName,color,healthReport[description,score,iconUrl],lastBuild[actions[causes[shortDescription]],number,timestamp,url,result]";
     var $buildInfoDiv = $('#build-info-content');
     $buildInfoDiv.empty();
     var baseResourceUrl = $('#resourceUrl').val();
@@ -486,7 +447,6 @@ function updateBuildInfo() {
 
 function refreshData() {
     console.log("Refreshing....")
-    issuesPerOrigin();
     issuesTable();
     updateLoCandDuplicates();
     updateIssuesGraph();

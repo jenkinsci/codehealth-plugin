@@ -7,6 +7,7 @@ import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
 import org.jenkinsci.plugins.codehealth.provider.issues.IssueProvider;
 import org.jenkinsci.plugins.codehealth.service.IssueRepository;
+import org.jenkinsci.plugins.codehealth.service.JPAIssueRepository;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.export.Exported;
@@ -54,7 +55,7 @@ public class IssuesProjectAction extends AbstractIssuesAction {
     }
 
     @Exported(name = "series")
-    public Map<Integer, Long> getIssueCountPerBuild() {
+    public Map<Integer, JPAIssueRepository.IssuesByPriority> getIssueCountPerBuild() {
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         try {

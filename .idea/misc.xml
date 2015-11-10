@@ -20,6 +20,7 @@
         <option value="$PROJECT_DIR$/../pmd-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/../js-libs/pom.xml" />
         <option value="$PROJECT_DIR$/../js-libs/numeraljs/pom.xml" />
+        <option value="$PROJECT_DIR$/../junit-plugin/pom.xml" />
       </list>
     </option>
   </component>

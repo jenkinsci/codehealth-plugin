@@ -26,7 +26,11 @@ import java.util.Set;
 })
 @NamedNativeQueries(
         @NamedNativeQuery(name = IssueEntity.NATIVE_FIND_OPEN_ISSUE_COUNT_PER_BUILD,
-                query = "select b.number as buildnumber , count(i.id) as issuecount from Build b " +
+                query = "select b.number as buildnumber , count(i.id) as issuecount_total, " +
+                        "sum(case i.priority when 0 then 1 else 0 end) as issuecount_high, " +
+                        "sum(case i.priority when 1 then 1 else 0 end) as issuecount_normal, " +
+                        "sum(case i.priority when 2 then 1 else 0 end) as issuecount_low " +
+                        "from Build b " +
                         "join StateHistory sh on sh.buildNr = b.number " +
                         "join Issue_StateHistory ish on ish.statehistory_id = sh.id " +
                         "join Issue i on i.id = ish.issue_id " +
@@ -36,7 +40,14 @@ import java.util.Set;
                 resultSetMapping = "openIssueCountMapping"
         )
 )
-@SqlResultSetMapping(name = "openIssueCountMapping", columns = {@ColumnResult(name = "buildnumber"), @ColumnResult(name = "issuecount")})
+@SqlResultSetMapping(name = "openIssueCountMapping",
+        columns = {
+                @ColumnResult(name = "buildnumber"),
+                @ColumnResult(name = "issuecount_total"),
+                @ColumnResult(name = "issuecount_high"),
+                @ColumnResult(name = "issuecount_normal"),
+                @ColumnResult(name = "issuecount_low")
+        })
 @ExportedBean
 public class IssueEntity implements Cloneable {
 
