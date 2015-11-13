@@ -543,24 +543,31 @@ function initConfigurationModal() {
 }
 
 function goFullscreen(contentId) {
-    var element = $('#' + contentId).get(0);
-    if (element.requestFullScreen) {
+    var jqueryElement = $('#' + contentId);
+    var jsElement = jqueryElement.get(0);
+    if (jsElement.requestFullScreen) {
         if (!document.fullScreen) {
-            element.requestFullscreen();
+            jsElement.requestFullscreen();
+            jqueryElement.addClass("fullscreen");
         } else {
             document.exitFullScreen();
+            jqueryElement.removeClass("fullscreen");
         }
-    } else if (element.mozRequestFullScreen) {
+    } else if (jsElement.mozRequestFullScreen) {
         if (!document.mozFullScreen) {
-            element.mozRequestFullScreen();
+            jsElement.mozRequestFullScreen();
+            jqueryElement.addClass("fullscreen");
         } else {
             document.mozCancelFullScreen();
+            jqueryElement.removeClass("fullscreen");
         }
-    } else if (element.webkitRequestFullScreen) {
+    } else if (jsElement.webkitRequestFullScreen) {
         if (!document.webkitIsFullScreen) {
-            element.webkitRequestFullScreen();
+            jsElement.webkitRequestFullScreen();
+            jqueryElement.addClass("fullscreen");
         } else {
-            document.webkitCancelFullScreen();
+            jsElement.webkitCancelFullScreen();
+            jqueryElement.removeClass("fullscreen");
         }
     }
 }
@@ -577,7 +584,7 @@ $(document).ready(function () {
     projectStorage = new Storage(projectId);
     initChangesetModal();
     initConfigurationModal();
-    addFullscreenEvent("codehealth_main", "dash-kiosk-btn");
+    addFullscreenEvent("main-panel", "dash-kiosk-btn");
     // remove empty Jenkins sidepanel
     $("#side-panel").remove();
     $("#main-panel").css("margin-left", "0px");
