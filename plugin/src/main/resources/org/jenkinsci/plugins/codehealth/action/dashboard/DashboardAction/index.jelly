@@ -13,6 +13,7 @@
                 <!-- content in here can use Bootstrap 3 CSS rules. -->
                 <st:include page="./changeset_configuration.jelly"/>
                 <st:include page="./dashboard_configuration.jelly"/>
+                <st:include page="./issues_configuration.jelly"/>
                 <div class="btn-overlay">
                     <button id="dash-configure-btn" type="button" class="btn btn-default btn-xs"
                             aria-label="Configure" data-toggle="modal" data-target="#modal-dashboard">
@@ -28,8 +29,15 @@
                     <div class="row">
                         <div class="col-md-5">
                             <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">Issue Trend</h3>
+                                <div class="panel-heading clearfix">
+                                    <h4 class="panel-title pull-left">Issue Trend</h4>
+                                    <div class="pull-right">
+                                        <button type="button" class="btn btn-default btn-xs pull-right"
+                                                aria-label="Configure Issue trend panel" data-toggle="modal"
+                                                data-target="#modal-issues">
+                                            <span class="glyphicon glyphicon-cog" aria-hidden="true"/>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="panel-content">
                                     <div class="row">
@@ -50,6 +58,11 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div id="issues-graph" class="chart-container"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="issue-table-container"></div>
                                         </div>
                                     </div>
                                 </div>

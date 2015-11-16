@@ -26,6 +26,7 @@ var buildTemplate = require('./handlebars/build.hbs');
 var issueRowTemplate = require('./handlebars/issue.hbs');
 var buildInfoTemplate = require('./handlebars/buildinfo.hbs');
 var healthReportTemplate = require('./handlebars/healthreport.hbs');
+var originsTemplate = require('./handlebars/origins.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
 handlebars.registerPartial('healthreport', healthReportTemplate);
 
@@ -280,29 +281,61 @@ function parseIssueCounts(data) {
 function parseIssueCountPerOrigin(data) {
     var totalIssueCount = 0;
     var graphDataArray = [];
+    var origins = [];
     $.each(data.issuesPerOrigin, function (key, value) {
         var totalOriginCount = value.length;
         totalIssueCount += totalOriginCount;
         var graphDataEntry = {};
         graphDataEntry.name = key;
         graphDataEntry.y = totalOriginCount;
-        graphDataEntry.drilldown = key;
         graphDataArray.push(graphDataEntry);
+        var origin = {};
+        origin.origin = key;
+        origin.countTotal = value.length;
+        origin.originLink = "../issues-api/goToBuildResult?origin=" + value[0].origin;
+        var lowCount = 0;
+        var normalCount = 0;
+        var highCount = 0;
+        $.each(value, function (item) {
+            if (item.priority === 'HIGH') {
+                highCount++;
+            } else if (item.priority === 'NORMAL') {
+                normalCount++;
+            } else {
+                lowCount++;
+            }
+        });
+        origin.countHigh = highCount;
+        origin.countNormal = normalCount;
+        origin.countLow = lowCount;
+        origins.push(origin);
     });
     $('#total-issue-count').text(numeral(totalIssueCount).format('0,0'));
-    issueGraphOptions.series[3] = {
-        data: graphDataArray,
-        name: "Issues",
-        type: "pie",
-        center: [80, 50],
-        size: 100,
-        showInLegend: false,
-        dataLabels: {
-            enabled: true,
-            connectorPadding: 0,
-            distance: 0
-        }
-    };
+    if (projectStorage.toBoolean(projectStorage.get("issues.showPie"))) {
+        issueGraphOptions.series[3] = {
+            data: graphDataArray,
+            name: "Issues",
+            type: "pie",
+            center: [80, 50],
+            size: 100,
+            showInLegend: false,
+            dataLabels: {
+                enabled: true,
+                connectorPadding: 0,
+                distance: 0
+            }
+        };
+    } else {
+        issueGraphOptions.series.splice(3, 1);
+    }
+    var tableContainer = $("#issue-table-container");
+    tableContainer.empty();
+    if (projectStorage.toBoolean(projectStorage.get("issues.showTable"))) {
+        var issueTableRes = originsTemplate({
+            origins: origins
+        });
+        tableContainer.append(issueTableRes);
+    }
 }
 
 function updateIssuesGraph() {
@@ -542,6 +575,26 @@ function initConfigurationModal() {
     }
 }
 
+function bindIssuesSaveButton() {
+    $("#btSaveIssueConfig").click(function () {
+        var pieEnabled = $("#cbShowPie").is(':checked');
+        projectStorage.put("issues.showPie", pieEnabled ? "true" : "false");
+        var gravatarEnabled = $("#cbShowTable").is(':checked');
+        projectStorage.put("issues.showTable", gravatarEnabled ? "true" : "false");
+        bootstrap("#modal-issues").modal('hide');
+    });
+}
+
+function initIssuesModal() {
+    bindIssuesSaveButton();
+    if (projectStorage.toBoolean(projectStorage.get("issues.showPie", "true"))) {
+        $("#cbShowPie").prop("checked", "checked");
+    }
+    if (projectStorage.toBoolean(projectStorage.get("issues.showTable", "true"))) {
+        $("#cbShowTable").prop("checked", "checked");
+    }
+}
+
 function goFullscreen(contentId) {
     var jqueryElement = $('#' + contentId);
     var jsElement = jqueryElement.get(0);
@@ -578,12 +631,17 @@ function addFullscreenEvent(contentId, triggerId) {
     });
 }
 
+function initModals() {
+    initChangesetModal();
+    initConfigurationModal();
+    initIssuesModal();
+}
+
 $(document).ready(function () {
     // init storage
     projectId = $("#projectId").val();
     projectStorage = new Storage(projectId);
-    initChangesetModal();
-    initConfigurationModal();
+    initModals();
     addFullscreenEvent("main-panel", "dash-kiosk-btn");
     // remove empty Jenkins sidepanel
     $("#side-panel").remove();

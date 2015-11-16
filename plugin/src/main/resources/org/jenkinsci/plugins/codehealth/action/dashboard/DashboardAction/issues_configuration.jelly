@@ -1,0 +1,43 @@
+<j:jelly xmlns:j="jelly:core">
+    <!-- Modal -->
+    <div class="modal fade" id="modal-issues" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn btn-default btn-xs close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+                    </button>
+                    <h4 class="modal-title">Configuration</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="cbShowPie" type="checkbox"/>
+                                        Show issues by origin in Pie chart
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="cbShowTable" type="checkbox"/>
+                                        Show issues by origin in Table
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="btSaveIssueConfig" type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</j:jelly>

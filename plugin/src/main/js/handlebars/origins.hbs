@@ -1,0 +1,20 @@
+<table class="table">
+    <thead>
+    <th>Plugin</th>
+    <th>HIGH</th>
+    <th>NORMAL</th>
+    <th>LOW</th>
+    <th>Total</th>
+    </thead>
+    <tbody>
+    {{#each origins}}
+        <tr>
+            <td><a href="{{this.originLink}}">{{this.origin}}</a></td>
+            <td>{{this.countHigh}}</td>
+            <td>{{this.countNormal}}</td>
+            <td>{{this.countLow}}</td>
+            <td>{{this.countTotal}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
