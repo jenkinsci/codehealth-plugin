@@ -2,7 +2,7 @@ package org.jenkinsci.plugins.codehealth.provider.issues;
 
 import hudson.ExtensionList;
 import hudson.ExtensionPoint;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import jenkins.model.Jenkins;
 
 import javax.annotation.Nonnull;
@@ -17,16 +17,16 @@ import java.util.Collection;
 public abstract class IssueProvider implements ExtensionPoint {
 
     /**
-     * @return existing issues for a build
+     * @return existing issues for a run
      */
     @Nonnull
-    public abstract Collection<Issue> getExistingIssues(AbstractBuild<?, ?> build);
+    public abstract Collection<Issue> getExistingIssues(Run<?, ?> run);
 
     /**
-     * @return issues that have been fixed with a build
+     * @return issues that have been fixed with a run
      */
     @Nullable
-    public abstract Collection<Issue> getFixedIssues(AbstractBuild<?, ?> build);
+    public abstract Collection<Issue> getFixedIssues(Run<?, ?> build);
 
     /**
      * @return unique identifier of the plugin which contributes issues

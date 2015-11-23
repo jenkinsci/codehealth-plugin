@@ -1,6 +1,6 @@
 package org.jenkinsci.plugins.codehealth.service;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.model.State;
@@ -18,18 +18,18 @@ public abstract class IssueRepository extends BaseRepository {
     /**
      * Updates new or open issues.
      *
-     * @param data  the collection of found issues
-     * @param build the build which produced the issues
+     * @param data the collection of found issues
+     * @param run  the Run which produced the issues
      */
-    public abstract void updateIssues(Collection<IssueEntity> data, AbstractBuild<?, ?> build);
+    public abstract void updateIssues(Collection<IssueEntity> data, Run<?, ?> run);
 
     /**
      * Mark some issues as fixed.
      *
-     * @param data  the issues that have been fixed
-     * @param build the corresponding build
+     * @param data the issues that have been fixed
+     * @param run  the corresponding Run
      */
-    public abstract void fixedIssues(List<IssueEntity> data, AbstractBuild<?, ?> build);
+    public abstract void fixedIssues(List<IssueEntity> data, Run<?, ?> run);
 
     /**
      * Load all issues for this top-level-item.

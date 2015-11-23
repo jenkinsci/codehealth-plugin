@@ -1,6 +1,6 @@
 package org.jenkinsci.plugins.codehealth.service;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.Build;
 
@@ -16,12 +16,12 @@ public abstract class BuildRepository extends BaseRepository {
     /**
      * Persist the given Build.
      *
-     * @param newBuild     the build
+     * @param run     the build
      * @param topLevelItem the top-level-item
      * @return the persisted Build
      */
     @Nullable
-    public abstract Build save(AbstractBuild<?, ?> newBuild, TopLevelItem topLevelItem);
+    public abstract Build save(Run<?, ?> run, TopLevelItem topLevelItem);
 
     /**
      * @param buildNr the build nr

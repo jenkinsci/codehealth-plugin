@@ -4,7 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import hudson.Extension;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
@@ -51,10 +51,10 @@ public class JPAIssueRepository extends IssueRepository {
 
 
     @Override
-    public void updateIssues(Collection<IssueEntity> data, AbstractBuild<?, ?> build) {
+    public void updateIssues(Collection<IssueEntity> data, Run<?, ?> run) {
         this.getInjector().injectMembers(this);
-        final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
-        final int buildNr = build.getNumber();
+        final TopLevelItem topLevelItem = (TopLevelItem) run.getParent();
+        final int buildNr = run.getNumber();
         Build codehealthBuild = jpaBuildRepository.loadBuild(buildNr, topLevelItem);
         LOG.log(Level.INFO, "Updating " + data.size() + " Issues for Top-Level-Item " + topLevelItem.getDisplayName() + " and Build #" + buildNr);
         try {
@@ -145,10 +145,10 @@ public class JPAIssueRepository extends IssueRepository {
     }
 
     @Override
-    public void fixedIssues(List<IssueEntity> data, AbstractBuild<?, ?> build) {
+    public void fixedIssues(List<IssueEntity> data, Run<?, ?> run) {
         this.getInjector().injectMembers(this);
-        final TopLevelItem topLevelItem = (TopLevelItem) build.getProject();
-        final int buildNr = build.getNumber();
+        final TopLevelItem topLevelItem = (TopLevelItem) run.getParent();
+        final int buildNr = run.getNumber();
         Build codehealthBuild = jpaBuildRepository.loadBuild(buildNr, topLevelItem);
         LOG.log(Level.INFO, data.size() + " Issues for Top-Level-Item " + topLevelItem.getDisplayName() + " and Build #" + buildNr + " have been marked as fixed.");
         try {

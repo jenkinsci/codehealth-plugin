@@ -1,6 +1,6 @@
 package org.jenkinsci.plugins.codehealth.action.issues;
 
-import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.TopLevelItem;
 import hudson.util.HttpResponses;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
@@ -22,12 +22,12 @@ import java.util.*;
  */
 @ExportedBean
 public class IssuesProjectAction extends AbstractIssuesAction {
-    private transient AbstractProject abstractProject;
+    private transient Job job;
     private transient final List<State> newAndOpen = list(State.NEW, State.OPEN);
 
-    public IssuesProjectAction(AbstractProject abstractProject, IssueRepository issueRepository) {
-        super((TopLevelItem) abstractProject, issueRepository);
-        this.abstractProject = abstractProject;
+    public IssuesProjectAction(Job job, IssueRepository issueRepository) {
+        super((TopLevelItem) job, issueRepository);
+        this.job = job;
     }
 
     @Exported(name = "issues")

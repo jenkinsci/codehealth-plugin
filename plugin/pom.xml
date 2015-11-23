@@ -45,16 +45,22 @@
             <artifactId>database-h2</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
+        <!-- Workflow Integration -->
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-step-api</artifactId>
+            <version>1.11</version>
+        </dependency>
         <!-- JS UI Modules -->
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>jquery-detached</artifactId>
-            <version>1.1</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
@@ -121,6 +127,11 @@
                     <groupId>org.jvnet.hudson.plugins</groupId>
                     <artifactId>analysis-core</artifactId>
                     <version>1.74</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.jenkins-ci.plugins.workflow</groupId>
+                    <artifactId>workflow-aggregator</artifactId>
+                    <version>1.11</version>
                 </dependency>
             </dependencies>
         </profile>

@@ -5,16 +5,15 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import hudson.Extension;
 import hudson.ExtensionList;
+import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
-import hudson.model.Result;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import jenkins.model.Jenkins;
+import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.plugins.codehealth.model.IssueEntity;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCode;
 import org.jenkinsci.plugins.codehealth.provider.duplicates.DuplicateCodeProvider;
@@ -41,7 +40,7 @@ import java.util.List;
  *
  * @author Michael Prankl
  */
-public class CodehealthPublisher extends Recorder {
+public class CodehealthPublisher extends Recorder implements SimpleBuildStep {
 
     private LinesOfCodeProvider linesOfCodeProvider;
     private DuplicateCodeProvider duplicateCodeProvider;
@@ -84,11 +83,20 @@ public class CodehealthPublisher extends Recorder {
         return true;
     }
 
-    private void handleNewBuild(AbstractBuild<?, ?> build, BuildListener listener) {
-        buildRepository.save(build, (hudson.model.TopLevelItem) build.getProject());
+    @Override
+    public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
+        this.getInjector().injectMembers(this);
+        handleNewBuild(run, listener);
+        handleIssues(run, listener);
+        //handleLinesOfCode(build, listener);
+        //handleDuplicateCode(build, listener);
     }
 
-    private void handleDuplicateCode(AbstractBuild<?, ?> build, BuildListener listener) {
+    private void handleNewBuild(Run<?, ?> run, TaskListener listener) {
+        buildRepository.save(run, (hudson.model.TopLevelItem) run.getParent());
+    }
+
+    private void handleDuplicateCode(AbstractBuild<?, ?> build, TaskListener listener) {
         DuplicateCodeProvider dupProvider = getDuplicateCodeProvider();
         if (dupProvider != null) {
             logConsole(listener, "Getting duplicate code from " + dupProvider.getClass().getName());
@@ -102,7 +110,7 @@ public class CodehealthPublisher extends Recorder {
         }
     }
 
-    private void handleLinesOfCode(AbstractBuild<?, ?> build, BuildListener listener) {
+    private void handleLinesOfCode(AbstractBuild<?, ?> build, TaskListener listener) {
         LinesOfCodeProvider locProvider = getLinesOfCodeProvider();
         if (locProvider != null) {
             logConsole(listener, "Getting LoC from " + locProvider.getClass().getName());
@@ -117,31 +125,31 @@ public class CodehealthPublisher extends Recorder {
 
     }
 
-    private void handleIssues(AbstractBuild<?, ?> build, BuildListener listener) {
+    private void handleIssues(Run<?, ?> run, TaskListener listener) {
         final List<IssueEntity> newIssues = new ArrayList<IssueEntity>();
         final List<IssueEntity> fixedIssues = new ArrayList<IssueEntity>();
         for (IssueProvider issueProvider : getIssueProviders()) {
             final String origin = issueProvider.getOrigin();
             logConsole(listener, "Getting Issues from " + issueProvider.getClass().getName() + ", origin=" + origin);
-            Collection<Issue> existingIssues = issueProvider.getExistingIssues(build);
+            Collection<Issue> existingIssues = issueProvider.getExistingIssues(run);
             if (existingIssues != null) {
                 for (Issue issue : existingIssues) {
                     newIssues.add(mapToInternal(issue, origin));
                 }
             }
-            fixedIssues.addAll(calculateFixedIssues(build, existingIssues, origin));
+            fixedIssues.addAll(calculateFixedIssues(run, existingIssues, origin));
         }
         logConsole(listener, String.format("%s new/open issues, %s fixed issues.", newIssues.size(), fixedIssues.size()));
-        issueRepository.updateIssues(newIssues, build);
-        issueRepository.fixedIssues(fixedIssues, build);
+        issueRepository.updateIssues(newIssues, run);
+        issueRepository.fixedIssues(fixedIssues, run);
     }
 
-    private List<IssueEntity> calculateFixedIssues(final AbstractBuild<?, ?> build,
+    private List<IssueEntity> calculateFixedIssues(final Run<?, ?> run,
                                                    final Collection<Issue> existingIssues, final String origin) {
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         try {
-            return issueRepository.calculateFixedIssues((hudson.model.TopLevelItem) build.getProject(), existingIssues, origin);
+            return issueRepository.calculateFixedIssues((hudson.model.TopLevelItem) run.getParent(), existingIssues, origin);
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
@@ -212,7 +220,7 @@ public class CodehealthPublisher extends Recorder {
         return BuildStepMonitor.NONE;
     }
 
-    private void logConsole(final BuildListener listener, final String message) {
+    private void logConsole(final TaskListener listener, final String message) {
         listener.getLogger().println(String.format("[CODEHEALTH] %s", message));
     }
 

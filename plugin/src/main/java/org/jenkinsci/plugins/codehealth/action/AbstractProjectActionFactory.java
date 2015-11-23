@@ -3,15 +3,17 @@ package org.jenkinsci.plugins.codehealth.action;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.TransientProjectActionFactory;
 import jenkins.model.Jenkins;
+import jenkins.model.TransientActionFactory;
 import org.jenkinsci.plugins.codehealth.CodehealthPublisher;
 import org.jenkinsci.plugins.codehealth.service.BaseRepository;
 
 /**
  * @author Michael Prankl
  */
-public abstract class AbstractProjectActionFactory<R extends BaseRepository> extends TransientProjectActionFactory implements CodehealthActiveChecker {
+public abstract class AbstractProjectActionFactory<R extends BaseRepository> extends TransientActionFactory<Job> implements CodehealthActiveChecker {
 
     @Inject
     private R repositoryImplementation;

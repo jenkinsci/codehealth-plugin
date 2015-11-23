@@ -2,7 +2,7 @@ package org.jenkinsci.plugins.codehealth.service;
 
 import com.google.inject.Inject;
 import hudson.Extension;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.model.TopLevelItem;
 import org.jenkinsci.plugins.codehealth.model.Build;
 import org.jenkinsci.plugins.database.jpa.PersistenceService;
@@ -29,9 +29,9 @@ public class JPABuildRepository extends BuildRepository {
     private transient PersistenceService persistenceService;
 
     @Override
-    public Build save(AbstractBuild<?, ?> newBuild, TopLevelItem topLevelItem) {
+    public Build save(Run<?, ?> run, TopLevelItem topLevelItem) {
         this.getInjector().injectMembers(this);
-        Build newCodehealthBuild = map(newBuild);
+        Build newCodehealthBuild = map(run);
         try {
             final EntityManager entityManager = persistenceService.getPerItemEntityManagerFactory(topLevelItem).createEntityManager();
             entityManager.getTransaction().begin();
@@ -39,9 +39,9 @@ public class JPABuildRepository extends BuildRepository {
             entityManager.getTransaction().commit();
             return newCodehealthBuild;
         } catch (SQLException e) {
-            LOG.log(Level.WARNING, "Unable to save build #" + newBuild.getNumber(), e);
+            LOG.log(Level.WARNING, "Unable to save build #" + run.getNumber(), e);
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Unable to save build #" + newBuild.getNumber(), e);
+            LOG.log(Level.WARNING, "Unable to save build #" + run.getNumber(), e);
         }
         return null;
     }
@@ -79,10 +79,10 @@ public class JPABuildRepository extends BuildRepository {
         return Collections.emptyList();
     }
 
-    private Build map(AbstractBuild<?, ?> newBuild) {
+    private Build map(Run<?, ?> run) {
         final Build codehealthBuild = new Build();
-        codehealthBuild.setNumber(newBuild.getNumber());
-        codehealthBuild.setTimestamp(newBuild.getTime());
+        codehealthBuild.setNumber(run.getNumber());
+        codehealthBuild.setTimestamp(run.getTime());
         return codehealthBuild;
     }
 }
