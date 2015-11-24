@@ -1,7 +1,6 @@
 // Libraries
 var $ = require('jquery-detached').getJQuery();
 var bootstrap = require('bootstrap-detached').getBootstrap();
-var Highcharts = require('highcharts-browserify/modules/drilldown');
 var cryptoJSMD5 = require("crypto-js/md5");
 var handlebars = require("handlebars");
 var moment = require('moment');
@@ -12,12 +11,6 @@ var Storage = require('./storage.js');
 
 // API Endpoints
 var issuesAPI = "../issues-api/api/json?tree=issues[id,priority,message,origin,state[state]]";
-var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
-var issuesGraphAPI = "../issues-api/api/json?tree=series[*]";
-var linesOfCodeSeriesAPI = "../loc-api/api/json?tree=series[fileCount,linesOfCode,build[number]]";
-var linesOfCodeAPI = "../loc-api/api/json?tree=linesOfCode[fileCount,linesOfCode]";
-var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLines,filesWithDuplicates,build[number]]";
-var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateLines]";
 var testResultsAPI = "../lastCompletedBuild/testReport/api/json?tree=duration,failCount,passCount,skipCount,empty";
 
 // Handlebars templates & partials
@@ -50,138 +43,9 @@ function issuesTable() {
         });
 }
 
-// Code Trend
-var codeGraphOptions = {
-    title: {
-        text: null
-    },
-    chart: {
-        renderTo: "loc",
-        type: 'area',
-        height: 275
-    },
-    plotOptions: {
-        area: {
-            marker: {
-                enabled: false
-            }
-        }
-    },
-    credits: {
-        enabled: false
-    },
-    series: [
-        {
-            name: "Lines of Code"
-        },
-        {
-            name: "Duplicate Lines"
-        }
-    ],
-    xAxis: {
-        labels: {
-            formatter: function () {
-                return '#' + this.value;
-            }
-        },
-        tickInterval: 1
-    },
-    yAxis: {
-        floor: 0,
-        min: 0
-    },
-    tooltip: {
-        formatter: function () {
-            var s = "<b>Build #" + this.x + "</b>";
-            $.each(this.points, function () {
-                s += "<br/>" + this.series.name + ": " + this.y;
-            });
-            return s;
-        },
-        shared: true
-    }
-};
-
-function getLoCSeries() {
-    return $.getJSON(linesOfCodeSeriesAPI);
-}
-
-function getDuplicateSeries() {
-    return $.getJSON(duplicateCodeSeriesAPI);
-}
-
-function parseLocSeries(data) {
-    var dataArray = [];
-    var idx = 0;
-    var lastCount = 0;
-    var lastTrend = 0;
-    $.each(data.series, function (i, item) {
-        var obj = [];
-        obj[0] = parseInt(item.build.number);
-        obj[1] = item.linesOfCode;
-        lastTrend = item.linesOfCode - lastCount;
-        lastCount = item.linesOfCode;
-        dataArray[idx] = obj;
-        idx++;
-    });
-    $("#total-line-trend").text(numeral(lastTrend).format('+0,0'));
-    if (lastTrend !== 0) {
-        var glyphElement = $("#total-line-trend-glyph");
-        glyphElement.removeClass("glyphicon glyphicon-circle-arrow-up glyphicon-circle-arrow-down");
-        glyphElement.addClass("glyphicon");
-        if (lastTrend > 0) {
-            glyphElement.addClass("glyphicon-circle-arrow-up");
-        } else {
-            glyphElement.addClass("glyphicon-circle-arrow-down");
-        }
-    }
-    codeGraphOptions.series[0].data = dataArray;
-}
-
-function parseDupSeries(data) {
-    var dataArray = [];
-    var idx = 0;
-    $.each(data.series, function (i, item) {
-        var arr = [];
-        arr[0] = parseInt(item.build.number);
-        arr[1] = item.duplicateLines;
-        dataArray[idx] = arr;
-        idx++;
-    });
-    codeGraphOptions.series[1].data = dataArray;
-}
-
-function getLoCCount() {
-    return $.getJSON(linesOfCodeAPI);
-}
-
-function getDupCount() {
-    return $.getJSON(duplicateCodeAPI);
-}
-
 function updateLoCandDuplicates() {
-    $.when(getLoCSeries(), getDuplicateSeries()).done(function (locResponse, dupResponse) {
-        parseLocSeries(locResponse[0]);
-        parseDupSeries(dupResponse[0]);
-        // render graph
-        new Highcharts.Chart(
-            codeGraphOptions
-        );
-
-    });
-    $.when(getDupCount(), getLoCCount()).done(function (dupResponse, locResponse) {
-        var dupData = dupResponse[0];
-        var locData = locResponse[0];
-        if (locData.linesOfCode) {
-            var lines = locData.linesOfCode.linesOfCode;
-            var files = locData.linesOfCode.fileCount;
-            $("#total-line-count").text(numeral(lines).format('0,0'));
-            $("#total-file-count").text(numeral(files).format('0,0'));
-            var duplicateLines = dupData.duplicateCode.duplicateLines;
-            var dupPercentage = duplicateLines / lines;
-            $("#total-duplications").text(numeral(dupPercentage).format('0.00%')).attr('title', duplicateLines + ' lines');
-        }
-    });
+    var updateLoCGraph = require('./graphs/loc.js');
+    updateLoCGraph('loc');
 }
 
 function updateIssuesGraph() {
@@ -215,6 +79,7 @@ function compareChangeSet(a, b) {
 }
 
 function updateChangesets() {
+    console.log("[Changesets] Updating data...");
     var nrOfBuildsToShow = projectStorage.get("builds", 10);
     var changeSetAPI = "../api/json?tree=builds[number,timestamp,changeSet[items[msg,comment,author[id,fullName,property[address]],date,commitId]]]{0," + nrOfBuildsToShow + "}";
     // default image src is gravatar default image (if no mail specified)
@@ -278,6 +143,7 @@ function updateChangesets() {
                 }
             });
         });
+    console.log("[Changesets] Update finished.");
 }
 
 function updateBuildInfo() {

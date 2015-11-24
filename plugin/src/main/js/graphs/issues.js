@@ -165,7 +165,7 @@ function parseIssueCountPerOrigin(data, showPie, showTable) {
  * @param {boolean} showTable show issues by origin table
  */
 var updateIssueGraph = function (container, showPie, showTable) {
-    console.log("[Issues] Updating...")
+    console.log("[Issues] Updating...");
     $.when(getIssueCounts(), getIssueCountPerOrigin()).done(function (countResponse, countPerOriginResponse) {
         parseIssueCounts(countResponse[0]);
         parseIssueCountPerOrigin(countPerOriginResponse[0], showPie, showTable);
@@ -174,7 +174,7 @@ var updateIssueGraph = function (container, showPie, showTable) {
         new Highcharts.Chart(
             issueGraphOptions
         );
-        console.log("[Issues] Updating finished.")
+        console.log("[Issues] Updating finished.");
     });
 };
 
