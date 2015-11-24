@@ -26,7 +26,6 @@ var buildTemplate = require('./handlebars/build.hbs');
 var issueRowTemplate = require('./handlebars/issue.hbs');
 var buildInfoTemplate = require('./handlebars/buildinfo.hbs');
 var healthReportTemplate = require('./handlebars/healthreport.hbs');
-var originsTemplate = require('./handlebars/origins.hbs');
 handlebars.registerPartial('changeset', changesetTemplate);
 handlebars.registerPartial('healthreport', healthReportTemplate);
 
@@ -185,169 +184,9 @@ function updateLoCandDuplicates() {
     });
 }
 
-// Issue Trend
-var issueGraphOptions = {
-    title: {
-        text: null
-    },
-    chart: {
-        renderTo: "issues-graph",
-        height: 275,
-        type: "area"
-    },
-    plotOptions: {
-        area: {
-            stacking: "normal",
-            marker: {
-                enabled: false
-            }
-        }
-    },
-    series: [
-        {
-            name: "High priority",
-            color: '#f44336'
-        },
-        {
-            name: "Normal priority",
-            color: '#cddc39'
-        },
-        {
-            name: "Low priority",
-            color: '#4caf50'
-        }
-    ],
-    credits: {
-        enabled: false
-    },
-    xAxis: {
-        labels: {
-            formatter: function () {
-                return '#' + this.value;
-            }
-        },
-        tickInterval: 1
-    },
-    yAxis: {
-        floor: 0,
-        min: 0
-    }
-};
-
-function buildDataEntry(buildNumber, count) {
-    return [buildNumber, count];
-}
-
-function getIssueCounts() {
-    return $.getJSON(issuesGraphAPI);
-}
-
-function getIssueCountPerOrigin() {
-    return $.getJSON(issuesPerOriginAPI);
-}
-
-function parseIssueCounts(data) {
-    var dataArrayTotal = [];
-    var dataArrayHigh = [];
-    var dataArrayNormal = [];
-    var dataArrayLow = [];
-    var lastCount = 0;
-    var lastTrend = 0;
-    $.each(data.series, function (buildNr, issueCount) {
-        var buildNumber = parseInt(buildNr);
-        dataArrayTotal.push(buildDataEntry(buildNumber, issueCount.total));
-        dataArrayHigh.push(buildDataEntry(buildNumber, issueCount.high));
-        dataArrayNormal.push(buildDataEntry(buildNumber, issueCount.normal));
-        dataArrayLow.push(buildDataEntry(buildNumber, issueCount.low));
-        lastTrend = issueCount.total - lastCount;
-        lastCount = issueCount.total;
-    });
-    $("#total-issue-trend").text(numeral(lastTrend).format('+0,0'));
-    if (lastTrend !== 0) {
-        var glyphElement = $("#total-issue-trend-glyph");
-        glyphElement.removeClass("glyphicon glyphicon-circle-arrow-up glyphicon-circle-arrow-down good bad");
-        glyphElement.addClass("glyphicon");
-        if (lastTrend > 0) {
-            glyphElement.addClass("glyphicon-circle-arrow-up bad");
-        } else {
-            glyphElement.addClass("glyphicon-circle-arrow-down good");
-        }
-    }
-    issueGraphOptions.series[0].data = dataArrayHigh;
-    issueGraphOptions.series[1].data = dataArrayNormal;
-    issueGraphOptions.series[2].data = dataArrayLow;
-}
-
-function parseIssueCountPerOrigin(data) {
-    var totalIssueCount = 0;
-    var graphDataArray = [];
-    var origins = [];
-    $.each(data.issuesPerOrigin, function (key, value) {
-        var totalOriginCount = value.length;
-        totalIssueCount += totalOriginCount;
-        var graphDataEntry = {};
-        graphDataEntry.name = key;
-        graphDataEntry.y = totalOriginCount;
-        graphDataArray.push(graphDataEntry);
-        var origin = {};
-        origin.origin = key;
-        origin.countTotal = value.length;
-        origin.originLink = "../issues-api/goToBuildResult?origin=" + value[0].origin;
-        var lowCount = 0;
-        var normalCount = 0;
-        var highCount = 0;
-        $.each(value, function (item) {
-            if (item.priority === 'HIGH') {
-                highCount++;
-            } else if (item.priority === 'NORMAL') {
-                normalCount++;
-            } else {
-                lowCount++;
-            }
-        });
-        origin.countHigh = highCount;
-        origin.countNormal = normalCount;
-        origin.countLow = lowCount;
-        origins.push(origin);
-    });
-    $('#total-issue-count').text(numeral(totalIssueCount).format('0,0'));
-    if (projectStorage.toBoolean(projectStorage.get("issues.showPie"))) {
-        issueGraphOptions.series[3] = {
-            data: graphDataArray,
-            name: "Issues",
-            type: "pie",
-            center: [80, 50],
-            size: 100,
-            showInLegend: false,
-            dataLabels: {
-                enabled: true,
-                connectorPadding: 0,
-                distance: 0
-            }
-        };
-    } else {
-        issueGraphOptions.series.splice(3, 1);
-    }
-    var tableContainer = $("#issue-table-container");
-    tableContainer.empty();
-    if (projectStorage.toBoolean(projectStorage.get("issues.showTable"))) {
-        var issueTableRes = originsTemplate({
-            origins: origins
-        });
-        tableContainer.append(issueTableRes);
-    }
-}
-
 function updateIssuesGraph() {
-    $.when(getIssueCounts(), getIssueCountPerOrigin()).done(function (countResponse, countPerOriginResponse) {
-        parseIssueCounts(countResponse[0]);
-        parseIssueCountPerOrigin(countPerOriginResponse[0]);
-        // render graph
-        new Highcharts.Chart(
-            issueGraphOptions
-        );
-
-    });
+    var updateIssues = require('./graphs/issues.js');
+    updateIssues('issues-graph', projectStorage.get('issues.showPie'), projectStorage.get('issues.showTable'));
 }
 
 function compareChangeSet(a, b) {
@@ -499,7 +338,7 @@ function updateTestResults() {
 }
 
 function refreshData() {
-    console.log("Refreshing....")
+    console.log("[Codehealth] Refreshing data...");
     issuesTable();
     updateLoCandDuplicates();
     updateIssuesGraph();
