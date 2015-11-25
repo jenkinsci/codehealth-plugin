@@ -1,5 +1,5 @@
 var $ = require('jquery-detached').getJQuery();
-var Highcharts = require('highcharts-browserify');
+var Chartjs = require('chart.js');
 var numeral = require('numeral');
 
 var originsTemplate = require('../handlebars/origins.hbs');
@@ -171,9 +171,7 @@ var updateIssueGraph = function (container, showPie, showTable) {
         parseIssueCountPerOrigin(countPerOriginResponse[0], showPie, showTable);
         issueGraphOptions.chart.renderTo = container;
         // render graph
-        new Highcharts.Chart(
-            issueGraphOptions
-        );
+
         console.log("[Issues] Updating finished.");
     });
 };
