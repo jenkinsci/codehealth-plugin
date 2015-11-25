@@ -26,6 +26,7 @@
     "jenkins-js-builder": "0.0.26",
     "jenkins-js-modules": "^1.1.0",
     "jquery-detached": "^2.1.4-v2",
-    "numeral": "^1.5.3"
+    "numeral": "^1.5.3",
+    "plotly.js": "^1.0.0"
   }
 }

@@ -1,5 +1,5 @@
-var $ = require('jquery-detached').getJQuery();
-var Highcharts = require('highcharts-browserify');
+var jQ = require('jquery-detached').getJQuery();
+var plotlyjs = require('plotly.js');
 var numeral = require('numeral');
 
 var originsTemplate = require('../handlebars/origins.hbs');
@@ -60,11 +60,11 @@ function buildDataEntry(buildNumber, count) {
 }
 
 function getIssueCounts() {
-    return $.getJSON(issuesGraphAPI);
+    return jQ.getJSON(issuesGraphAPI);
 }
 
 function getIssueCountPerOrigin() {
-    return $.getJSON(issuesPerOriginAPI);
+    return jQ.getJSON(issuesPerOriginAPI);
 }
 
 function parseIssueCounts(data) {
@@ -74,7 +74,7 @@ function parseIssueCounts(data) {
     var dataArrayLow = [];
     var lastCount = 0;
     var lastTrend = 0;
-    $.each(data.series, function (buildNr, issueCount) {
+    jQ.each(data.series, function (buildNr, issueCount) {
         var buildNumber = parseInt(buildNr);
         dataArrayTotal.push(buildDataEntry(buildNumber, issueCount.total));
         dataArrayHigh.push(buildDataEntry(buildNumber, issueCount.high));
@@ -83,9 +83,9 @@ function parseIssueCounts(data) {
         lastTrend = issueCount.total - lastCount;
         lastCount = issueCount.total;
     });
-    $("#total-issue-trend").text(numeral(lastTrend).format('+0,0'));
+    jQ("#total-issue-trend").text(numeral(lastTrend).format('+0,0'));
     if (lastTrend !== 0) {
-        var glyphElement = $("#total-issue-trend-glyph");
+        var glyphElement = jQ("#total-issue-trend-glyph");
         glyphElement.removeClass("glyphicon glyphicon-circle-arrow-up glyphicon-circle-arrow-down good bad");
         glyphElement.addClass("glyphicon");
         if (lastTrend > 0) {
@@ -103,7 +103,7 @@ function parseIssueCountPerOrigin(data, showPie, showTable) {
     var totalIssueCount = 0;
     var graphDataArray = [];
     var origins = [];
-    $.each(data.issuesPerOrigin, function (key, value) {
+    jQ.each(data.issuesPerOrigin, function (key, value) {
         var totalOriginCount = value.length;
         totalIssueCount += totalOriginCount;
         var graphDataEntry = {};
@@ -117,7 +117,7 @@ function parseIssueCountPerOrigin(data, showPie, showTable) {
         var lowCount = 0;
         var normalCount = 0;
         var highCount = 0;
-        $.each(value, function (item) {
+        jQ.each(value, function (item) {
             if (item.priority === 'HIGH') {
                 highCount++;
             } else if (item.priority === 'NORMAL') {
@@ -131,7 +131,7 @@ function parseIssueCountPerOrigin(data, showPie, showTable) {
         origin.countLow = lowCount;
         origins.push(origin);
     });
-    $('#total-issue-count').text(numeral(totalIssueCount).format('0,0'));
+    jQ('#total-issue-count').text(numeral(totalIssueCount).format('0,0'));
     if (showPie === 'true') {
         issueGraphOptions.series[3] = {
             data: graphDataArray,
@@ -149,7 +149,7 @@ function parseIssueCountPerOrigin(data, showPie, showTable) {
     } else {
         issueGraphOptions.series.splice(3, 1);
     }
-    var tableContainer = $("#issue-table-container");
+    var tableContainer = jQ("#issue-table-container");
     tableContainer.empty();
     if (showTable === 'true') {
         var issueTableRes = originsTemplate({
@@ -166,14 +166,21 @@ function parseIssueCountPerOrigin(data, showPie, showTable) {
  */
 var updateIssueGraph = function (container, showPie, showTable) {
     console.log("[Issues] Updating...");
-    $.when(getIssueCounts(), getIssueCountPerOrigin()).done(function (countResponse, countPerOriginResponse) {
+    jQ.when(getIssueCounts(), getIssueCountPerOrigin()).done(function (countResponse, countPerOriginResponse) {
         parseIssueCounts(countResponse[0]);
         parseIssueCountPerOrigin(countPerOriginResponse[0], showPie, showTable);
-        issueGraphOptions.chart.renderTo = container;
-        // render graph
-        new Highcharts.Chart(
-            issueGraphOptions
+        plotlyjs.newPlot(container,
+            [{
+                x: [1, 2, 3, 4, 5],
+                y: [1, 2, 4, 8, 16]
+            }],
+            {
+                margin: { t: 0 }
+            }
         );
+        // TODO not working
+        // console: TypeError: $(...).triggerHandler is not a function
+        // maybe problem with detached jquery??
         console.log("[Issues] Updating finished.");
     });
 };
