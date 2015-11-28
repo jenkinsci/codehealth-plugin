@@ -43,18 +43,18 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>database-h2</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1</version>
         </dependency>
-        <!-- JS UI Modules -->
+        <!-- JS UI Libraries -->
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>jquery-detached</artifactId>
-            <version>1.1</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
