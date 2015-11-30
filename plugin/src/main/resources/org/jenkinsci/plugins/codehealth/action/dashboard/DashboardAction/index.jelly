@@ -103,8 +103,11 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <div id="loc" class="chart-container"/>
+                                        <div class="col-md-12 center-text">
+                                            <span>Lines of Code Trend</span>
+                                            <canvas id="loc" class="chart-container"/>
+                                            <span>Duplicate Code Trend</span>
+                                            <canvas id="dup" class="chart-container"/>
                                         </div>
                                     </div>
                                 </div>

@@ -1,5 +1,4 @@
 var $ = require('jquery-detached').getJQuery();
-var Highcharts = require('highcharts-browserify');
 var numeral = require('numeral');
 
 
@@ -10,54 +9,36 @@ var duplicateCodeSeriesAPI = "../duplicates-api/api/json?tree=series[duplicateLi
 var duplicateCodeAPI = "../duplicates-api/api/json?tree=duplicateCode[duplicateLines]";
 
 
-var codeGraphOptions = {
-    title: {
-        text: null
-    },
-    chart: {
-        type: 'area',
-        height: 275
-    },
-    plotOptions: {
-        area: {
-            marker: {
-                enabled: false
-            }
-        }
-    },
-    credits: {
-        enabled: false
-    },
-    series: [
+var locGraphData = {
+    labels: ['#1', '#1', '#1', '#1', '#1', '#1', '#1'],
+    datasets: [
         {
-            name: "Lines of Code"
-        },
-        {
-            name: "Duplicate Lines"
+            label: "Lines of Code",
+            fillColor: "#7cb5ec",
+            //strokeColor: "rgba(220,220,220,1)",
+            //pointColor: "rgba(220,220,220,1)",
+            //pointStrokeColor: "#fff",
+            //pointHighlightFill: "#f44336",
+            //pointHighlightStroke: "rgba(220,220,220,1)",
+            data: []
         }
-    ],
-    xAxis: {
-        labels: {
-            formatter: function () {
-                return '#' + this.value;
-            }
-        },
-        tickInterval: 1
-    },
-    yAxis: {
-        floor: 0,
-        min: 0
-    },
-    tooltip: {
-        formatter: function () {
-            var s = "<b>Build #" + this.x + "</b>";
-            $.each(this.points, function () {
-                s += "<br/>" + this.series.name + ": " + this.y;
-            });
-            return s;
-        },
-        shared: true
-    }
+    ]
+};
+
+var dupGraphData = {
+    labels: ['#1', '#1', '#1', '#1', '#1', '#1', '#1'],
+    datasets: [
+        {
+            label: "Duplicate Code",
+            fillColor: "#90ed7d",
+            //strokeColor: "rgba(151,187,205,1)",
+            //pointColor: "rgba(151,187,205,1)",
+            //pointStrokeColor: "#fff",
+            //pointHighlightFill: "#cddc39",
+            //pointHighlightStroke: "rgba(151,187,205,1)",
+            data: []
+        }
+    ]
 };
 
 function getLoCSeries() {
@@ -69,18 +50,14 @@ function getDuplicateSeries() {
 }
 
 function parseLocSeries(data) {
-    var dataArray = [];
-    var idx = 0;
+    locGraphData.labels = [];
     var lastCount = 0;
     var lastTrend = 0;
     $.each(data.series, function (i, item) {
-        var obj = [];
-        obj[0] = parseInt(item.build.number);
-        obj[1] = item.linesOfCode;
+        locGraphData.labels.push("#" + item.build.number);
+        locGraphData.datasets[0].data.push(item.linesOfCode);
         lastTrend = item.linesOfCode - lastCount;
         lastCount = item.linesOfCode;
-        dataArray[idx] = obj;
-        idx++;
     });
     $("#total-line-trend").text(numeral(lastTrend).format('+0,0'));
     if (lastTrend !== 0) {
@@ -93,20 +70,14 @@ function parseLocSeries(data) {
             glyphElement.addClass("glyphicon-circle-arrow-down");
         }
     }
-    codeGraphOptions.series[0].data = dataArray;
 }
 
 function parseDupSeries(data) {
-    var dataArray = [];
-    var idx = 0;
+    dupGraphData.labels = [];
     $.each(data.series, function (i, item) {
-        var arr = [];
-        arr[0] = parseInt(item.build.number);
-        arr[1] = item.duplicateLines;
-        dataArray[idx] = arr;
-        idx++;
+        dupGraphData.labels.push("#" + item.build.number);
+        dupGraphData.datasets[0].data.push(item.duplicateLines);
     });
-    codeGraphOptions.series[1].data = dataArray;
 }
 
 function getLoCCount() {
@@ -121,16 +92,24 @@ function getDupCount() {
  * Update LoC and Duplicates graph.
  * @param {string} containerId the id of the container element for the graph
  */
-var updateLocGraph = function (containerId) {
+var updateLocGraph = function (locContainerId, dupContainerId) {
     console.log("[LoC] Updating...");
     $.when(getLoCSeries(), getDuplicateSeries()).done(function (locResponse, dupResponse) {
         parseLocSeries(locResponse[0]);
-        parseDupSeries(dupResponse[0]);
+        var dupData = parseDupSeries(dupResponse[0]);
+
         // render graph
-        codeGraphOptions.chart.renderTo = containerId;
-        new Highcharts.Chart(
-            codeGraphOptions
-        );
+        // Get the context of the canvas element we want to select
+        var options = {
+            pointDot: false,
+            animation: false,
+            showTooltips: false,
+            scaleBeginAtZero: true
+        };
+        var ctxLoc = document.getElementById(locContainerId).getContext("2d");
+        var locChart = new Chart(ctxLoc).Line(locGraphData, options);
+        var ctxDup = document.getElementById(dupContainerId).getContext("2d");
+        var dupChart = new Chart(ctxDup).Line(dupGraphData, options);
 
     });
     $.when(getDupCount(), getLoCCount()).done(function (dupResponse, locResponse) {

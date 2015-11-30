@@ -16,16 +16,6 @@
                             <div class="col-sm-12">
                                 <div class="checkbox">
                                     <label>
-                                        <input id="cbShowPie" type="checkbox"/>
-                                        Show issues by origin in Pie chart
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <div class="checkbox">
-                                    <label>
                                         <input id="cbShowTable" type="checkbox"/>
                                         Show issues by origin in Table
                                     </label>

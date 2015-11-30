@@ -56,22 +56,14 @@ function getIssueCountPerOrigin() {
 }
 
 function parseIssueCounts(data) {
-    var dataArrayTotal = [];
-    var dataArrayHigh = [];
-    var dataArrayNormal = [];
-    var dataArrayLow = [];
     var lastCount = 0;
     var lastTrend = 0;
     graphData.labels = [];
     $.each(data.series, function (buildNr, issueCount) {
         var buildNumber = parseInt(buildNr);
         graphData.labels.push('#'+buildNr);
-        dataArrayTotal.push(buildDataEntry(buildNumber, issueCount.total));
-        dataArrayHigh.push(buildDataEntry(buildNumber, issueCount.high));
         graphData.datasets[0].data.push(issueCount.high);
-        dataArrayNormal.push(buildDataEntry(buildNumber, issueCount.normal));
         graphData.datasets[1].data.push(issueCount.normal);
-        dataArrayLow.push(buildDataEntry(buildNumber, issueCount.low));
         graphData.datasets[2].data.push(issueCount.low);
         lastTrend = issueCount.total - lastCount;
         lastCount = issueCount.total;
@@ -91,15 +83,10 @@ function parseIssueCounts(data) {
 
 function parseIssueCountPerOrigin(data, showTable) {
     var totalIssueCount = 0;
-    var graphDataArray = [];
     var origins = [];
     $.each(data.issuesPerOrigin, function (key, value) {
         var totalOriginCount = value.length;
         totalIssueCount += totalOriginCount;
-        var graphDataEntry = {};
-        graphDataEntry.name = key;
-        graphDataEntry.y = totalOriginCount;
-        graphDataArray.push(graphDataEntry);
         var origin = {};
         origin.origin = key;
         origin.countTotal = value.length;
@@ -145,6 +132,7 @@ var updateIssueGraph = function (container, showTable) {
         // Get the context of the canvas element we want to select
         var ctx = document.getElementById("issues-graph").getContext("2d");
         var myNewChart = new Chart(ctx).Line(graphData, {
+            animation: false,
             pointDot: false,
             multiTooltipTemplate: "<%= datasetLabel %> - <%= value %> issue(s)"
         });
