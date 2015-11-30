@@ -45,12 +45,12 @@ function issuesTable() {
 
 function updateLoCandDuplicates() {
     var updateLoCGraph = require('./graphs/loc.js');
-    updateLoCGraph('loc');
+    updateLoCGraph('loc', 'dup');
 }
 
 function updateIssuesGraph() {
     var updateIssues = require('./graphs/issues.js');
-    updateIssues('issues-graph', projectStorage.get('issues.showPie'), projectStorage.get('issues.showTable'));
+    updateIssues('issues-graph', projectStorage.get('issues.showTable'));
 }
 
 function compareChangeSet(a, b) {
@@ -282,19 +282,14 @@ function initConfigurationModal() {
 
 function bindIssuesSaveButton() {
     $("#btSaveIssueConfig").click(function () {
-        var pieEnabled = $("#cbShowPie").is(':checked');
-        projectStorage.put("issues.showPie", pieEnabled ? "true" : "false");
-        var gravatarEnabled = $("#cbShowTable").is(':checked');
-        projectStorage.put("issues.showTable", gravatarEnabled ? "true" : "false");
+        var showTable = $("#cbShowTable").is(':checked');
+        projectStorage.put("issues.showTable", showTable ? "true" : "false");
         bootstrap("#modal-issues").modal('hide');
     });
 }
 
 function initIssuesModal() {
     bindIssuesSaveButton();
-    if (projectStorage.toBoolean(projectStorage.get("issues.showPie", "true"))) {
-        $("#cbShowPie").prop("checked", "checked");
-    }
     if (projectStorage.toBoolean(projectStorage.get("issues.showTable", "true"))) {
         $("#cbShowTable").prop("checked", "checked");
     }
