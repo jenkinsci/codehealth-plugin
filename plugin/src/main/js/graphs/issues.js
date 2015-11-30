@@ -6,52 +6,41 @@ var originsTemplate = require('../handlebars/origins.hbs');
 var issuesPerOriginAPI = "../issues-api/api/json?tree=issuesPerOrigin[*]";
 var issuesGraphAPI = "../issues-api/api/json?tree=series[*]";
 
-// Issue Trend
-var issueGraphOptions = {
-    title: {
-        text: null
-    },
-    chart: {
-        height: 275,
-        type: "area"
-    },
-    plotOptions: {
-        area: {
-            stacking: "normal",
-            marker: {
-                enabled: false
-            }
+
+var graphData = {
+    labels: ['#1', '#1', '#1', '#1', '#1', '#1', '#1'],
+    datasets: [
+        {
+            label: "High priority",
+            fillColor: "#f44336",
+            //strokeColor: "rgba(220,220,220,1)",
+            //pointColor: "rgba(220,220,220,1)",
+            //pointStrokeColor: "#fff",
+            pointHighlightFill: "#f44336",
+            //pointHighlightStroke: "rgba(220,220,220,1)",
+            data: []
+        },
+        {
+            label: "Normal priority",
+            fillColor: "#cddc39",
+            strokeColor: "rgba(151,187,205,1)",
+            //pointColor: "rgba(151,187,205,1)",
+            //pointStrokeColor: "#fff",
+            pointHighlightFill: "#cddc39",
+            //pointHighlightStroke: "rgba(151,187,205,1)",
+            data: []
+        },
+        {
+            label: "Low priority",
+            fillColor: "#4caf50",
+            //strokeColor: "rgba(151,187,205,1)",
+            //pointColor: "rgba(151,187,205,1)",
+            //pointStrokeColor: "#fff",
+            pointHighlightFill: "#4caf50",
+            //pointHighlightStroke: "rgba(151,187,205,1)",
+            data: []
         }
-    },
-    series: [
-        {
-            name: "High priority",
-            color: '#f44336'
-        },
-        {
-            name: "Normal priority",
-            color: '#cddc39'
-        },
-        {
-            name: "Low priority",
-            color: '#4caf50'
-        }
-    ],
-    credits: {
-        enabled: false
-    },
-    xAxis: {
-        labels: {
-            formatter: function () {
-                return '#' + this.value;
-            }
-        },
-        tickInterval: 1
-    },
-    yAxis: {
-        floor: 0,
-        min: 0
-    }
+    ]
 };
 
 function buildDataEntry(buildNumber, count) {
@@ -73,12 +62,17 @@ function parseIssueCounts(data) {
     var dataArrayLow = [];
     var lastCount = 0;
     var lastTrend = 0;
+    graphData.labels = [];
     $.each(data.series, function (buildNr, issueCount) {
         var buildNumber = parseInt(buildNr);
+        graphData.labels.push('#'+buildNr);
         dataArrayTotal.push(buildDataEntry(buildNumber, issueCount.total));
         dataArrayHigh.push(buildDataEntry(buildNumber, issueCount.high));
+        graphData.datasets[0].data.push(issueCount.high);
         dataArrayNormal.push(buildDataEntry(buildNumber, issueCount.normal));
+        graphData.datasets[1].data.push(issueCount.normal);
         dataArrayLow.push(buildDataEntry(buildNumber, issueCount.low));
+        graphData.datasets[2].data.push(issueCount.low);
         lastTrend = issueCount.total - lastCount;
         lastCount = issueCount.total;
     });
@@ -93,12 +87,9 @@ function parseIssueCounts(data) {
             glyphElement.addClass("glyphicon-circle-arrow-down good");
         }
     }
-    issueGraphOptions.series[0].data = dataArrayHigh;
-    issueGraphOptions.series[1].data = dataArrayNormal;
-    issueGraphOptions.series[2].data = dataArrayLow;
 }
 
-function parseIssueCountPerOrigin(data, showPie, showTable) {
+function parseIssueCountPerOrigin(data, showTable) {
     var totalIssueCount = 0;
     var graphDataArray = [];
     var origins = [];
@@ -131,23 +122,6 @@ function parseIssueCountPerOrigin(data, showPie, showTable) {
         origins.push(origin);
     });
     $('#total-issue-count').text(numeral(totalIssueCount).format('0,0'));
-    if (showPie === 'true') {
-        issueGraphOptions.series[3] = {
-            data: graphDataArray,
-            name: "Issues",
-            type: "pie",
-            center: [80, 50],
-            size: 100,
-            showInLegend: false,
-            dataLabels: {
-                enabled: true,
-                connectorPadding: 0,
-                distance: 0
-            }
-        };
-    } else {
-        issueGraphOptions.series.splice(3, 1);
-    }
     var tableContainer = $("#issue-table-container");
     tableContainer.empty();
     if (showTable === 'true') {
@@ -160,44 +134,20 @@ function parseIssueCountPerOrigin(data, showPie, showTable) {
 /**
  * Update Issue panel data and render the graph.
  * @param {string} container ID of the chart container element
- * @param {boolean} showPie show inline pie chart
  * @param {boolean} showTable show issues by origin table
  */
-var updateIssueGraph = function (container, showPie, showTable) {
+var updateIssueGraph = function (container, showTable) {
     console.log("[Issues] Updating...");
     $.when(getIssueCounts(), getIssueCountPerOrigin()).done(function (countResponse, countPerOriginResponse) {
         parseIssueCounts(countResponse[0]);
-        parseIssueCountPerOrigin(countPerOriginResponse[0], showPie, showTable);
-        issueGraphOptions.chart.renderTo = container;
+        parseIssueCountPerOrigin(countPerOriginResponse[0], showTable);
         // render graph
-        var data = {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
-            datasets: [
-                {
-                    label: "My First dataset",
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                },
-                {
-                    label: "My Second dataset",
-                    fillColor: "rgba(151,187,205,0.2)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    pointColor: "rgba(151,187,205,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(151,187,205,1)",
-                    data: [28, 48, 40, 19, 86, 27, 90]
-                }
-            ]
-        };
         // Get the context of the canvas element we want to select
         var ctx = document.getElementById("issues-graph").getContext("2d");
-        var myNewChart = new Chart(ctx).Line(data);
+        var myNewChart = new Chart(ctx).Line(graphData, {
+            pointDot: false,
+            multiTooltipTemplate: "<%= datasetLabel %> - <%= value %> issue(s)"
+        });
         console.log("[Issues] Updating finished.");
     });
 };

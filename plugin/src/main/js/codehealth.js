@@ -50,7 +50,7 @@ function updateLoCandDuplicates() {
 
 function updateIssuesGraph() {
     var updateIssues = require('./graphs/issues.js');
-    updateIssues('issues-graph', projectStorage.get('issues.showPie'), projectStorage.get('issues.showTable'));
+    updateIssues('issues-graph', projectStorage.get('issues.showTable'));
 }
 
 function compareChangeSet(a, b) {

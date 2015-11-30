@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <canvas id="issues-graph" height="325"></canvas>
+                                            <canvas id="issues-graph" class="chart-container"></canvas>
                                         </div>
                                     </div>
                                     <div class="row">
