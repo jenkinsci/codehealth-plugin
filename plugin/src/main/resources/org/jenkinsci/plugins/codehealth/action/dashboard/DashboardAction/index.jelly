@@ -4,6 +4,7 @@
             <link rel="stylesheet" type="text/css" href="${resURL}/plugin/codehealth/codehealth.css"/>
         </l:header>
         <l:main-panel>
+            <script src="${resURL}/plugin/codehealth/Chart.js"/>
             <script src="${resURL}/plugin/codehealth/bundles/codehealth.js"/>
             <!--provides resource url for use in javascript -->
             <input id="resourceUrl" type="hidden" value="${resURL}"/>
@@ -57,7 +58,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div id="issues-graph" class="chart-container"/>
+                                            <canvas id="issues-graph" height="325"></canvas>
                                         </div>
                                     </div>
                                     <div class="row">
