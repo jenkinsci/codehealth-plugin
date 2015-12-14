@@ -7,20 +7,13 @@
       <module fileurl="file://$PROJECT_DIR$/build-tools/build-tools.iml" filepath="$PROJECT_DIR$/build-tools/build-tools.iml" />
       <module fileurl="file://$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" filepath="$PROJECT_DIR$/../checkstyle-plugin/checkstyle.iml" group="contrib-plugins/issues" />
       <module fileurl="file://$PROJECT_DIR$/plugin/codehealth.iml" filepath="$PROJECT_DIR$/plugin/codehealth.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../dry-plugin/dry.iml" filepath="$PROJECT_DIR$/../dry-plugin/dry.iml" group="contrib-plugins/dry" />
       <module fileurl="file://$PROJECT_DIR$/../js-libs/handlebars/handlebars.iml" filepath="$PROJECT_DIR$/../js-libs/handlebars/handlebars.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../javancss-plugin/javancss.iml" filepath="$PROJECT_DIR$/../javancss-plugin/javancss.iml" group="contrib-plugins/loc" />
       <module fileurl="file://$PROJECT_DIR$/../js-libs/jenkins-js-libs.iml" filepath="$PROJECT_DIR$/../js-libs/jenkins-js-libs.iml" />
       <module fileurl="file://$PROJECT_DIR$/../js-libs/jquery-detached/jquery-detached.iml" filepath="$PROJECT_DIR$/../js-libs/jquery-detached/jquery-detached.iml" />
       <module fileurl="file://$PROJECT_DIR$/../js-libs/js-module-base/js-module-base.iml" filepath="$PROJECT_DIR$/../js-libs/js-module-base/js-module-base.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../junit-plugin/junit.iml" filepath="$PROJECT_DIR$/../junit-plugin/junit.iml" group="contrib-plugins/test" />
       <module fileurl="file://$PROJECT_DIR$/../js-libs/momentjs/momentjs.iml" filepath="$PROJECT_DIR$/../js-libs/momentjs/momentjs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../js-libs/numeraljs/numeraljs.iml" filepath="$PROJECT_DIR$/../js-libs/numeraljs/numeraljs.iml" />
       <module fileurl="file://$PROJECT_DIR$/parent.iml" filepath="$PROJECT_DIR$/parent.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../pmd-plugin/pmd.iml" filepath="$PROJECT_DIR$/../pmd-plugin/pmd.iml" group="contrib-plugins/issues" />
       <module fileurl="file://$PROJECT_DIR$/provider/provider.iml" filepath="$PROJECT_DIR$/provider/provider.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" filepath="$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" group="contrib-plugins/loc" />
-      <module fileurl="file://$PROJECT_DIR$/../violations-plugin/violations.iml" filepath="$PROJECT_DIR$/../violations-plugin/violations.iml" group="contrib-plugins/issues" />
     </modules>
   </component>
 </project>
