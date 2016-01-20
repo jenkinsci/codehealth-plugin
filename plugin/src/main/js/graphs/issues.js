@@ -43,10 +43,6 @@ var graphData = {
     ]
 };
 
-function buildDataEntry(buildNumber, count) {
-    return [buildNumber, count];
-}
-
 function getIssueCounts() {
     return $.getJSON(issuesGraphAPI);
 }
@@ -61,7 +57,7 @@ function parseIssueCounts(data) {
     graphData.labels = [];
     $.each(data.series, function (buildNr, issueCount) {
         var buildNumber = parseInt(buildNr);
-        graphData.labels.push('#'+buildNr);
+        graphData.labels.push('#' + buildNumber);
         graphData.datasets[0].data.push(issueCount.high);
         graphData.datasets[1].data.push(issueCount.normal);
         graphData.datasets[2].data.push(issueCount.low);
