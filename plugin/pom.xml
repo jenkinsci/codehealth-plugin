@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>numeraljs</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
 
         <!-- ### TEST -->
@@ -87,25 +87,6 @@
         <npm.version>3.3.8</npm.version>
     </properties>
 
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.cj.jshintmojo</groupId>
-                <artifactId>jshint-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <configuration>
-                    <options>maxparams:3,indent,camelcase,eqeqeq,forin,immed,latedef,noarg,noempty,nonew</options>
-                    <directories>
-                        <directory>src/main/js</directory>
-                    </directories>
-                    <reporter>jslint</reporter>
-                    <reportFile>${project.build.directory}/jshint.xml</reportFile>
-                    <failOnError>false</failOnError>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <profiles>
         <!-- For local testing -->
@@ -133,35 +114,51 @@
         <profile>
             <id>node-classifier-linux</id>
             <activation>
-                <os>
-                    <family>Linux</family>
-                    <arch>amd64</arch>
-                </os>
+                <os><family>Linux</family><arch>amd64</arch></os>
             </activation>
             <properties>
                 <node.download.file>node-v${node.version}-linux-x64.tar.gz</node.download.file>
+                <node.download.classifier />
             </properties>
         </profile>
         <profile>
             <id>node-classifier-mac</id>
             <activation>
-                <os>
-                    <family>mac</family>
-                </os>
+                <os><family>mac</family></os>
             </activation>
             <properties>
                 <node.download.file>node-v${node.version}-darwin-x64.tar.gz</node.download.file>
+                <node.download.classifier />
             </properties>
         </profile>
         <profile>
             <id>node-classifier-windows</id>
             <activation>
-                <os>
-                    <family>windows</family>
-                </os>
+                <os><family>windows</family><arch>x64</arch></os>
             </activation>
             <properties>
                 <node.download.file>win-x64/node.exe</node.download.file>
+                <node.download.classifier>/x64</node.download.classifier>
+            </properties>
+        </profile>
+        <profile>
+            <id>node-classifier-windows-amd64</id>
+            <activation>
+                <os><family>windows</family><arch>amd64</arch></os>
+            </activation>
+            <properties>
+                <node.download.file>win-x64/node.exe</node.download.file>
+                <node.download.classifier>/x64</node.download.classifier>
+            </properties>
+        </profile>
+        <profile>
+            <id>node-classifier-windows-x86</id>
+            <activation>
+                <os><family>windows</family><arch>x86</arch></os>
+            </activation>
+            <properties>
+                <node.download.file>win-x86/node.exe</node.download.file>
+                <node.download.classifier />
             </properties>
         </profile>
         <profile>
@@ -187,8 +184,7 @@
                                 <configuration>
                                     <url>https://nodejs.org/dist/v${node.version}/${node.download.file}</url>
                                     <unpack>false</unpack>
-                                    <outputDirectory>${project.build.directory}/frontend/v${node.version}
-                                    </outputDirectory>
+                                    <outputDirectory>${project.build.directory}/frontend/v${node.version}${node.download.classifier}</outputDirectory>
                                 </configuration>
                             </execution>
                             <execution>
@@ -255,7 +251,7 @@
                                     <nodeVersion>v${node.version}</nodeVersion>
                                     <npmVersion>${npm.version}</npmVersion>
                                     <!-- Use the pre-download node and npm packages. See download-maven-plugin config above. -->
-                                    <downloadRoot>file:${project.build.directory}/frontend/</downloadRoot>
+                                    <downloadRoot>${project.baseUri}target/frontend/</downloadRoot>
                                 </configuration>
                             </execution>
 
@@ -282,16 +278,6 @@
                                 </configuration>
                             </execution>
 
-                            <execution>
-                                <phase>test</phase>
-                                <id>gulp test</id>
-                                <goals>
-                                    <goal>gulp</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>bundle test</arguments>
-                                </configuration>
-                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
