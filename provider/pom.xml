@@ -10,7 +10,6 @@
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>org.jenkins-ci.plugins.codehealth</groupId>
     <artifactId>provider</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
