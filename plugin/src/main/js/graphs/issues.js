@@ -90,12 +90,12 @@ function parseIssueCountPerOrigin(data, showTable) {
         var lowCount = 0;
         var normalCount = 0;
         var highCount = 0;
-        $.each(value, function (item) {
+        $.each(value, function (idx, item) {
             if (item.priority === 'HIGH') {
                 highCount++;
             } else if (item.priority === 'NORMAL') {
                 normalCount++;
-            } else {
+            } else if (item.priority === 'LOW') {
                 lowCount++;
             }
         });
