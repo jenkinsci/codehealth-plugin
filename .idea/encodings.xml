@@ -6,12 +6,16 @@
     <file url="file://$PROJECT_DIR$/build-tools" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/plugin" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/provider" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../dry-plugin" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/../javancss-plugin" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../js-libs/ace-editor" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../js-libs/bootstrap" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../js-libs/handlebars" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../js-libs/jquery-detached" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../js-libs/js-module-base" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../js-libs/momentjs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../sloccount-plugin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../violations-plugin" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

@@ -1,6 +1,6 @@
-var builder = require('jenkins-js-builder');
+var builder = require('@jenkins-cd/js-builder');
 
-//builder.defineTasks(['test','bundle','rebundle', 'jshint']);
+builder.defineTasks(['test', 'bundle', 'rebundle']);
 
 builder.bundle('src/main/js/codehealth.js')
     .withExternalModuleMapping('jquery-detached', 'jquery-detached:jquery2')

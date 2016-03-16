@@ -83,7 +83,7 @@
     </dependencies>
 
     <properties>
-        <node.version>4.2.1</node.version>
+        <node.version>4.4.0</node.version>
         <npm.version>3.3.8</npm.version>
     </properties>
 
