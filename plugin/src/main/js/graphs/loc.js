@@ -104,7 +104,8 @@ var updateLocGraph = function (locContainerId, dupContainerId) {
             pointDot: false,
             animation: false,
             showTooltips: false,
-            scaleBeginAtZero: true
+            scaleBeginAtZero: true,
+            bezierCurve : false
         };
         var ctxLoc = document.getElementById(locContainerId).getContext("2d");
         var locChart = new Chart(ctxLoc).Line(locGraphData, options);
