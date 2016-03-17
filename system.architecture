@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conqat-architecture xmlns="http://conqat.cs.tum.edu/ns/architecture" policy="deny" file-based="true" scope-include="" scope-exclude="">
+  <component name="plugin" dim="120,40" pos="491,121">
+    <code-mapping type="include" regex="plugin/.*" />
+  </component>
+  <component name="provider" dim="120,40" pos="321,121">
+    <code-mapping type="include" regex="provider/.*" />
+  </component>
+  <deny source="provider" target="plugin" />
+</conqat-architecture>
