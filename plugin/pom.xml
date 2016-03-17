@@ -54,22 +54,22 @@
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>handlebars</artifactId>
-            <version>1.0</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>momentjs</artifactId>
-            <version>1.0</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.ui</groupId>
             <artifactId>numeraljs</artifactId>
-            <version>1.1</version>
+            <version>1.1.1</version>
         </dependency>
 
         <!-- ### TEST -->
