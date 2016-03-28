@@ -20,13 +20,7 @@ public abstract class IssueProvider implements ExtensionPoint {
      * @return existing issues for a build
      */
     @Nonnull
-    public abstract Collection<Issue> getExistingIssues(AbstractBuild<?, ?> build);
-
-    /**
-     * @return issues that have been fixed with a build
-     */
-    @Nullable
-    public abstract Collection<Issue> getFixedIssues(AbstractBuild<?, ?> build);
+    public abstract Collection<Issue> getIssues(AbstractBuild<?, ?> build);
 
     /**
      * @return unique identifier of the plugin which contributes issues
@@ -39,11 +33,6 @@ public abstract class IssueProvider implements ExtensionPoint {
      */
     @Nonnull
     public abstract String getOriginPluginName();
-
-    /**
-     * @return if the plugin can provide information about fixed issues with {@link IssueProvider#getFixedIssues(hudson.model.AbstractBuild)}
-     */
-    public abstract boolean canProvideFixedIssues();
 
     /**
      * @return the project result action url
