@@ -46,6 +46,9 @@ public abstract class IssueProvider implements ExtensionPoint {
     @Nullable
     public abstract String getBuildResultUrlName();
 
+    /**
+     * @return get all registered implementations of IssueProvider
+     */
     public static ExtensionList<IssueProvider> all() {
         return Jenkins.getInstance().getExtensionList(IssueProvider.class);
     }

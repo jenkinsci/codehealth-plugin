@@ -15,6 +15,7 @@
       <module fileurl="file://$PROJECT_DIR$/../js-libs/js-module-base/js-module-base.iml" filepath="$PROJECT_DIR$/../js-libs/js-module-base/js-module-base.iml" />
       <module fileurl="file://$PROJECT_DIR$/../js-libs/momentjs/momentjs.iml" filepath="$PROJECT_DIR$/../js-libs/momentjs/momentjs.iml" />
       <module fileurl="file://$PROJECT_DIR$/parent.iml" filepath="$PROJECT_DIR$/parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../pmd-plugin/pmd.iml" filepath="$PROJECT_DIR$/../pmd-plugin/pmd.iml" group="contrib-plugins/issues" />
       <module fileurl="file://$PROJECT_DIR$/provider/provider.iml" filepath="$PROJECT_DIR$/provider/provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" filepath="$PROJECT_DIR$/../sloccount-plugin/sloccount.iml" group="contrib-plugins/loc" />
       <module fileurl="file://$PROJECT_DIR$/../violations-plugin/violations.iml" filepath="$PROJECT_DIR$/../violations-plugin/violations.iml" group="contrib-plugins/issues" />

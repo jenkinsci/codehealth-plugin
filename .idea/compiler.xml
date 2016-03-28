@@ -52,13 +52,6 @@
         <processorPath useClasspath="true" />
         <module name="build-tools" />
       </profile>
-      <profile default="false" name="Annotation profile for pmd" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="pmd" />
-      </profile>
       <profile default="false" name="Annotation profile for jquery-detached" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -127,6 +120,13 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="dry" />
+      </profile>
+      <profile default="false" name="Annotation profile for pmd" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="pmd" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
