@@ -64,12 +64,10 @@ public class CodehealthPublisherTest {
     }
 
     /**
-     * Given provider "findbugs" with 5 existing issues and 2 fixed issues
-     * And provider "checkstyle" with 10 existing issues and that can not provide fixed issues
+     * Given provider "findbugs" with 5 existing issues
+     * And provider "checkstyle" with 10 existing issues
      * When the codehealth publisher collects these issues from these providers
      * Then in total 15 existing issues are reported
-     * And in total 2 fixed issues are reported
-     * And for provider "checkstyle" fixed issues are calculated
      *
      * @throws IOException
      * @throws InterruptedException
@@ -77,16 +75,13 @@ public class CodehealthPublisherTest {
     @Test
     public void issues_roundtrip() throws IOException, InterruptedException {
         // setup
-        this.issueProviderList.add(buildIssueProvider("findbugs", 5, 2, true));
-        this.issueProviderList.add(buildIssueProvider("checkstyle", 10, 0, false));
+        this.issueProviderList.add(buildIssueProvider("findbugs", 5));
+        this.issueProviderList.add(buildIssueProvider("checkstyle", 10));
         // act
         this.publisher.perform(this.build, this.launcher, this.buildListener);
         // verify 15 new/open issues are reported
         verify(issueRepository).updateIssues(argThat(hasSizeOf(15)), eq(this.build));
         // right now all fixed issues are always calculated
-        // verify 2 fixed issues are reported
-        //verify(issueRepository).fixedIssues(argThat(hasSizeOf(2)), eq(this.build));
-        // verify that for checkstyle fixed issues are calculated
         verify(issueRepository).calculateFixedIssues(eq(this.topLevelItem), anyCollection(), eq("checkstyle"));
         verify(issueRepository).calculateFixedIssues(eq(this.topLevelItem), anyCollection(), eq("findbugs"));
     }
@@ -105,12 +100,7 @@ public class CodehealthPublisherTest {
         // setup
         this.issueProviderList.add(new IssueProvider() {
             @Override
-            public Collection<Issue> getExistingIssues(AbstractBuild<?, ?> build) {
-                return null;
-            }
-
-            @Override
-            public Collection<Issue> getFixedIssues(AbstractBuild<?, ?> build) {
+            public Collection<Issue> getIssues(AbstractBuild<?, ?> build) {
                 return null;
             }
 
@@ -125,11 +115,6 @@ public class CodehealthPublisherTest {
                 return "Broken Provider Plugin";
             }
 
-            @Override
-            public boolean canProvideFixedIssues() {
-                return true;
-            }
-
             @Nullable
             @Override
             public String getProjectResultUrlName() {
@@ -142,7 +127,7 @@ public class CodehealthPublisherTest {
                 return getOrigin();
             }
         });
-        this.issueProviderList.add(buildIssueProvider("checkstyle", 10, 0, false));
+        this.issueProviderList.add(buildIssueProvider("checkstyle", 10));
         // act
         this.publisher.perform(this.build, this.launcher, this.buildListener);
         // verify 15 new/open issues are reported
@@ -165,22 +150,12 @@ public class CodehealthPublisherTest {
         return new MockExtensionList(jenkins, LinesOfCodeProvider.class, locProviderList);
     }
 
-    private IssueProvider buildIssueProvider(final String origin, final int existingIssues, final int fixedIssues, final boolean canProvideFixedIssues) {
+    private IssueProvider buildIssueProvider(final String origin, final int existingIssues) {
         final List<Issue> existingIssueList = buildIssues(existingIssues);
-        final List<Issue> fixedIssueList = buildIssues(fixedIssues);
         return new IssueProvider() {
             @Override
-            public Collection<Issue> getExistingIssues(AbstractBuild<?, ?> build) {
+            public Collection<Issue> getIssues(AbstractBuild<?, ?> build) {
                 return existingIssueList;
-            }
-
-            @Override
-            public Collection<Issue> getFixedIssues(AbstractBuild<?, ?> build) {
-                if (canProvideFixedIssues) {
-                    return fixedIssueList;
-                } else {
-                    return Collections.emptyList();
-                }
             }
 
             @Override
@@ -192,11 +167,6 @@ public class CodehealthPublisherTest {
             @Override
             public String getOriginPluginName() {
                 return origin;
-            }
-
-            @Override
-            public boolean canProvideFixedIssues() {
-                return canProvideFixedIssues;
             }
 
             @Nullable

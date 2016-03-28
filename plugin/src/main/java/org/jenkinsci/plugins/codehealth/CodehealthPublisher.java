@@ -123,7 +123,7 @@ public class CodehealthPublisher extends Recorder {
         for (IssueProvider issueProvider : getIssueProviders()) {
             final String origin = issueProvider.getOrigin();
             logConsole(listener, "Getting Issues from " + issueProvider.getClass().getName() + ", origin=" + origin);
-            Collection<Issue> existingIssues = issueProvider.getExistingIssues(build);
+            Collection<Issue> existingIssues = issueProvider.getIssues(build);
             if (existingIssues != null) {
                 for (Issue issue : existingIssues) {
                     newIssues.add(mapToInternal(issue, origin));
