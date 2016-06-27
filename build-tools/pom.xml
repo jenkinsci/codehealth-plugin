@@ -10,4 +10,11 @@
     <name>Codehealth Build-Tools</name>
     <description>Contains configuration files for the build.</description>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
 </project>
