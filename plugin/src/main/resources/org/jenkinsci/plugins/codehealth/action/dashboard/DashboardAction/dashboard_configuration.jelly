@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
     <!-- Modal -->
     <div class="modal fade" id="modal-dashboard" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

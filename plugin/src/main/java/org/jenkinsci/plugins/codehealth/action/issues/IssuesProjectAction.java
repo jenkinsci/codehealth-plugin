@@ -47,7 +47,7 @@ public class IssuesProjectAction extends AbstractIssuesAction {
         Map<String, List<IssueEntity>> map = new LinkedHashMap<String, List<IssueEntity>>();
         for (IssueEntity issue : issues) {
             String originPluginName = IssueProvider.findProvider(issue.getOrigin()).getOriginPluginName();
-            List<IssueEntity> issueList = map.getOrDefault(originPluginName, new ArrayList<IssueEntity>());
+            List<IssueEntity> issueList = map.get(originPluginName) != null ? map.get(originPluginName) : new ArrayList<IssueEntity>();
             issueList.add(issue);
             map.put(originPluginName, issueList);
         }
