@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "mvnbuild": "gulp bundle",
+    "mvntest": "gulp test",
     "gulp": "gulp"
   },
   "repository": {
